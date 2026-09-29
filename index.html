@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weekly Task Tracker</title>
+<style>
+  :root { --bg:#eef1f5; --card:#fff; --ink:#1b2430; --muted:#6b7684; --line:#d5dbe3; --accent:#2f5bea; --done:#2e8b57; --danger:#c0392b; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#151a21; --card:#1e252e; --ink:#e8ecf1; --muted:#93a0af; --line:#323c48; --accent:#6f8fff; --done:#4fc083; --danger:#ef7566; }
+  }
+  * { box-sizing:border-box; }
+  html { padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:24px 16px 64px; }
+  header { margin-bottom:20px; }
+  h1 { margin:0; font-size:1.9rem; letter-spacing:-0.02em; }
+  .owner { margin:4px 0 0; color:var(--muted); }
+  .status { margin:0 0 12px; font-size:.9rem; color:var(--muted); }
+  .status.error { color:var(--danger); }
+  input[type=text], input[type=password] { flex:1; min-width:0; padding:10px 12px; font:inherit; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:8px; }
+  input:focus-visible, button:focus-visible, textarea:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+  button { font:inherit; cursor:pointer; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--ink); padding:10px 14px; }
+  button.primary { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600; }
+  .row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+  .week { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; margin-bottom:16px; }
+  .week-head { display:flex; align-items:center; gap:12px; }
+  .week-head h2 { margin:0; font-size:1.15rem; flex:1; }
+  .count { color:var(--muted); font-size:.9rem; }
+  .icon { padding:4px 10px; color:var(--muted); }
+  .icon:hover { color:var(--danger); border-color:var(--danger); }
+  .codebtn { padding:4px 10px; color:var(--accent); font-size:.9rem; }
+  .progress { height:6px; background:var(--line); border-radius:3px; margin:10px 0 12px; overflow:hidden; }
+  .progress > div { height:100%; background:var(--done); transition:width .25s; }
+  ul { list-style:none; margin:0 0 12px; padding:0; }
+  li { display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--line); }
+  li:last-child { border-bottom:0; }
+  li input[type=checkbox] { width:18px; height:18px; accent-color:var(--done); flex:none; }
+  li span { flex:1; overflow-wrap:anywhere; }
+  li.done span { text-decoration:line-through; color:var(--muted); }
+  .code-area { flex:1 0 100%; min-height:150px; padding:10px; font:13px/1.45 ui-monospace,Consolas,"Courier New",monospace; color:var(--ink); background:var(--bg); border:1px solid var(--line); border-radius:8px; white-space:pre; overflow:auto; resize:vertical; }
+  .add-task { display:flex; gap:8px; }
+  .empty { color:var(--muted); padding:24px 0; text-align:center; }
+  .panel { background:var(--card); border:1px solid var(--accent); border-radius:10px; padding:14px; margin-bottom:16px; font-size:.95rem; }
+  .panel .row { margin:10px 0 0; }
+  footer { margin-top:32px; text-align:center; }
+  footer button { border:0; background:none; color:var(--muted); font-size:.85rem; text-decoration:underline; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Weekly Task Tracker</h1>
+    <p class="owner">Fatkhullaev Muhammadmuso &middot; Student ID 202637351</p>
+  </header>
+
+  <p class="status" id="status" hidden></p>
+
+  <div id="editTools" hidden>
+    <div class="row">
+      <input type="text" id="weekTitle" placeholder="Week name, e.g. Week 2" aria-label="New week name">
+      <button class="primary" id="addWeek">Add week</button>
+      <button id="saveNow">Save now</button>
+      <button id="disconnect">Sign out</button>
+    </div>
+  </div>
+
+  <div id="weeks"></div>
+
+  <div class="panel" id="signin" hidden>
+    <strong>Owner sign in.</strong> Paste your GitHub token to edit and save to your repository. It stays in this browser only.
+    <div class="row"><input type="text" id="ghOwner" placeholder="GitHub username" aria-label="GitHub username"><input type="text" id="ghRepo" placeholder="Repository name" aria-label="Repository name"></div>
+    <div class="row"><input type="password" id="ghToken" placeholder="Token (starts with github_pat_)" aria-label="GitHub token" autocomplete="off"><button class="primary" id="connect">Connect</button></div>
+    <p class="status" id="signinMsg"></p>
+  </div>
+
+  <footer><button id="signinBtn">Owner sign in</button></footer>
+</main>
+
+<script>
+  const CFG_KEY = "tracker-github-v1";
+  const $ = id => document.getElementById(id);
+  const uid = () => Math.random().toString(36).slice(2, 10);
+  const b64 = s => btoa(unescape(encodeURIComponent(s)));
+  const unb64 = s => decodeURIComponent(escape(atob(s.replace(/\s/g, ""))));
+
+  function guessRepo() {
+    const host = location.hostname, first = location.pathname.split("/").filter(Boolean)[0];
+    if (host.endsWith(".github.io"))
+      return { owner: host.replace(".github.io", ""), repo: first && !first.includes(".") ? first : host };
+    return { owner: "muso081", repo: "task-tracker" };
+  }
+  let cfg = {};
+  try { cfg = JSON.parse(localStorage.getItem(CFG_KEY)) || {}; } catch (e) {}
+  const guess = guessRepo();
+  cfg.owner = cfg.owner || guess.owner;
+  cfg.repo = cfg.repo || guess.repo;
+
+  let weeks = [], sha = null, canEdit = false, dirty = false, saving = false, timer;
+  const open = new Set();
+
+  const defaultWeeks = () => [{ id: uid(), title: "Week 1", tasks: [
+    { id: uid(), text: "Task 1", done: false, code: "" },
+    { id: uid(), text: "Task 2", done: false, code: "" },
+    { id: uid(), text: "Task 3", done: false, code: "" }
+  ]}];
+
+  function setStatus(text, isError) {
+    const el = $("status");
+    el.hidden = !text;
+    el.textContent = text || "";
+    el.className = "status" + (isError ? " error" : "");
+  }
+
+  function gh(method, payload) {
+    const headers = { Authorization: "Bearer " + cfg.token, Accept: "application/vnd.github+json" };
+    if (payload) headers["Content-Type"] = "application/json";
+    return fetch("https://api.github.com/repos/" + cfg.owner + "/" + cfg.repo + "/contents/data.json", {
+      method, headers, cache: "no-store", body: payload ? JSON.stringify(payload) : undefined
+    });
+  }
+
+  async function load() {
+    canEdit = false;
+    if (cfg.token) {
+      let msg = "";
+      try {
+        const r = await gh("GET");
+        if (r.ok) {
+          const j = await r.json();
+          sha = j.sha; weeks = JSON.parse(unb64(j.content)).weeks || []; canEdit = true;
+          setStatus("Signed in. Every change is saved to GitHub."); return;
+        }
+        if (r.status === 404) { sha = null; weeks = defaultWeeks(); canEdit = true; setStatus("Signed in. Your first change creates data.json in the repository."); return; }
+        msg = r.status === 401 ? "GitHub rejected your token. Sign in again." : "Could not reach your repository (error " + r.status + ").";
+      } catch (e) { msg = "No connection to GitHub."; }
+      setStatus(msg, true);
+    } else setStatus("");
+    try {
+      const r = await fetch("data.json?ts=" + Date.now(), { cache: "no-store" });
+      if (r.ok) { weeks = (await r.json()).weeks || []; return; }
+    } catch (e) {}
+    weeks = [];
+  }
+
+  function changed() {
+    dirty = true;
+    setStatus("Unsaved changes...");
+    clearTimeout(timer);
+    timer = setTimeout(saveNow, 1500);
+  }
+
+  async function saveNow() {
+    clearTimeout(timer);
+    if (!canEdit || saving || !dirty) return;
+    saving = true; dirty = false;
+    setStatus("Saving to GitHub...");
+    const body = JSON.stringify({ weeks }, null, 2);
+    const put = () => gh("PUT", { message: "Update tasks", content: b64(body), ...(sha ? { sha } : {}) });
+    let ok = false;
+    try {
+      let res = await put();
+      if (res.status === 409 || res.status === 422) {
+        const g = await gh("GET");
+        sha = g.ok ? (await g.json()).sha : null;
+        res = await put();
+      }
+      if (res.ok) {
+        sha = (await res.json()).content.sha; ok = true;
+        setStatus("Saved to GitHub at " + new Date().toLocaleTimeString() + ".");
+      } else {
+        dirty = true;
+        setStatus("Save failed (error " + res.status + "). Check the token allows Contents: Read and write, then click Save now.", true);
+      }
+    } catch (e) {
+      dirty = true;
+      setStatus("Save failed: no connection. Click Save now to try again.", true);
+    }
+    saving = false;
+    if (ok && dirty) saveNow();
+  }
+
+  function render() {
+    $("editTools").hidden = !canEdit;
+    $("signinBtn").hidden = canEdit;
+    const root = $("weeks");
+    root.innerHTML = "";
+    if (!weeks.length) {
+      root.innerHTML = '<p class="empty">' + (canEdit ? "No weeks yet. Add your first week above." : "No tasks published yet.") + "</p>";
+      return;
+    }
+    weeks.forEach(w => {
+      const done = w.tasks.filter(t => t.done).length;
+      const pct = w.tasks.length ? Math.round(done / w.tasks.length * 100) : 0;
+      const el = document.createElement("section");
+      el.className = "week";
+      el.innerHTML =
+        '<div class="week-head"><h2></h2><span class="count">' + done + "/" + w.tasks.length + " done</span>" +
+        (canEdit ? '<button class="icon" data-del aria-label="Delete week">Delete</button>' : "") + "</div>" +
+        '<div class="progress"><div style="width:' + pct + '%"></div></div><ul></ul>' +
+        (canEdit ? '<div class="add-task"><input type="text" placeholder="New task" aria-label="New task"><button>Add task</button></div>' : "");
+      el.querySelector("h2").textContent = w.title;
+
+      const ul = el.querySelector("ul");
+      w.tasks.forEach(t => {
+        const li = document.createElement("li");
+        if (t.done) li.className = "done";
+        const showCodeBtn = canEdit || t.code;
+        li.innerHTML = '<input type="checkbox" aria-label="Done"><span></span>' +
+          (showCodeBtn ? '<button class="codebtn"></button>' : "") +
+          (canEdit ? '<button class="icon rm" aria-label="Delete task">Remove</button>' : "");
+        li.querySelector("span").textContent = t.text;
+        const cb = li.querySelector("input");
+        cb.checked = t.done;
+        if (canEdit) {
+          cb.onchange = () => { t.done = cb.checked; changed(); render(); };
+          li.querySelector(".rm").onclick = () => { w.tasks = w.tasks.filter(x => x.id !== t.id); changed(); render(); };
+        } else cb.disabled = true;
+        if (showCodeBtn) {
+          const btn = li.querySelector(".codebtn");
+          btn.textContent = open.has(t.id) ? "Hide code" : (t.code ? "View code" : "Add code");
+          btn.onclick = () => { open.has(t.id) ? open.delete(t.id) : open.add(t.id); render(); };
+        }
+        if (open.has(t.id)) {
+          const ta = document.createElement("textarea");
+          ta.className = "code-area";
+          ta.spellcheck = false;
+          ta.value = t.code || "";
+          if (canEdit) { ta.placeholder = "Paste your code for this task here"; ta.oninput = () => { t.code = ta.value; changed(); }; }
+          else ta.readOnly = true;
+          li.appendChild(ta);
+        }
+        ul.appendChild(li);
+      });
+
+      if (canEdit) {
+        const input = el.querySelector(".add-task input");
+        const add = () => {
+          const text = input.value.trim();
+          if (!text) return;
+          w.tasks.push({ id: uid(), text, done: false, code: "" });
+          changed(); render();
+        };
+        el.querySelector(".add-task button").onclick = add;
+        input.onkeydown = e => { if (e.key === "Enter") add(); };
+
+        const del = el.querySelector("[data-del]");
+        let armed = false, t2;
+        del.onclick = () => {
+          if (!armed) {
+            armed = true;
+            del.textContent = "Click again to delete";
+            del.style.color = del.style.borderColor = "var(--danger)";
+            t2 = setTimeout(() => { armed = false; del.textContent = "Delete"; del.style.color = del.style.borderColor = ""; }, 3000);
+            return;
+          }
+          clearTimeout(t2);
+          weeks = weeks.filter(x => x.id !== w.id); changed(); render();
+        };
+      }
+      root.appendChild(el);
+    });
+  }
+
+  const titleInput = $("weekTitle");
+  function addWeek() {
+    weeks.push({ id: uid(), title: titleInput.value.trim() || "Week " + (weeks.length + 1), tasks: [] });
+    titleInput.value = "";
+    changed(); render();
+  }
+  $("addWeek").onclick = addWeek;
+  titleInput.onkeydown = e => { if (e.key === "Enter") addWeek(); };
+  $("saveNow").onclick = () => { dirty = true; saveNow(); };
+
+  $("signinBtn").onclick = () => {
+    $("ghOwner").value = cfg.owner; $("ghRepo").value = cfg.repo;
+    $("signin").hidden = !$("signin").hidden;
+  };
+  $("connect").onclick = async () => {
+    const msg = (t, err) => { const m = $("signinMsg"); m.textContent = t; m.className = "status" + (err ? " error" : ""); };
+    const o = $("ghOwner").value.trim(), r = $("ghRepo").value.trim(), t = $("ghToken").value.trim();
+    if (!o || !r || !t) return msg("Fill in all three fields.", true);
+    msg("Checking...");
+    let test;
+    try {
+      test = await fetch("https://api.github.com/repos/" + o + "/" + r,
+        { headers: { Authorization: "Bearer " + t, Accept: "application/vnd.github+json" } });
+    } catch (e) { return msg("No connection to GitHub.", true); }
+    if (!test.ok) return msg(test.status === 401
+      ? "GitHub did not accept this token. Check that you copied all of it."
+      : "Repository not found, or the token has no access to it (error " + test.status + ").", true);
+    cfg = { owner: o, repo: r, token: t };
+    try { localStorage.setItem(CFG_KEY, JSON.stringify(cfg)); } catch (e) {}
+    $("ghToken").value = ""; msg(""); $("signin").hidden = true;
+    await load(); render();
+  };
+  $("disconnect").onclick = async () => {
+    if (dirty) await saveNow();
+    cfg.token = "";
+    try { localStorage.setItem(CFG_KEY, JSON.stringify(cfg)); } catch (e) {}
+    await load(); render();
+  };
+
+  window.addEventListener("beforeunload", e => { if (dirty || saving) { e.preventDefault(); e.returnValue = ""; } });
+
+  load().then(render);
+</script>
+</body>
+</html>
