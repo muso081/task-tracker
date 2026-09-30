@@ -40,6 +40,11 @@
   li span { flex:1; overflow-wrap:anywhere; }
   li.done span { text-decoration:line-through; color:var(--muted); }
   .code-area { flex:1 0 100%; min-height:150px; padding:10px; font:13px/1.45 ui-monospace,Consolas,"Courier New",monospace; color:var(--ink); background:var(--bg); border:1px solid var(--line); border-radius:8px; white-space:pre; overflow:auto; resize:vertical; }
+  .code-wrap { flex:1 0 100%; display:flex; flex-direction:column; gap:8px; }
+  .code-wrap .code-area { flex:none; }
+  .code-bar { display:flex; gap:8px; align-items:center; }
+  .code-bar select { font:inherit; padding:8px 10px; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:8px; }
+  .preview { width:100%; height:260px; border:1px solid var(--line); border-radius:8px; background:#fff; resize:vertical; }
   .add-task { display:flex; gap:8px; }
   .empty { color:var(--muted); padding:24px 0; text-align:center; }
   .panel { background:var(--card); border:1px solid var(--accent); border-radius:10px; padding:14px; margin-bottom:16px; font-size:.95rem; }
@@ -99,6 +104,7 @@
 
   let weeks = [], sha = null, canEdit = false, dirty = false, saving = false, timer;
   const open = new Set();
+  const running = new Set();
 
   const defaultWeeks = () => [{ id: uid(), title: "Week 1", tasks: [
     { id: uid(), text: "Task 1", done: false, code: "" },
@@ -186,6 +192,27 @@
     if (ok && dirty) saveNow();
   }
 
+  function detectMode(c) {
+    if (/<[a-z!][^>]*>/i.test(c)) return "html";
+    if (!/\b(function|const|let|var|console|document|window|if|for|while)\b|=>/.test(c) && /[^{}]+\{[^{}]*:[^{}]*\}/.test(c)) return "css";
+    return "js";
+  }
+
+  function buildDoc(code, lang) {
+    const mode = lang === "auto" ? detectMode(code) : lang;
+    if (mode === "html") return code;
+    if (mode === "css") {
+      return '<!doctype html><meta charset="utf-8"><style>' + code.replace(/<\/style/gi, "<\\/style") + '</style>' +
+        '<h1>Heading</h1><p>A paragraph with <a href="#">a link</a> and <strong>bold text</strong>.</p>' +
+        '<button>Button</button><ul><li>List item one</li><li>List item two</li></ul><div class="box">.box</div>';
+    }
+    const shim = '(function(){var o=document.getElementById("o");function p(c,a){var s=[].map.call(a,function(x){try{return typeof x==="object"?JSON.stringify(x):String(x)}catch(e){return String(x)}}).join(" ");var d=document.createElement("div");if(c)d.className=c;d.textContent=s;o.appendChild(d)}' +
+      'console.log=function(){p("",arguments)};console.info=console.log;console.warn=function(){p("w",arguments)};console.error=function(){p("e",arguments)};' +
+      'window.onerror=function(m,u,l){p("e",["Error: "+m+(l?" (line "+l+")":"")]);return true}})();';
+    return '<!doctype html><meta charset="utf-8"><style>body{font:14px/1.5 ui-monospace,Consolas,monospace;margin:8px;color:#1b2430;background:#fff}.e{color:#c0392b}.w{color:#b7791f}</style>' +
+      '<pre id="o" style="margin:0;white-space:pre-wrap"></pre><script>' + shim + '<\/script><script>' + code.replace(/<\/script/gi, "<\\/script") + '<\/script>';
+  }
+
   function render() {
     $("editTools").hidden = !canEdit;
     $("signinBtn").hidden = canEdit;
@@ -207,31 +234,59 @@
       const ul = el.querySelector("ul");
       w.tasks.forEach(t => {
         const li = document.createElement("li");
-        if (t.done) li.className = "done";
         const showCodeBtn = canEdit || t.code;
-        li.innerHTML = '<input type="checkbox" aria-label="Done"><span></span>' +
+        li.innerHTML = '<span></span>' +
           (showCodeBtn ? '<button class="codebtn"></button>' : "") +
           (canEdit ? '<button class="icon rm" aria-label="Delete task">Remove</button>' : "");
         li.querySelector("span").textContent = t.text;
-        const cb = li.querySelector("input");
-        cb.checked = t.done;
         if (canEdit) {
-          cb.onchange = () => { t.done = cb.checked; changed(); render(); };
           li.querySelector(".rm").onclick = () => { w.tasks = w.tasks.filter(x => x.id !== t.id); changed(); render(); };
-        } else cb.disabled = true;
+        }
         if (showCodeBtn) {
           const btn = li.querySelector(".codebtn");
           btn.textContent = open.has(t.id) ? "Hide code" : (t.code ? "View code" : "Add code");
           btn.onclick = () => { open.has(t.id) ? open.delete(t.id) : open.add(t.id); render(); };
         }
         if (open.has(t.id)) {
+          const wrap = document.createElement("div");
+          wrap.className = "code-wrap";
+          let lang = t.lang || "auto";
+          const bar = document.createElement("div");
+          bar.className = "code-bar";
+          const sel = document.createElement("select");
+          sel.setAttribute("aria-label", "Language");
+          [["auto", "Auto-detect"], ["html", "HTML"], ["js", "JavaScript"], ["css", "CSS"]].forEach(([v, n]) => {
+            const o = document.createElement("option"); o.value = v; o.textContent = n; sel.appendChild(o);
+          });
+          sel.value = lang;
+          const run = document.createElement("button");
+          run.className = "primary";
+          run.textContent = running.has(t.id) ? "Stop" : "Run";
+          bar.append(sel, run);
+
           const ta = document.createElement("textarea");
           ta.className = "code-area";
           ta.spellcheck = false;
           ta.value = t.code || "";
-          if (canEdit) { ta.placeholder = "Paste your code for this task here"; ta.oninput = () => { t.code = ta.value; changed(); }; }
-          else ta.readOnly = true;
-          li.appendChild(ta);
+          wrap.append(bar, ta);
+
+          let frame = null, timer2;
+          const refresh = () => { if (frame) frame.srcdoc = buildDoc(ta.value, lang); };
+          if (running.has(t.id)) {
+            frame = document.createElement("iframe");
+            frame.className = "preview";
+            frame.title = "Result";
+            frame.setAttribute("sandbox", "allow-scripts");
+            refresh();
+            wrap.appendChild(frame);
+          }
+          run.onclick = () => { running.has(t.id) ? running.delete(t.id) : running.add(t.id); render(); };
+          sel.onchange = () => { lang = sel.value; if (canEdit) { t.lang = lang; changed(); } refresh(); };
+          if (canEdit) {
+            ta.placeholder = "Paste your code for this task here";
+            ta.oninput = () => { t.code = ta.value; changed(); clearTimeout(timer2); timer2 = setTimeout(refresh, 400); };
+          } else ta.readOnly = true;
+          li.appendChild(wrap);
         }
         ul.appendChild(li);
       });
