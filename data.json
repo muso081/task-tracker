@@ -1,22 +1,3 @@
 {
-  "weeks": [
-    {
-      "id": "q76gp1kc",
-      "title": "Week 1",
-      "tasks": [
-        {
-          "id": "pxcw9uf9",
-          "text": "task 1",
-          "done": false,
-          "code": "dasdasd"
-        },
-        {
-          "id": "3y9k79nk",
-          "text": "task 2",
-          "done": false,
-          "code": "asdasdasd"
-        }
-      ]
-    }
-  ]
+  "weeks": []
 }
