@@ -3,7 +3,14 @@
     {
       "id": "djk9tt86",
       "title": "Week 2",
-      "tasks": []
+      "tasks": [
+        {
+          "id": "i7y24s6k",
+          "text": "ASDASD",
+          "done": false,
+          "code": ""
+        }
+      ]
     }
   ]
 }
