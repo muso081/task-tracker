@@ -8,7 +8,7 @@
           "id": "1lk1kzu6",
           "text": "Task 1",
           "done": false,
-          "code": ""
+          "code": "<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n  <meta charset=\"UTF-8\">\n\n  <style>\n    h1 {\n      color: green;\n      text-align: center;\n      font-size: 2.5rem;\n    }\n  </style>\n</head>\n\n<body>\n  <h1>Muso</h1>\n</body>\n\n</html>"
         }
       ]
     }
