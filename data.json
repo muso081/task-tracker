@@ -3,7 +3,14 @@
     {
       "id": "q76gp1kc",
       "title": "Week 1",
-      "tasks": []
+      "tasks": [
+        {
+          "id": "pxcw9uf9",
+          "text": "task 1",
+          "done": false,
+          "code": ""
+        }
+      ]
     }
   ]
 }
