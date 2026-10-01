@@ -48,7 +48,7 @@
             {
               "id": "azld7ghr",
               "name": "index.html",
-              "code": ""
+              "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <style>\n    body { font-family: sans-serif; padding: 20px; }\n\n    .margin-box {\n      background-color: #fde68a;\n      padding: 30px;\n      text-align: center;\n      max-width: 400px;\n    }\n    .border-box {\n      background-color: #6b7280;\n      padding: 20px;\n    }\n    .padding-box {\n      background-color: #bfdbfe;\n      padding: 24px;\n    }\n    .content-box {\n      background-color: #ddd6fe;\n      padding: 20px;\n    }\n\n    .layer-label {\n      font-size: 11px;\n      font-weight: bold;\n      text-transform: uppercase;\n      letter-spacing: 0.08em;\n    }\n  </style>\n</head>\n<body>\n  <div class=\"margin-box\">\n    <span class=\"layer-label\">Margin</span>\n    <div class=\"border-box\">\n      <span class=\"layer-label\">Border</span>\n      <div class=\"padding-box\">\n        <span class=\"layer-label\">Padding</span>\n        <div class=\"content-box\">\n          <span class=\"layer-label\">Content</span>\n        </div>\n      </div>\n    </div>\n  </div>\n</body>\n</html>"
             }
           ]
         }
