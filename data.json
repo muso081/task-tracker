@@ -96,7 +96,7 @@
             {
               "id": "pk2e1jmk",
               "name": "index.html",
-              "code": ""
+              "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>My CSS Portfolio</title>\n  <style>\n    * {\n      box-sizing: border-box;\n      margin: 0;\n      padding: 0;\n    }\n\n    body {\n      font-family: sans-serif;\n      line-height: 1.6;\n      color: #1e293b;\n      background-color: #f8fafc;\n    }\n    a { text-decoration: none; }\n    h1 { font-size: 2.75rem; }\n    h2 { font-size: 1.75rem; }\n    h3 { font-size: 1.25rem; }\n    p { color: #475569; }\n\n    .nav {\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      background-color: #0f172a;\n      padding: 16px 24px;\n    }\n    .nav-logo {\n      color: white;\n      font-weight: bold;\n      font-size: 1.25rem;\n    }\n    .nav-links {\n      display: flex;\n      gap: 24px;\n    }\n    .nav-links a { color: white; }\n    .nav-links a:hover { color: #10B981; }\n\n    .hero {\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      text-align: center;\n      background-color: #1e293b;\n      padding: 96px 24px;"
             }
           ]
         }
