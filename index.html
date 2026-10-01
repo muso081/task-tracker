@@ -44,6 +44,11 @@
   .code-wrap .code-area { flex:none; }
   .code-bar { display:flex; gap:8px; align-items:center; }
   .code-bar select { font:inherit; padding:8px 10px; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:8px; }
+  .tab { padding:6px 12px; font-size:.9rem; color:var(--muted); }
+  .tab.on { color:var(--accent); border-color:var(--accent); font-weight:600; }
+  .code-bar { flex-wrap:wrap; }
+  .code-bar .newfile { flex:1; min-width:140px; padding:6px 10px; }
+  .code-bar .fname { flex:1; min-width:120px; padding:6px 10px; }
   .preview { width:100%; height:260px; border:1px solid var(--line); border-radius:8px; background:#fff; resize:vertical; }
   .add-task { display:flex; gap:8px; }
   .empty { color:var(--muted); padding:24px 0; text-align:center; }
@@ -105,11 +110,12 @@
   let weeks = [], sha = null, canEdit = false, dirty = false, saving = false, timer;
   const open = new Set();
   const running = new Set();
+  const activeFile = {};
 
   const defaultWeeks = () => [{ id: uid(), title: "Week 1", tasks: [
-    { id: uid(), text: "Task 1", done: false, code: "" },
-    { id: uid(), text: "Task 2", done: false, code: "" },
-    { id: uid(), text: "Task 3", done: false, code: "" }
+    { id: uid(), text: "Task 1", done: false, files: [] },
+    { id: uid(), text: "Task 2", done: false, files: [] },
+    { id: uid(), text: "Task 3", done: false, files: [] }
   ]}];
 
   function setStatus(text, isError) {
@@ -198,24 +204,65 @@
     return "js";
   }
 
-  function buildDoc(code, lang) {
-    const mode = lang === "auto" ? detectMode(code) : lang;
-    if (mode === "html") return code;
-    if (mode === "css") {
-      return '<!doctype html><meta charset="utf-8"><style>' + code.replace(/<\/style/gi, "<\\/style") + '</style>' +
-        '<h1>Heading</h1><p>A paragraph with <a href="#">a link</a> and <strong>bold text</strong>.</p>' +
-        '<button>Button</button><ul><li>List item one</li><li>List item two</li></ul><div class="box">.box</div>';
+  const SHIM = '(function(){var o=document.getElementById("o");function p(c,a){var s=[].map.call(a,function(x){try{return typeof x==="object"?JSON.stringify(x):String(x)}catch(e){return String(x)}}).join(" ");var d=document.createElement("div");if(c)d.className=c;d.textContent=s;o.appendChild(d)}' +
+    'console.log=function(){p("",arguments)};console.info=console.log;console.warn=function(){p("w",arguments)};console.error=function(){p("e",arguments)};' +
+    'window.onerror=function(m,u,l){p("e",["Error: "+m+(l?" (line "+l+")":"")]);return true}})();';
+  const ext = n => (n.split(".").pop() || "").toLowerCase();
+  const baseName = n => n.split("/").pop().toLowerCase();
+  const safeJs = s => s.replace(/<\/script/gi, "<\\/script");
+  const safeCss = s => s.replace(/<\/style/gi, "<\\/style");
+
+  function buildProject(files) {
+    const html = files.filter(f => ext(f.name) === "html" || ext(f.name) === "htm");
+    const css = files.filter(f => ext(f.name) === "css");
+    const js = files.filter(f => ext(f.name) === "js");
+    const find = (list, ref) => list.find(f => baseName(f.name) === ref.split("?")[0].split("#")[0].split("/").pop().toLowerCase());
+    const main = html.find(f => baseName(f.name) === "index.html") || html[0];
+
+    if (main) {
+      const used = new Set();
+      let doc = main.code;
+      doc = doc.replace(/<link\b[^>]*href\s*=\s*["']([^"']+)["'][^>]*>/gi, (m, href) => {
+        const f = find(css, href);
+        if (!f) return m;
+        used.add(f.id);
+        return "<style>" + safeCss(f.code) + "</style>";
+      });
+      doc = doc.replace(/<script\b[^>]*?src\s*=\s*["']([^"']+)["'][^>]*>\s*<\/script>/gi, (m, src) => {
+        const f = find(js, src);
+        if (!f) return m;
+        used.add(f.id);
+        return "<script>" + safeJs(f.code) + "<\/script>";
+      });
+      const extraCss = css.filter(f => !used.has(f.id)).map(f => "<style>" + safeCss(f.code) + "</style>").join("");
+      const extraJs = js.filter(f => !used.has(f.id)).map(f => "<script>" + safeJs(f.code) + "<\/script>").join("");
+      if (extraCss) doc = /<\/head>/i.test(doc) ? doc.replace(/<\/head>/i, () => extraCss + "</head>") : extraCss + doc;
+      if (extraJs) doc = /<\/body>/i.test(doc) ? doc.replace(/<\/body>/i, () => extraJs + "</body>") : doc + extraJs;
+      return doc;
     }
-    const shim = '(function(){var o=document.getElementById("o");function p(c,a){var s=[].map.call(a,function(x){try{return typeof x==="object"?JSON.stringify(x):String(x)}catch(e){return String(x)}}).join(" ");var d=document.createElement("div");if(c)d.className=c;d.textContent=s;o.appendChild(d)}' +
-      'console.log=function(){p("",arguments)};console.info=console.log;console.warn=function(){p("w",arguments)};console.error=function(){p("e",arguments)};' +
-      'window.onerror=function(m,u,l){p("e",["Error: "+m+(l?" (line "+l+")":"")]);return true}})();';
-    return '<!doctype html><meta charset="utf-8"><style>body{font:14px/1.5 ui-monospace,Consolas,monospace;margin:8px;color:#1b2430;background:#fff}.e{color:#c0392b}.w{color:#b7791f}</style>' +
-      '<pre id="o" style="margin:0;white-space:pre-wrap"></pre><script>' + shim + '<\/script><script>' + code.replace(/<\/script/gi, "<\\/script") + '<\/script>';
+
+    const cssAll = css.map(f => "<style>" + safeCss(f.code) + "</style>").join("");
+    if (js.length) {
+      return '<!doctype html><meta charset="utf-8"><style>body{font:14px/1.5 ui-monospace,Consolas,monospace;margin:8px;color:#1b2430;background:#fff}.e{color:#c0392b}.w{color:#b7791f}</style>' + cssAll +
+        '<pre id="o" style="margin:0;white-space:pre-wrap"></pre><script>' + SHIM + '<\/script>' +
+        js.map(f => "<script>" + safeJs(f.code) + "<\/script>").join("");
+    }
+    return '<!doctype html><meta charset="utf-8">' + cssAll +
+      '<h1>Heading</h1><p>A paragraph with <a href="#">a link</a> and <strong>bold text</strong>.</p>' +
+      '<button>Button</button><ul><li>List item one</li><li>List item two</li></ul><div class="box">.box</div>';
   }
 
   function render() {
     $("editTools").hidden = !canEdit;
     $("signinBtn").hidden = canEdit;
+    weeks.forEach(w => w.tasks.forEach(t => {
+      if (!Array.isArray(t.files)) {
+        const c = t.code || "";
+        const mode = (t.lang && t.lang !== "auto") ? t.lang : detectMode(c);
+        t.files = c ? [{ id: uid(), name: mode === "css" ? "style.css" : mode === "js" ? "script.js" : "index.html", code: c }] : [];
+        delete t.code; delete t.lang;
+      }
+    }));
     const root = $("weeks");
     root.innerHTML = "";
     if (!weeks.length) {
@@ -234,7 +281,8 @@
       const ul = el.querySelector("ul");
       w.tasks.forEach(t => {
         const li = document.createElement("li");
-        const showCodeBtn = canEdit || t.code;
+        const hasCode = t.files.some(f => f.code);
+        const showCodeBtn = canEdit || hasCode;
         li.innerHTML = '<span></span>' +
           (showCodeBtn ? '<button class="codebtn"></button>' : "") +
           (canEdit ? '<button class="icon rm" aria-label="Delete task">Remove</button>' : "");
@@ -244,34 +292,98 @@
         }
         if (showCodeBtn) {
           const btn = li.querySelector(".codebtn");
-          btn.textContent = open.has(t.id) ? "Hide code" : (t.code ? "View code" : "Add code");
-          btn.onclick = () => { open.has(t.id) ? open.delete(t.id) : open.add(t.id); render(); };
+          btn.textContent = open.has(t.id) ? "Hide code" : (hasCode ? "View code" : "Add code");
+          btn.onclick = () => {
+            if (open.has(t.id)) open.delete(t.id);
+            else {
+              open.add(t.id);
+              if (canEdit && !t.files.length) { t.files.push({ id: uid(), name: "index.html", code: "" }); changed(); }
+            }
+            render();
+          };
         }
         if (open.has(t.id)) {
           const wrap = document.createElement("div");
           wrap.className = "code-wrap";
-          let lang = t.lang || "auto";
+          if (!t.files.some(f => f.id === activeFile[t.id])) activeFile[t.id] = t.files.length ? t.files[0].id : null;
+          const cur = t.files.find(f => f.id === activeFile[t.id]);
+
+          const tabs = document.createElement("div");
+          tabs.className = "code-bar";
+          t.files.forEach(f => {
+            const b = document.createElement("button");
+            b.className = "tab" + (f.id === activeFile[t.id] ? " on" : "");
+            b.textContent = f.name;
+            b.onclick = () => { activeFile[t.id] = f.id; render(); };
+            tabs.appendChild(b);
+          });
+          if (canEdit) {
+            const nf = document.createElement("input");
+            nf.type = "text"; nf.className = "newfile"; nf.placeholder = "New file, e.g. style.css";
+            nf.setAttribute("aria-label", "New file name");
+            const addf = document.createElement("button");
+            addf.textContent = "+ File";
+            const addFile = () => {
+              const name = nf.value.trim();
+              if (!name) return;
+              if (t.files.some(f => f.name.toLowerCase() === name.toLowerCase())) { setStatus("A file named " + name + " already exists.", true); return; }
+              const f = { id: uid(), name, code: "" };
+              t.files.push(f); activeFile[t.id] = f.id; changed(); render();
+            };
+            addf.onclick = addFile;
+            nf.onkeydown = e => { if (e.key === "Enter") addFile(); };
+            tabs.append(nf, addf);
+          }
+          wrap.appendChild(tabs);
+
           const bar = document.createElement("div");
           bar.className = "code-bar";
-          const sel = document.createElement("select");
-          sel.setAttribute("aria-label", "Language");
-          [["auto", "Auto-detect"], ["html", "HTML"], ["js", "JavaScript"], ["css", "CSS"]].forEach(([v, n]) => {
-            const o = document.createElement("option"); o.value = v; o.textContent = n; sel.appendChild(o);
-          });
-          sel.value = lang;
           const run = document.createElement("button");
           run.className = "primary";
           run.textContent = running.has(t.id) ? "Stop" : "Run";
-          bar.append(sel, run);
+          run.onclick = () => { running.has(t.id) ? running.delete(t.id) : running.add(t.id); render(); };
+          bar.appendChild(run);
+
+          if (canEdit && cur) {
+            const nameIn = document.createElement("input");
+            nameIn.type = "text"; nameIn.className = "fname"; nameIn.value = cur.name;
+            nameIn.setAttribute("aria-label", "File name");
+            nameIn.onchange = () => {
+              const v = nameIn.value.trim();
+              if (!v || t.files.some(f => f.id !== cur.id && f.name.toLowerCase() === v.toLowerCase())) { nameIn.value = cur.name; return; }
+              cur.name = v; changed(); render();
+            };
+            const delF = document.createElement("button");
+            delF.className = "icon";
+            delF.textContent = "Delete file";
+            let armedF = false, tF;
+            delF.onclick = () => {
+              if (!armedF) {
+                armedF = true; delF.textContent = "Click again to delete";
+                delF.style.color = delF.style.borderColor = "var(--danger)";
+                tF = setTimeout(() => { armedF = false; delF.textContent = "Delete file"; delF.style.color = delF.style.borderColor = ""; }, 3000);
+                return;
+              }
+              clearTimeout(tF);
+              t.files = t.files.filter(f => f.id !== cur.id); activeFile[t.id] = null; changed(); render();
+            };
+            bar.append(nameIn, delF);
+          }
+          wrap.appendChild(bar);
 
           const ta = document.createElement("textarea");
           ta.className = "code-area";
           ta.spellcheck = false;
-          ta.value = t.code || "";
-          wrap.append(bar, ta);
-
           let frame = null, timer2;
-          const refresh = () => { if (frame) frame.srcdoc = buildDoc(ta.value, lang); };
+          const refresh = () => { if (frame) frame.srcdoc = buildProject(t.files); };
+          if (cur) {
+            ta.value = cur.code || "";
+            if (canEdit) {
+              ta.placeholder = "Paste the code for " + cur.name + " here";
+              ta.oninput = () => { cur.code = ta.value; changed(); clearTimeout(timer2); timer2 = setTimeout(refresh, 400); };
+            } else ta.readOnly = true;
+            wrap.appendChild(ta);
+          }
           if (running.has(t.id)) {
             frame = document.createElement("iframe");
             frame.className = "preview";
@@ -280,12 +392,6 @@
             refresh();
             wrap.appendChild(frame);
           }
-          run.onclick = () => { running.has(t.id) ? running.delete(t.id) : running.add(t.id); render(); };
-          sel.onchange = () => { lang = sel.value; if (canEdit) { t.lang = lang; changed(); } refresh(); };
-          if (canEdit) {
-            ta.placeholder = "Paste your code for this task here";
-            ta.oninput = () => { t.code = ta.value; changed(); clearTimeout(timer2); timer2 = setTimeout(refresh, 400); };
-          } else ta.readOnly = true;
           li.appendChild(wrap);
         }
         ul.appendChild(li);
@@ -296,7 +402,7 @@
         const add = () => {
           const text = input.value.trim();
           if (!text) return;
-          w.tasks.push({ id: uid(), text, done: false, code: "" });
+          w.tasks.push({ id: uid(), text, done: false, files: [] });
           changed(); render();
         };
         el.querySelector(".add-task button").onclick = add;
