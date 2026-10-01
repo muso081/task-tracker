@@ -63,6 +63,12 @@
               "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <style>\n    body {\n      font-family: sans-serif;\n      background-color: #f0fdf4;\n    }\n\n    h1 {\n      color: #15803d;\n      font-size: 2rem;\n      text-align: center;\n    }\n\n    p {\n      line-height: 1.7;\n      color: #334155;\n    }\n\n    /* This is a fixed comment */\n    .highlight {\n      background-color: #dcfce7;\n    }\n  </style>\n</head>\n<body>\n  <h1>Fix Me!</h1>\n  <p>This paragraph has <span class=\"highlight\">broken CSS</span> around it.</p>\n</body>\n</html>"
             }
           ]
+        },
+        {
+          "id": "wb1iu9jo",
+          "text": "Task 6",
+          "done": false,
+          "files": []
         }
       ]
     }
