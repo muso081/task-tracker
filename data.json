@@ -20,7 +20,13 @@
           "id": "8p9b4fa3",
           "text": "Task 2",
           "done": false,
-          "files": []
+          "files": [
+            {
+              "id": "rpdtwdni",
+              "name": "index.html",
+              "code": ""
+            }
+          ]
         }
       ]
     }
