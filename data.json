@@ -56,7 +56,13 @@
           "id": "8ib3vqze",
           "text": "Task 4",
           "done": false,
-          "files": []
+          "files": [
+            {
+              "id": "nhkytpqt",
+              "name": "index.html",
+              "code": ""
+            }
+          ]
         }
       ]
     }
