@@ -39,6 +39,18 @@
               "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <style>\n    .palette {\n      display: flex;\n      gap: 12px;\n      padding: 16px;\n      background: #f1f5f9;\n    }\n    .swatch {\n      width: 100px;\n      height: 100px;\n      border-radius: 8px;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      color: white;\n      font-weight: bold;\n      font-size: 13px;\n      font-family: monospace;\n    }\n    .c1 { background: #EF4444; }\n    .c2 { background: #F59E0B; }\n    .c3 { background: #10B981; }\n    .c4 { background: #3B82F6; }\n    .c5 { background: #8B5CF6; }\n  </style>\n</head>\n<body>\n  <div class=\"palette\">\n    <div class=\"swatch c1\">#EF4444</div>\n    <div class=\"swatch c2\">#F59E0B</div>\n    <div class=\"swatch c3\">#10B981</div>\n    <div class=\"swatch c4\">#3B82F6</div>\n    <div class=\"swatch c5\">#8B5CF6</div>\n  </div>\n</body>\n</html>"
             }
           ]
+        },
+        {
+          "id": "i4u9ypoo",
+          "text": "Task 3",
+          "done": false,
+          "files": [
+            {
+              "id": "azld7ghr",
+              "name": "index.html",
+              "code": ""
+            }
+          ]
         }
       ]
     }
