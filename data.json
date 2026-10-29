@@ -105,7 +105,14 @@
     {
       "id": "ae1qql12",
       "title": "Week 9",
-      "tasks": []
+      "tasks": [
+        {
+          "id": "10inpok3",
+          "text": "Task 1",
+          "done": false,
+          "files": []
+        }
+      ]
     }
   ]
 }
