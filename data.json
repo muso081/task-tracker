@@ -110,7 +110,13 @@
           "id": "10inpok3",
           "text": "Task 1",
           "done": false,
-          "files": []
+          "files": [
+            {
+              "id": "w93c3u1o",
+              "name": "index.html",
+              "code": ""
+            }
+          ]
         }
       ]
     }
