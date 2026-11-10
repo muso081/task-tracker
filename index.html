@@ -28,15 +28,17 @@
     .number{display:grid;width:32px;height:32px;place-items:center;border:1px solid var(--line);border-radius:10px;color:var(--cyan);font-size:.72rem;font-weight:800}
     .task-title{display:block;overflow-wrap:anywhere;font-weight:700}
     .task-path{display:block;margin-top:2px;color:var(--muted);font-size:.76rem;overflow-wrap:anywhere}
-    .task a{padding:7px 10px;border:1px solid #ffbd5950;border-radius:10px;color:var(--accent);font-size:.82rem;font-weight:800;text-decoration:none;white-space:nowrap}
-    .task a:hover{background:#ffbd5918}
-    a:focus-visible,input:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+    button{padding:8px 11px;border:1px solid #ffbd5950;border-radius:10px;background:transparent;color:var(--accent);font:inherit;font-size:.82rem;font-weight:800;cursor:pointer}
+    button:hover{background:#ffbd5918}
+    button:disabled{opacity:.6;cursor:wait}
+    button:focus-visible,input:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+    .preview{grid-column:1/-1;width:100%;height:min(75vh,720px);border:1px solid var(--line);border-radius:12px;background:#fff}
+    .task-message{grid-column:2/-1;color:var(--muted);font-size:.82rem}
     .notice{margin:16px 0 0;padding:13px 15px;border:1px solid var(--line);border-radius:12px;color:var(--muted);font-size:.88rem}
-    .notice a{color:var(--cyan)}
     .notice.error{border-color:#ff8b8760;color:var(--danger)}
     .empty{grid-column:1/-1;padding:32px;text-align:center;color:var(--muted)}
     footer{margin-top:28px;color:var(--muted);font-size:.85rem;text-align:center}
-    @media(max-width:620px){main{width:min(100% - 22px,1120px);padding-top:22px}.masthead{display:block;border-radius:20px}.student{display:inline-block;margin-top:18px}.toolbar{align-items:stretch;flex-direction:column}.summary{white-space:normal}.task{grid-template-columns:32px minmax(0,1fr)}.task a{grid-column:2;justify-self:start}}
+    @media(max-width:620px){main{width:min(100% - 22px,1120px);padding-top:22px}.masthead{display:block;border-radius:20px}.student{display:inline-block;margin-top:18px}.toolbar{align-items:stretch;flex-direction:column}.summary{white-space:normal}.task{grid-template-columns:32px minmax(0,1fr)}.task button{grid-column:2;justify-self:start}.preview{grid-column:1/-1}}
   </style>
 </head>
 <body>
@@ -45,7 +47,7 @@
       <div>
         <p class="eyebrow">Web programming · coursework archive</p>
         <h1>Every week.<br>Every task.</h1>
-        <p class="intro">The coursework is now shown right here in your tracker. Browse week overviews, exercises, and samples; open a task to view its working page, with its supporting files loaded from the source repository.</p>
+        <p class="intro">Open full coursework pages directly inside this tracker—no task links taking you away. Search weeks, exercises, and samples below.</p>
       </div>
       <span class="student">Muhammadmuso · ID 202637351</span>
     </header>
@@ -54,7 +56,7 @@
       <span class="summary" id="summary" role="status">Loading the coursework…</span>
     </div>
     <div class="weeks" id="weeks" aria-live="polite"></div>
-    <p class="notice" id="notice">Coursework source: <a href="https://github.com/Xushnudbek76/week2" target="_blank" rel="noopener noreferrer">Xushnudbek76/week2</a>. Source attribution is retained.</p>
+    <p class="notice" id="notice">Coursework source: Xushnudbek76/week2. The source credit is retained; task files open in the preview panels below.</p>
     <footer>Coursework Tracker · Muhammadmuso · Student ID 202637351</footer>
   </main>
   <script>
@@ -76,7 +78,62 @@
     function displayName(path) {
       const file = path.split("/").pop();
       if (file.toLowerCase() === "index.html") return "Week overview";
-      return `${category(path)} ${file.replace(/\.html$/i, "").replace(/^(exer|sample)/i, "")}`;
+      return `${category(path)} · ${file}`;
+    }
+
+    function redesignDocument(source, path) {
+      const base = `https://raw.githubusercontent.com/${sourceOwner}/${sourceRepo}/main/${path.split("/").slice(0,-1).join("/")}/`;
+      let doc = source;
+      const baseTag = `<base href="${base}">`;
+      const redesign = `<style id="tracker-redesign">
+        :root{color-scheme:light dark!important;--page:#f4f7fb;--surface:#fff;--ink:#17243a;--muted:#5e6f84;--line:#dce4ec;--accent:#405fe8;--accent-soft:#e9edff}
+        @media(prefers-color-scheme:dark){:root{--page:#101827;--surface:#172337;--ink:#f3f6fb;--muted:#a9b5c7;--line:#34445c;--accent:#ffbd59;--accent-soft:#29334a}}
+        html{background:var(--page)!important}body{min-height:100vh!important;margin:0!important;padding:clamp(22px,5vw,56px)!important;background:radial-gradient(ellipse at 10% 0%,color-mix(in srgb,var(--accent) 15%,transparent),transparent 30rem),var(--page)!important;color:var(--ink)!important;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif!important;line-height:1.65!important}
+        body>*{max-width:1000px!important;margin-left:auto!important;margin-right:auto!important}main,header,section,article,.panel,.card,.hero,.content-panel,.sample-panel,.feature-card{border-radius:18px!important}section,article,.panel,.card,.content-panel,.sample-panel,.feature-card{border:1px solid var(--line)!important;background:var(--surface)!important;box-shadow:0 12px 32px #00000012!important;padding:clamp(18px,3vw,30px)!important;margin-block:16px!important;color:var(--ink)!important}
+        h1,h2,h3{color:var(--ink)!important;letter-spacing:-.035em!important}p,li,small{color:inherit}a{color:var(--accent)!important;text-underline-offset:3px}button{border-radius:11px!important;background:var(--accent)!important;color:white!important;border:0!important;padding:10px 15px!important;font:inherit!important;font-weight:700!important}input,textarea,select{max-width:100%;border:1px solid var(--line)!important;border-radius:10px!important;padding:10px 12px!important;background:var(--page)!important;color:var(--ink)!important;font:inherit!important}img,svg,iframe,video{max-width:100%} :focus-visible{outline:3px solid var(--accent)!important;outline-offset:3px!important}
+      </style>`;
+      if (/<head\b[^>]*>/i.test(doc)) {
+        doc = doc.replace(/<head\b[^>]*>/i, match => match + baseTag);
+        doc = doc.replace(/<\/head>/i, redesign + "</head>");
+      } else {
+        doc = `<!doctype html><html><head>${baseTag}${redesign}</head><body>${doc}</body></html>`;
+      }
+      return doc;
+    }
+
+    function openTask(task, row, button) {
+      const existing = row.querySelector("iframe");
+      if (existing) {
+        existing.remove();
+        button.textContent = "Open full task";
+        return;
+      }
+      button.disabled = true;
+      button.textContent = "Loading…";
+      const message = document.createElement("span");
+      message.className = "task-message";
+      message.textContent = "Loading the complete task file…";
+      row.appendChild(message);
+      fetch(`https://raw.githubusercontent.com/${sourceOwner}/${sourceRepo}/main/${task.path}`, { cache: "no-store" })
+        .then(response => {
+          if (!response.ok) throw new Error(`Could not load file (HTTP ${response.status})`);
+          return response.text();
+        })
+        .then(source => {
+          message.remove();
+          const frame = document.createElement("iframe");
+          frame.className = "preview";
+          frame.title = `Full task preview: ${task.path}`;
+          frame.setAttribute("sandbox", "allow-scripts allow-forms allow-popups");
+          frame.srcdoc = redesignDocument(source, task.path);
+          row.appendChild(frame);
+          button.textContent = "Close task";
+        })
+        .catch(error => {
+          message.textContent = `${error.message}. Check your internet connection and try again.`;
+          button.textContent = "Retry task";
+        })
+        .finally(() => { button.disabled = false; });
     }
 
     function render() {
@@ -115,13 +172,12 @@
           pathLabel.className = "task-path";
           pathLabel.textContent = task.path;
           details.append(label, pathLabel);
-          const link = document.createElement("a");
-          link.href = `https://raw.githubusercontent.com/${sourceOwner}/${sourceRepo}/main/${task.path}`;
-          link.target = "_blank";
-          link.rel = "noopener noreferrer";
-          link.textContent = "Open task ↗";
-          link.setAttribute("aria-label", `Open ${task.path}`);
-          row.append(number, details, link);
+          const button = document.createElement("button");
+          button.type = "button";
+          button.textContent = "Open full task";
+          button.setAttribute("aria-label", `Open the complete file ${task.path} inside the tracker`);
+          button.addEventListener("click", () => openTask(task, row, button));
+          row.append(number, details, button);
           list.appendChild(row);
         });
         section.append(head, list);
@@ -160,11 +216,7 @@
       .catch(error => {
         summary.textContent = "Unable to load coursework";
         notice.classList.add("error");
-        notice.textContent = `${error.message}. Check your internet connection and reload. You can still browse the source repository directly: `;
-        const source = document.createElement("a");
-        source.href = `https://github.com/${sourceOwner}/${sourceRepo}`;
-        source.textContent = `${sourceOwner}/${sourceRepo}`;
-        notice.appendChild(source);
+        notice.textContent = `${error.message}. Check your internet connection and reload. The coursework source is Xushnudbek76/week2.`;
         const message = document.createElement("p");
         message.className = "empty";
         message.textContent = "The task list needs access to GitHub's public repository listing. Reload once the connection is available.";
