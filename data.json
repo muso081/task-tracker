@@ -1,130 +1,216 @@
 {
   "weeks": [
     {
-      "id": "umz42qoi",
-      "title": "Week 3_1",
+      "id": "wk2p1",
+      "title": "Week 2_1",
       "tasks": [
         {
-          "id": "1lk1kzu6",
-          "text": "Task 1",
+          "id": "t-wk2p1",
+          "text": "Intro project",
           "done": false,
           "files": [
             {
-              "id": "ojl3wysq",
+              "id": "f-wk2p1",
               "name": "index.html",
-              "code": "<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n  <meta charset=\"UTF-8\">\n\n  <style>\n    h1 {\n      color: green;\n      text-align: center;\n      font-size: 2.5rem;\n    }\n  </style>\n</head>\n\n<body>\n  <h1>Muso</h1>\n</body>\n\n</html>"
-            }
-          ]
-        },
-        {
-          "id": "8p9b4fa3",
-          "text": "Task 2",
-          "done": false,
-          "files": [
-            {
-              "id": "rpdtwdni",
-              "name": "index.html",
-              "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <style>\n    h2 { color: #0369a1; }\n    body { font-family: sans-serif; }\n  </style>\n</head>\n<body>\n  <h2>Internal Style (change me to blue)</h2>\n  <p style=\"color: #7c3aed;\">Inline styled paragraph (change me to purple)</p>\n  <p>Normal paragraph — will inherit body font from internal CSS</p>\n</body>\n</html>"
-            }
-          ]
-        },
-        {
-          "id": "wmtvtgrm",
-          "text": "Task 3",
-          "done": false,
-          "files": [
-            {
-              "id": "zipd5uc7",
-              "name": "index.html",
-              "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <style>\n    .palette {\n      display: flex;\n      gap: 12px;\n      padding: 16px;\n      background: #f1f5f9;\n    }\n    .swatch {\n      width: 100px;\n      height: 100px;\n      border-radius: 8px;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      color: white;\n      font-weight: bold;\n      font-size: 13px;\n      font-family: monospace;\n    }\n    .c1 { background: #EF4444; }\n    .c2 { background: #F59E0B; }\n    .c3 { background: #10B981; }\n    .c4 { background: #3B82F6; }\n    .c5 { background: #8B5CF6; }\n  </style>\n</head>\n<body>\n  <div class=\"palette\">\n    <div class=\"swatch c1\">#EF4444</div>\n    <div class=\"swatch c2\">#F59E0B</div>\n    <div class=\"swatch c3\">#10B981</div>\n    <div class=\"swatch c4\">#3B82F6</div>\n    <div class=\"swatch c5\">#8B5CF6</div>\n  </div>\n</body>\n</html>"
-            }
-          ]
-        },
-        {
-          "id": "i4u9ypoo",
-          "text": "Task 3",
-          "done": false,
-          "files": [
-            {
-              "id": "azld7ghr",
-              "name": "index.html",
-              "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <style>\n    body { font-family: sans-serif; padding: 20px; }\n\n    .margin-box {\n      background-color: #fde68a;\n      padding: 30px;\n      text-align: center;\n      max-width: 400px;\n    }\n    .border-box {\n      background-color: #6b7280;\n      padding: 20px;\n    }\n    .padding-box {\n      background-color: #bfdbfe;\n      padding: 24px;\n    }\n    .content-box {\n      background-color: #ddd6fe;\n      padding: 20px;\n    }\n\n    .layer-label {\n      font-size: 11px;\n      font-weight: bold;\n      text-transform: uppercase;\n      letter-spacing: 0.08em;\n    }\n  </style>\n</head>\n<body>\n  <div class=\"margin-box\">\n    <span class=\"layer-label\">Margin</span>\n    <div class=\"border-box\">\n      <span class=\"layer-label\">Border</span>\n      <div class=\"padding-box\">\n        <span class=\"layer-label\">Padding</span>\n        <div class=\"content-box\">\n          <span class=\"layer-label\">Content</span>\n        </div>\n      </div>\n    </div>\n  </div>\n</body>\n</html>"
-            }
-          ]
-        },
-        {
-          "id": "8ib3vqze",
-          "text": "Task 4",
-          "done": false,
-          "files": [
-            {
-              "id": "nhkytpqt",
-              "name": "index.html",
-              "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <style>\n    body {\n      font-family: sans-serif;\n      background-color: #f0fdf4;\n    }\n\n    h1 {\n      color: #15803d;\n      font-size: 2rem;\n      text-align: center;\n    }\n\n    p {\n      line-height: 1.7;\n      color: #334155;\n    }\n\n    /* This is a fixed comment */\n    .highlight {\n      background-color: #dcfce7;\n    }\n  </style>\n</head>\n<body>\n  <h1>Fix Me!</h1>\n  <p>This paragraph has <span class=\"highlight\">broken CSS</span> around it.</p>\n</body>\n</html>"
-            }
-          ]
-        },
-        {
-          "id": "wb1iu9jo",
-          "text": "Task 6",
-          "done": false,
-          "files": [
-            {
-              "id": "4xb0delv",
-              "name": "index.html",
-              "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <style>\n    * { box-sizing: border-box; margin: 0; padding: 0; }\n    body { font-family: sans-serif; }\n\n    nav {\n      background-color: #1e293b;\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      padding: 16px 24px;\n    }\n\n    .logo {\n      color: white;\n      font-weight: bold;\n      font-size: 1.25rem;\n      text-decoration: none;\n    }\n\n    .nav-links {\n      display: flex;\n      gap: 24px;\n    }\n\n    .nav-links a {\n      color: white;\n      text-decoration: none;\n    }\n\n    .nav-links a:hover {\n      color: #10B981;\n    }\n  </style>\n</head>\n<body>\n  <nav>\n    <a href=\"#\" class=\"logo\">WebPro</a>\n    <div class=\"nav-links\">\n      <a href=\"#\">Home</a>\n      <a href=\"#\">Topics</a>\n      <a href=\"#\">Quiz</a>\n      <a href=\"#\">About</a>\n    </div>\n  </nav>\n</body>\n</html>"
-            }
-          ]
-        },
-        {
-          "id": "1eol2c5q",
-          "text": "Task 7",
-          "done": false,
-          "files": [
-            {
-              "id": "wyi07znz",
-              "name": "index.html",
-              "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <style>\n    body {\n      font-family: sans-serif;\n      background-color: #f1f5f9;\n      padding: 40px 16px;\n    }\n\n    .card {\n      background: white;\n      max-width: 320px;\n      margin: 0 auto;\n      padding: 32px;\n      border-radius: 12px;\n      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);\n      text-align: center;\n    }\n\n    .avatar {\n      width: 80px;\n      height: 80px;\n      border-radius: 50%;\n      background-color: #15803d;\n      color: white;\n      font-size: 2rem;\n      font-weight: bold;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      margin: 0 auto 16px;\n    }\n\n    .name {\n      font-size: 1.5rem;\n      font-weight: bold;\n      margin: 0 0 4px;\n    }\n\n    .role {\n      color: #64748b;\n      margin: 0;\n    }\n\n    hr {\n      border: 0;\n      border-top: 1px solid #e2e8f0;\n      margin: 20px 0;\n    }\n\n    .skills {\n      display: flex;\n      justify-content: center;\n      flex-wrap: wrap;\n      gap: 8px;\n    }\n\n    .badge {\n      background-color: #15803d;\n      color: white;\n      font-size: 0.85rem;\n      padding: 6px 14px;\n      border-radius: 999px;\n    }\n  </style>\n</head>\n<body>\n  <div class=\"card\">\n    <div class=\"avatar\">F</div>\n    <h2 class=\"name\">Fatkhullaev Muhammadmuso</h2>\n    <p class=\"role\">Web Programming Student</p>\n    <hr>\n    <div class=\"skills\">\n      <span class=\"badge\">HTML5</span>\n      <span class=\"badge\">CSS3</span>\n      <span class=\"badge\">JS</span>\n    </div>\n  </div>\n</body>\n</html>"
-            }
-          ]
-        },
-        {
-          "id": "zgbvq05s",
-          "text": "Task 8",
-          "done": false,
-          "files": [
-            {
-              "id": "pk2e1jmk",
-              "name": "index.html",
-              "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>My CSS Portfolio</title>\n  <style>\n    * {\n      box-sizing: border-box;\n      margin: 0;\n      padding: 0;\n    }\n\n    body {\n      font-family: sans-serif;\n      line-height: 1.6;\n      color: #1e293b;\n      background-color: #f8fafc;\n    }\n    a { text-decoration: none; }\n    h1 { font-size: 2.75rem; }\n    h2 { font-size: 1.75rem; }\n    h3 { font-size: 1.25rem; }\n    p { color: #475569; }\n\n    .nav {\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      background-color: #0f172a;\n      padding: 16px 24px;\n    }\n    .nav-logo {\n      color: white;\n      font-weight: bold;\n      font-size: 1.25rem;\n    }\n    .nav-links {\n      display: flex;\n      gap: 24px;\n    }\n    .nav-links a { color: white; }\n    .nav-links a:hover { color: #10B981; }\n\n    .hero {\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      text-align: center;\n      background-color: #1e293b;\n      padding: 96px 24px;\n    }\n    .hero h1 {\n      color: white;\n      margin-bottom: 12px;\n    }\n    .hero p {\n      color: #cbd5e1;\n      margin-bottom: 28px;\n    }\n    .btn {\n      display: inline-block;\n      background-color: #10B981;\n      color: white;\n      font-weight: bold;\n      padding: 12px 28px;\n      border-radius: 8px;\n    }\n    .btn:hover { background-color: #059669; }\n\n    .skills-section {\n      max-width: 960px;\n      margin: 0 auto;\n      padding: 64px 24px;\n      text-align: center;\n    }\n    .skills-section h2 { margin-bottom: 32px; }\n    .skills-grid {\n      display: flex;\n      flex-wrap: wrap;\n      gap: 24px;\n    }\n    .skill-card {\n      flex: 1 1 200px;\n      background-color: white;\n      padding: 24px;\n      border-radius: 12px;\n      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);\n    }\n    .skill-card h3 { margin-bottom: 8px; }\n\n    .footer {\n      background-color: #0f172a;\n      padding: 24px;\n      text-align: center;\n    }\n    .footer p { color: #94a3b8; }\n  </style>\n</head>\n<body>\n  <nav class=\"nav\">\n    <span class=\"nav-logo\">MyPortfolio</span>\n    <div class=\"nav-links\">\n      <a href=\"#skills\">Skills</a>\n      <a href=\"#contact\">Contact</a>\n    </div>\n  </nav>\n\n  <section class=\"hero\">\n    <h1>Hello, I am Learning CSS!</h1>\n    <p>Week 3 · CSS Introduction · Gachon University</p>\n    <a href=\"#skills\" class=\"btn\">See My Skills</a>\n  </section>\n\n  <section class=\"skills-section\" id=\"skills\">\n    <h2>What I Know</h2>\n    <div class=\"skills-grid\">\n      <div class=\"skill-card\"><h3>HTML5</h3><p>Structure and semantics</p></div>\n      <div class=\"skill-card\"><h3>CSS3</h3><p>Styling and layout</p></div>\n      <div class=\"skill-card\"><h3>Flexbox</h3><p>Modern layout model</p></div>\n    </div>\n  </section>\n\n  <footer class=\"footer\" id=\"contact\">\n    <p>K0126002 Web Programming &copy; 2026 Gachon University</p>\n  </footer>\n</body>\n</html>"
+              "code": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Week 2_1</title><style>:root{--bg:#f5efe4;--ink:#1f1d1b;--card:#fffaf2;--accent:#b5621b;--soft:#f0dfc9;--line:#e7d9c1}*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#f8f4ed,#efe6d8);color:var(--ink)}main{max-width:900px;margin:0 auto;padding:60px 20px}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;padding:18px 22px;border:1px solid var(--line);border-radius:18px;background:var(--card)}h1{margin:0;font-size:clamp(2rem,5vw,3.2rem)}.tag{display:inline-block;padding:8px 12px;border-radius:999px;background:var(--soft);color:var(--accent);font-weight:700}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}.card{padding:22px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.7);box-shadow:0 8px 18px rgba(41,31,16,.05)}.card h2{margin:0 0 12px;font-size:1.2rem}.card p{margin:0;line-height:1.6;color:#4a413b}.cta{display:inline-block;margin-top:20px;padding:12px 20px;border-radius:12px;background:var(--accent);color:#fff;text-decoration:none;font-weight:700}</style></head><body><main><header><h1>Week 2_1</h1><span class=\"tag\">HTML Basics</span></header><div class=\"grid\"><article class=\"card\"><h2>Objective</h2><p>Build an organized and readable first web page using semantic structure and expressive content.</p></article><article class=\"card\"><h2>Focus</h2><p>Headings, paragraphs, lists, links, spacing, and clean visual hierarchy.</p></article><article class=\"card\"><h2>Outcome</h2><p>A simple but polished HTML page that demonstrates good layout and readability.</p></article></div><a class=\"cta\" href=\"#\">Continue project</a></main></body></html>"
             }
           ]
         }
       ]
     },
     {
-      "id": "ae1qql12",
-      "title": "Week 9",
+      "id": "wk2p2",
+      "title": "Week 2_2",
       "tasks": [
         {
-          "id": "10inpok3",
-          "text": "Task 1",
+          "id": "t-wk2p2",
+          "text": "Extended layout",
           "done": false,
           "files": [
             {
-              "id": "w93c3u1o",
-              "name": "sample.html",
-              "code": "<!doctype html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <meta name=\"color-scheme\" content=\"light dark\">\n  <title>Creative Coding Lab | Week 9</title>\n  <link rel=\"stylesheet\" href=\"../style.css\">\n</head>\n<body>\n  <main class=\"form-page\">\n    <a class=\"back\" href=\"../index.html\">Back to Week 9</a>\n    <section class=\"form-layout\" id=\"formContainer\" aria-label=\"Creative Coding Lab registration\">\n      <aside class=\"form-aside\">\n        <div class=\"aside-content\">\n          <p class=\"aside-kicker\">Creative Coding Lab · Spring session</p>\n          <h2>Bring your next idea to life.</h2>\n          <p class=\"aside-copy\">Join a hands-on community exploring the playful side of the web. Pick a track and save your seat.</p>\n        </div>\n        <div class=\"aside-bottom\"><span class=\"aside-dots\" aria-hidden=\"true\"><span></span><span></span><span></span></span> Learn by making · Share what you find</div>\n      </aside>\n      <div class=\"form-main\">\n        <p class=\"eyebrow\">Save your spot</p>\n        <h1>Lab registration</h1>\n        <p class=\"form-intro\">A few quick details. We’ll let you know if anything needs a second look.</p>\n        <form id=\"regForm\" novalidate>\n          <fieldset class=\"form-section\">\n            <legend>Your details</legend>\n            <div class=\"field-row\">\n              <div class=\"field\">\n                <label for=\"studentId\">Campus ID <span class=\"field-hint\">(9 digits)</span></label>\n                <input type=\"text\" id=\"studentId\" name=\"studentId\" inputmode=\"numeric\" autocomplete=\"off\" placeholder=\"e.g. 202612345\" aria-describedby=\"idError\" aria-invalid=\"false\">\n                <p id=\"idError\" class=\"error-msg\" aria-live=\"polite\"></p>\n              </div>\n              <div class=\"field\">\n                <label for=\"fullName\">Your name</label>\n                <input type=\"text\" id=\"fullName\" name=\"fullName\" autocomplete=\"name\" placeholder=\"First and last name\" aria-describedby=\"nameError\" aria-invalid=\"false\">\n                <p id=\"nameError\" class=\"error-msg\" aria-live=\"polite\"></p>\n              </div>\n            </div>\n            <div class=\"field\">\n              <label for=\"track\">Choose a lab track</label>\n              <select id=\"track\" name=\"track\" aria-describedby=\"trackError\" aria-invalid=\"false\">\n                <option value=\"\">Select a track</option>\n                <option value=\"Creative Web Design\">Creative Web Design</option>\n                <option value=\"Generative Art\">Generative Art</option>\n                <option value=\"Interactive Experiences\">Interactive Experiences</option>\n                <option value=\"Digital Prototyping\">Digital Prototyping</option>\n              </select>\n              <p id=\"trackError\" class=\"error-msg\" aria-live=\"polite\"></p>\n            </div>\n          </fieldset>\n\n          <fieldset class=\"form-section\">\n            <legend>Set up your account</legend>\n            <div class=\"field\">\n              <label for=\"email\">Email address</label>\n              <input type=\"email\" id=\"email\" name=\"email\" autocomplete=\"email\" placeholder=\"you@example.edu\" aria-describedby=\"emailError\" aria-invalid=\"false\">\n              <p id=\"emailError\" class=\"error-msg\" aria-live=\"polite\"></p>\n            </div>\n            <div class=\"field-row\">\n              <div class=\"field\">\n                <label for=\"password\">Create a password</label>\n                <input type=\"password\" id=\"password\" name=\"password\" autocomplete=\"new-password\" placeholder=\"At least 8 characters\" aria-describedby=\"passwordError\" aria-invalid=\"false\">\n                <p id=\"passwordError\" class=\"error-msg\" aria-live=\"polite\"></p>\n              </div>\n              <div class=\"field\">\n                <label for=\"confirmPassword\">Confirm password</label>\n                <input type=\"password\" id=\"confirmPassword\" name=\"confirmPassword\" autocomplete=\"new-password\" placeholder=\"Type it once more\" aria-describedby=\"confirmError\" aria-invalid=\"false\">\n                <p id=\"confirmError\" class=\"error-msg\" aria-live=\"polite\"></p>\n              </div>\n            </div>\n          </fieldset>\n\n          <div class=\"checkbox-wrap\">\n            <input type=\"checkbox\" id=\"agreeTerms\" name=\"agreeTerms\" aria-describedby=\"termsError\" aria-invalid=\"false\">\n            <label for=\"agreeTerms\">I agree to the Creative Coding Lab participation guidelines.</label>\n          </div>\n          <p id=\"termsError\" class=\"error-msg terms-error\" aria-live=\"polite\"></p>\n\n          <button type=\"submit\" class=\"submit-button\">Reserve my spot <span aria-hidden=\"true\">→</span></button>\n          <p class=\"form-footnote\">Demo only. Details stay in this browser; your password is never shown.</p>\n        </form>\n      </div>\n    </section>\n\n    <section id=\"successCard\" class=\"success-card\" aria-labelledby=\"successHeading\" tabindex=\"-1\" hidden>\n      <div class=\"success-mark\" aria-hidden=\"true\">✓</div>\n      <p class=\"eyebrow\">You’re on the list</p>\n      <h1 id=\"successHeading\">Your next idea starts here.</h1>\n      <p>Your demo registration is complete. Here’s a quick look at your details.</p>\n      <dl id=\"summaryDetails\" class=\"summary-box\"></dl>\n      <button type=\"button\" class=\"reset-button\" id=\"resetButton\">Register another maker</button>\n    </section>\n  </main>\n  <script>\n    const form = document.getElementById('regForm');\n    const idInput = document.getElementById('studentId');\n    const nameInput = document.getElementById('fullName');\n    const trackInput = document.getElementById('track');\n    const emailInput = document.getElementById('email');\n    const passwordInput = document.getElementById('password');\n    const confirmInput = document.getElementById('confirmPassword');\n    const termsInput = document.getElementById('agreeTerms');\n    const formContainer = document.getElementById('formContainer');\n    const successCard = document.getElementById('successCard');\n    const summaryDetails = document.getElementById('summaryDetails');\n    const touchedFields = new Set();\n\n    function markValid(input, errorId) {\n      input.classList.remove('is-invalid');\n      input.classList.add('is-valid');\n      input.setAttribute('aria-invalid', 'false');\n      document.getElementById(errorId).textContent = '';\n      return true;\n    }\n\n    function markInvalid(input, errorId, message) {\n      input.classList.remove('is-valid');\n      input.classList.add('is-invalid');\n      input.setAttribute('aria-invalid', 'true');\n      document.getElementById(errorId).textContent = message;\n      return false;\n    }\n\n    function checkId() {\n      const value = idInput.value.trim();\n      if (!value) return markInvalid(idInput, 'idError', 'Enter your campus ID.');\n      if (!/^\\d{9}$/.test(value)) return markInvalid(idInput, 'idError', 'Your campus ID must be exactly 9 digits.');\n      return markValid(idInput, 'idError');\n    }\n\n    function checkName() {\n      const value = nameInput.value.trim();\n      if (!value) return markInvalid(nameInput, 'nameError', 'Tell us your name.');\n      if (value.length < 2) return markInvalid(nameInput, 'nameError', 'Your name must be at least 2 characters.');\n      return markValid(nameInput, 'nameError');\n    }\n\n    function checkTrack() {\n      if (!trackInput.value) return markInvalid(trackInput, 'trackError', 'Choose the lab track you’re interested in.');\n      return markValid(trackInput, 'trackError');\n    }\n\n    function checkEmail() {\n      const value = emailInput.value.trim();\n      if (!value) return markInvalid(emailInput, 'emailError', 'Enter your email address.');\n      if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(value)) {\n        return markInvalid(emailInput, 'emailError', 'Enter a valid email address, like you@example.edu.');\n      }\n      return markValid(emailInput, 'emailError');\n    }\n\n    function checkPassword() {\n      if (!passwordInput.value) return markInvalid(passwordInput, 'passwordError', 'Create a password to continue.');\n      if (passwordInput.value.length < 8) {\n        return markInvalid(passwordInput, 'passwordError', 'Use at least 8 characters for your password.');\n      }\n      markValid(passwordInput, 'passwordError');\n      if (touchedFields.has(confirmInput)) checkConfirm();\n      return true;\n    }\n\n    function checkConfirm() {\n      if (!confirmInput.value) return markInvalid(confirmInput, 'confirmError', 'Type your password one more time.');\n      if (confirmInput.value !== passwordInput.value) {\n        return markInvalid(confirmInput, 'confirmError', 'These passwords don’t match yet.');\n      }\n      return markValid(confirmInput, 'confirmError');\n    }\n\n    function checkTerms() {\n      const error = document.getElementById('termsError');\n      if (!termsInput.checked) {\n        termsInput.setAttribute('aria-invalid', 'true');\n        error.textContent = 'Please agree to the participation guidelines to register.';\n        return false;\n      }\n      termsInput.setAttribute('aria-invalid', 'false');\n      error.textContent = '';\n      return true;\n    }\n\n    const fieldChecks = new Map([\n      [idInput, checkId],\n      [nameInput, checkName],\n      [trackInput, checkTrack],\n      [emailInput, checkEmail],\n      [passwordInput, checkPassword],\n      [confirmInput, checkConfirm]\n    ]);\n\n    for (const [input, check] of fieldChecks) {\n      input.addEventListener('blur', () => {\n        touchedFields.add(input);\n        check();\n      });\n      input.addEventListener(input === trackInput ? 'change' : 'input', () => {\n        if (touchedFields.has(input)) check();\n      });\n    }\n\n    termsInput.addEventListener('change', checkTerms);\n\n    form.addEventListener('submit', (event) => {\n      event.preventDefault();\n      for (const input of fieldChecks.keys()) touchedFields.add(input);\n\n      const checks = [...fieldChecks.values()].map((check) => check());\n      const termsValid = checkTerms();\n      const valid = checks.every(Boolean) && termsValid;\n      if (!valid) {\n        const firstInvalid = form.querySelector('[aria-invalid=\"true\"]');\n        firstInvalid?.focus();\n        return;\n      }\n\n      const details = [\n        ['Campus ID', idInput.value.trim()],\n        ['Name', nameInput.value.trim()],\n        ['Lab track', trackInput.value],\n        ['Email', emailInput.value.trim()]\n      ];\n      summaryDetails.replaceChildren(...details.map(([label, value]) => {\n        const row = document.createElement('div');\n        row.className = 'summary-row';\n        const term = document.createElement('dt');\n        term.textContent = label;\n        const description = document.createElement('dd');\n        description.textContent = value;\n        row.append(term, description);\n        return row;\n      }));\n\n      formContainer.hidden = true;\n      successCard.hidden = false;\n      successCard.focus();\n    });\n\n    document.getElementById('resetButton').addEventListener('click', () => {\n      form.reset();\n      touchedFields.clear();\n      for (const input of [...fieldChecks.keys(), termsInput]) {\n        input.classList.remove('is-valid', 'is-invalid');\n        input.setAttribute('aria-invalid', 'false');\n      }\n      for (const error of form.querySelectorAll('.error-msg')) error.textContent = '';\n      summaryDetails.replaceChildren();\n      successCard.hidden = true;\n      formContainer.hidden = false;\n      idInput.focus();\n    });\n  </script>\n</body>\n</html>"
-            },
-            {
-              "id": "nhy7p7xh",
+              "id": "f-wk2p2",
               "name": "index.html",
-              "code": "<!doctype html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <meta name=\"color-scheme\" content=\"light dark\">\n  <title>Week 9 | Creative Coding Lab</title>\n  <link rel=\"stylesheet\" href=\"style.css\">\n</head>\n<body>\n  <main class=\"home\">\n    <a class=\"back\" href=\"../index.html\">Back to home</a>\n    <header class=\"hero\">\n      <div class=\"hero-copy\">\n        <p class=\"eyebrow\"><span class=\"live-dot\" aria-hidden=\"true\"></span> JSK0126002 · Web Programming · Week 9</p>\n        <h1>Make it real.<br><span>Make it yours.</span></h1>\n        <p class=\"lede\">A better form is more than a submit button. Practice real-time validation, thoughtful feedback, and a smoother sign-up from the very first keystroke.</p>\n        <a class=\"hero-link\" href=\"samples/sample01.html\">Explore the registration demo <span aria-hidden=\"true\">↗</span></a>\n      </div>\n      <div class=\"hero-art\" aria-hidden=\"true\">\n        <div class=\"art-orbit orbit-one\"></div>\n        <div class=\"art-orbit orbit-two\"></div>\n        <div class=\"art-sticker\"><span>IDEA</span><strong>→</strong></div>\n        <div class=\"art-label\">A little<br>more creative.</div>\n        <span class=\"art-star star-one\">✳</span>\n        <span class=\"art-star star-two\">✦</span>\n      </div>\n    </header>\n\n    <section class=\"content-panel\" aria-labelledby=\"week-heading\">\n      <div class=\"section-heading\">\n        <div>\n          <p class=\"eyebrow\">This week’s skill</p>\n          <h2 id=\"week-heading\">Validation that feels helpful.</h2>\n        </div>\n        <span class=\"week-tag\">01 interactive lab</span>\n      </div>\n      <div class=\"lesson-grid\">\n        <article class=\"lesson\">\n          <span class=\"lesson-icon\" aria-hidden=\"true\">✓</span>\n          <h3>Validate as you go</h3>\n          <p>Catch missing or mismatched details early with clear, field-level feedback.</p>\n        </article>\n        <article class=\"lesson\">\n          <span class=\"lesson-icon lesson-icon-orange\" aria-hidden=\"true\">↔</span>\n          <h3>Confirm with confidence</h3>\n          <p>Check IDs, email addresses, password length, and matching passwords.</p>\n        </article>\n        <article class=\"lesson\">\n          <span class=\"lesson-icon lesson-icon-blue\" aria-hidden=\"true\">✦</span>\n          <h3>Finish on a high note</h3>\n          <p>See a friendly confirmation and a safe summary of the registration.</p>\n        </article>\n      </div>\n      <a class=\"lab-row\" href=\"samples/sample01.html\">\n        <span class=\"lab-number\">01</span>\n        <span class=\"lab-copy\"><strong>Creative Coding Lab</strong><small>Interactive registration · Custom JavaScript validation</small></span>\n        <span class=\"lab-arrow\" aria-hidden=\"true\">↗</span>\n      </a>\n    </section>\n    <p class=\"page-note\">A browser-only demo: information is not sent to a server, and passwords never appear in the confirmation.</p>\n  </main>\n</body>\n</html>"
-            },
+              "code": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Week 2_2</title><style>:root{--bg:#eef3ee;--ink:#1a2521;--card:#ffffff;--accent:#1a7c62;--soft:#dfeee7;--line:#d3e3db}*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#edf6f1,#e6f1ee);color:var(--ink)}main{max-width:960px;margin:0 auto;padding:60px 22px}.hero{padding:30px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(135deg,#eaf9f2,#f6fbf8);box-shadow:0 12px 24px rgba(22,92,76,.08)}h1{margin:0 0 12px;font-size:clamp(2.2rem,5vw,3.2rem)}p{line-height:1.7}ul{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;padding:0;list-style:none;margin-top:22px}li{padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--card)}strong{display:block;margin-bottom:8px;color:var(--accent)}.pill{display:inline-block;padding:8px 12px;border-radius:999px;background:var(--soft);color:var(--accent);font-weight:700}</style></head><body><main><div class=\"hero\"><span class=\"pill\">Week 2_2</span><h1>Structured Web Design</h1><p>Build on the previous lesson with better layout logic, section grouping, and a more thoughtful visual flow.</p></div><ul><li><strong>Section</strong><p>Organize content into meaningful blocks with clear hierarchy.</p></li><li><strong>Lists</strong><p>Use ordered and unordered lists for easier scanning and readability.</p></li><li><strong>Links</strong><p>Connect ideas with purposeful navigation and accessible labels.</p></li><li><strong>Spacing</strong><p>Create balance with padding, line height, and consistent rhythm.</p></li></ul></main></body></html>"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wk31",
+      "title": "Week 3_1",
+      "tasks": [
+        {
+          "id": "t-wk31",
+          "text": "CSS styling basics",
+          "done": false,
+          "files": [
             {
-              "id": "f3kds0hl",
-              "name": "style.css",
-              "code": ":root {\n  color-scheme: light dark;\n  --page: #f5f4ed;\n  --surface: #fffefa;\n  --surface-soft: #f8f7f0;\n  --ink: #242920;\n  --muted: #73796e;\n  --line: #e4e5d9;\n  --accent: #477a46;\n  --accent-dark: #315d34;\n  --accent-soft: #e8f0dd;\n  --orange: #e99456;\n  --blue: #e4eef0;\n  --danger: #b74746;\n  --success: #286d49;\n  --shadow: 0 20px 55px rgb(46 57 34 / 8%);\n}\n\n@media (prefers-color-scheme: dark) {\n  :root {\n    --page: #191d18;\n    --surface: #252b23;\n    --surface-soft: #2e352a;\n    --ink: #eff1e8;\n    --muted: #b6bdad;\n    --line: #414a3b;\n    --accent: #a7cf91;\n    --accent-dark: #c4e3b0;\n    --accent-soft: #344331;\n    --orange: #ffb078;\n    --blue: #2d4042;\n    --danger: #ffaaa0;\n    --success: #9ee0b3;\n    --shadow: 0 20px 55px rgb(0 0 0 / 24%);\n  }\n}\n\n* { box-sizing: border-box; }\n\nbody {\n  min-height: 100vh;\n  margin: 0;\n  padding: 34px 20px 60px;\n  background:\n    radial-gradient(ellipse at 2% 2%, rgb(233 148 86 / 15%), transparent 31rem),\n    radial-gradient(ellipse at 96% 29%, rgb(71 122 70 / 12%), transparent 30rem),\n    var(--page);\n  color: var(--ink);\n  font: 16px/1.6 \"Avenir Next\", Avenir, \"Segoe UI\", sans-serif;\n}\n\na { color: var(--accent-dark); text-underline-offset: 4px; }\na:hover { color: var(--orange); }\na:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {\n  outline: 3px solid var(--orange);\n  outline-offset: 3px;\n}\n\n.home, .form-page { width: min(100%, 1020px); margin: 0 auto; }\n.back { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 30px; font-size: .9rem; font-weight: 750; text-decoration: none; }\n.back::before { content: \"←\"; font-size: 1.1em; }\n.eyebrow { margin: 0 0 10px; color: var(--accent-dark); font-size: .72rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }\n.live-dot { display: inline-block; width: 8px; height: 8px; margin: 0 6px 1px 0; border-radius: 50%; background: var(--orange); }\n\n.hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(250px, .8fr); align-items: center; gap: 36px; margin-bottom: 38px; }\n.hero-copy { padding: 12px 0; }\nh1, h2 { font-family: Georgia, \"Times New Roman\", serif; font-weight: 500; line-height: 1.12; }\nh1 { margin: 0 0 18px; font-size: clamp(3rem, 8vw, 5.2rem); letter-spacing: -.055em; }\nh1 span { color: var(--accent); font-style: italic; }\n.lede { max-width: 59ch; margin: 0; color: var(--muted); font-size: 1.02rem; }\n.hero-link { display: inline-flex; align-items: center; gap: 12px; margin-top: 24px; padding: 12px 17px; border-radius: 10px; background: var(--accent); color: #fff; font-size: .88rem; font-weight: 800; text-decoration: none; transition: transform .18s ease, background .18s ease; }\n.hero-link:hover { transform: translateY(-2px); background: var(--accent-dark); color: #fff; }\n\n.hero-art { position: relative; display: grid; min-height: 300px; place-items: center; overflow: hidden; border: 1px solid var(--line); border-radius: 22px; background: var(--accent-soft); }\n.art-orbit { position: absolute; width: 218px; height: 218px; border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); border-radius: 50%; transform: rotate(-28deg) scaleX(1.45); }\n.orbit-two { width: 175px; height: 175px; transform: rotate(38deg) scaleX(1.65); border-color: color-mix(in srgb, var(--orange) 65%, transparent); }\n.art-sticker { position: relative; z-index: 1; display: flex; width: 136px; height: 136px; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border: 1px solid rgb(255 255 255 / 48%); border-radius: 34px; background: var(--orange); color: #30271f; box-shadow: 0 15px 35px rgb(117 77 41 / 20%); transform: rotate(-8deg); }\n.art-sticker span { font-size: .7rem; font-weight: 900; letter-spacing: .18em; }\n.art-sticker strong { font-family: Georgia, serif; font-size: 3.2rem; font-weight: 500; line-height: 1; }\n.art-label { position: absolute; right: 22px; bottom: 20px; color: var(--accent-dark); font-family: Georgia, serif; font-size: 1rem; font-style: italic; line-height: 1.2; text-align: right; transform: rotate(-5deg); }\n.art-star { position: absolute; color: var(--accent); font-size: 1.7rem; }\n.star-one { top: 36px; left: 34px; }\n.star-two { top: 58px; right: 43px; color: var(--orange); }\n\n.content-panel { padding: clamp(20px, 4vw, 34px); border: 1px solid var(--line); border-radius: 22px; background: var(--surface); box-shadow: var(--shadow); }\n.section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; margin-bottom: 22px; }\n.section-heading .eyebrow { margin-bottom: 5px; }\nh2 { margin: 0; font-size: clamp(1.45rem, 4vw, 2rem); letter-spacing: -.025em; }\n.week-tag { flex: 0 0 auto; padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: .76rem; font-weight: 750; }\n.lesson-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 20px; }\n.lesson { padding: 17px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface-soft); }\n.lesson-icon { display: grid; width: 34px; height: 34px; margin-bottom: 13px; place-items: center; border-radius: 11px; background: var(--accent-soft); color: var(--accent-dark); font-weight: 850; }\n.lesson-icon-orange { background: color-mix(in srgb, var(--orange) 22%, var(--surface)); color: #9b542b; }\n.lesson-icon-blue { background: var(--blue); color: var(--accent-dark); }\n.lesson h3 { margin: 0; font-size: .95rem; }\n.lesson p { margin: 6px 0 0; color: var(--muted); font-size: .82rem; line-height: 1.5; }\n.lab-row { display: grid; grid-template-columns: 42px minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 15px 16px; border: 1px solid var(--line); border-radius: 13px; background: var(--accent-soft); color: var(--ink); text-decoration: none; transition: border-color .18s ease, transform .18s ease; }\n.lab-row:hover { transform: translateY(-2px); border-color: var(--accent); color: var(--ink); }\n.lab-number { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 11px; background: var(--surface); color: var(--accent-dark); font-size: .76rem; font-weight: 850; }\n.lab-copy strong, .lab-copy small { display: block; }\n.lab-copy strong { font-size: .94rem; }\n.lab-copy small { margin-top: 2px; color: var(--muted); font-size: .78rem; }\n.lab-arrow { color: var(--accent-dark); font-size: 1.25rem; }\n.page-note { margin: 17px 4px 0; color: var(--muted); font-size: .83rem; }\n\n.form-layout { display: grid; grid-template-columns: minmax(255px, .8fr) minmax(0, 1.2fr); overflow: hidden; border: 1px solid var(--line); border-radius: 22px; background: var(--surface); box-shadow: var(--shadow); }\n.form-aside { position: relative; display: flex; min-height: 100%; flex-direction: column; justify-content: space-between; overflow: hidden; padding: clamp(25px, 5vw, 42px); background: #477a46; color: #fffef7; }\n.form-aside::after { position: absolute; right: -100px; bottom: -132px; width: 310px; height: 310px; border: 1px solid rgb(255 255 255 / 28%); border-radius: 50%; box-shadow: 0 0 0 34px rgb(255 255 255 / 7%), 0 0 0 70px rgb(255 255 255 / 5%); content: \"\"; }\n.aside-content, .aside-bottom { position: relative; z-index: 1; }\n.aside-kicker { margin: 0 0 15px; color: rgb(255 255 255 / 76%); font-size: .72rem; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }\n.form-aside h2 { max-width: 9ch; color: #fffef7; font-size: clamp(2.2rem, 4vw, 3.3rem); }\n.aside-copy { max-width: 32ch; margin: 14px 0 0; color: rgb(255 255 255 / 80%); font-size: .92rem; }\n.aside-bottom { display: flex; align-items: center; gap: 10px; margin-top: 45px; color: rgb(255 255 255 / 78%); font-size: .77rem; }\n.aside-dots { display: flex; gap: 5px; }\n.aside-dots span { width: 6px; height: 6px; border-radius: 50%; background: #fffef7; opacity: .7; }\n.aside-dots span:first-child { opacity: 1; }\n.form-main { padding: clamp(24px, 5vw, 44px); }\n.form-main h1 { margin: 0; font-size: clamp(2rem, 5vw, 2.8rem); letter-spacing: -.04em; }\n.form-intro { margin: 7px 0 24px; color: var(--muted); font-size: .9rem; }\n.form-section { margin: 0 0 20px; padding: 0; border: 0; }\n.form-section legend { width: 100%; margin-bottom: 12px; padding-bottom: 9px; border-bottom: 1px solid var(--line); color: var(--accent-dark); font-size: .73rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }\n.field { margin-bottom: 13px; }\n.field-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }\n.field label { display: block; margin-bottom: 5px; color: var(--ink); font-size: .8rem; font-weight: 750; }\n.field input, .field select { display: block; width: 100%; min-height: 46px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface-soft); color: var(--ink); font: inherit; font-size: .86rem; transition: border-color .18s ease, box-shadow .18s ease, background .18s ease; }\n.field input::placeholder { color: var(--muted); opacity: .8; }\n.field input:focus, .field select:focus { border-color: var(--accent); outline: 0; box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 17%, transparent); }\n.field input.is-valid, .field select.is-valid { border-color: var(--success); background: color-mix(in srgb, var(--success) 6%, var(--surface)); }\n.field input.is-invalid, .field select.is-invalid { border-color: var(--danger); background: color-mix(in srgb, var(--danger) 6%, var(--surface)); }\n.error-msg { min-height: 0; margin: 0; color: var(--danger); font-size: .74rem; line-height: 1.35; }\n.error-msg:not(:empty) { min-height: 18px; margin-top: 4px; }\n.checkbox-wrap { display: flex; align-items: flex-start; gap: 9px; margin: 3px 0 18px; }\n.checkbox-wrap input { flex: 0 0 auto; width: 17px; height: 17px; margin: 2px 0 0; accent-color: var(--accent); cursor: pointer; }\n.checkbox-wrap label { color: var(--muted); font-size: .8rem; line-height: 1.45; cursor: pointer; }\n.terms-error { margin: -13px 0 13px 26px; }\n.submit-button { display: flex; width: 100%; min-height: 48px; align-items: center; justify-content: center; gap: 9px; padding: 11px 16px; border: 0; border-radius: 10px; background: var(--accent); color: #fff; font: inherit; font-size: .9rem; font-weight: 800; cursor: pointer; transition: transform .18s ease, background .18s ease; }\n.submit-button:hover { transform: translateY(-2px); background: var(--accent-dark); }\n.submit-button span { font-size: 1.1em; }\n.form-footnote { margin: 13px 0 0; color: var(--muted); font-size: .74rem; text-align: center; }\n.success-card { padding: clamp(26px, 5vw, 42px); border: 1px solid var(--line); border-radius: 20px; background: var(--surface); box-shadow: var(--shadow); text-align: center; }\n.success-mark { display: grid; width: 58px; height: 58px; margin: 0 auto 17px; place-items: center; border-radius: 19px; background: var(--accent-soft); color: var(--success); font-size: 1.65rem; font-weight: 800; }\n.success-card h1 { margin: 0; font-size: clamp(2rem, 6vw, 3rem); }\n.success-card > p { margin: 8px auto 23px; color: var(--muted); }\n.summary-box { display: grid; gap: 0; margin: 0 0 22px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-soft); text-align: left; }\n.summary-row { display: flex; justify-content: space-between; gap: 16px; padding: 11px 14px; border-bottom: 1px solid var(--line); font-size: .84rem; }\n.summary-row:last-child { border-bottom: 0; }\n.summary-row dt { color: var(--muted); }\n.summary-row dd { margin: 0; color: var(--ink); font-weight: 750; text-align: right; overflow-wrap: anywhere; }\n.reset-button { min-height: 42px; padding: 9px 15px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); color: var(--accent-dark); font: inherit; font-size: .84rem; font-weight: 750; cursor: pointer; }\n.reset-button:hover { border-color: var(--accent); background: var(--accent-soft); }\n[hidden] { display: none !important; }\n\n@media (max-width: 760px) {\n  body { padding: 24px 14px 42px; }\n  .hero { grid-template-columns: 1fr; gap: 24px; }\n  .hero-art { min-height: 245px; }\n  .lesson-grid { grid-template-columns: 1fr; }\n  .lesson { display: grid; grid-template-columns: 38px 1fr; column-gap: 12px; align-items: center; }\n  .lesson-icon { grid-row: span 2; margin: 0; }\n  .lesson p { margin-top: 2px; }\n  .form-layout { grid-template-columns: 1fr; }\n  .form-aside { min-height: 235px; }\n  .aside-bottom { margin-top: 30px; }\n}\n\n@media (max-width: 480px) {\n  .section-heading { align-items: flex-start; flex-direction: column; }\n  .field-row { grid-template-columns: 1fr; gap: 0; }\n  .form-main { padding: 23px 18px; }\n  .lab-row { grid-template-columns: 38px minmax(0, 1fr) auto; gap: 10px; padding: 12px; }\n  .lab-copy small { font-size: .72rem; }\n  .summary-row { flex-direction: column; gap: 2px; }\n  .summary-row dd { text-align: left; }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }\n}"
+              "id": "f-wk31",
+              "name": "index.html",
+              "code": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Week 3_1</title><style>:root{--bg:#f3f7ff;--ink:#1d2434;--card:#ffffff;--accent:#3d5af1;--soft:#dfe6ff;--line:#d9e0ff}body{margin:0;font-family:Arial,sans-serif;background:radial-gradient(circle at top,#eef4ff,#eaf0ff);color:var(--ink)}main{max-width:980px;margin:0 auto;padding:60px 22px}.panel{padding:28px;border:1px solid var(--line);border-radius:22px;background:var(--card);box-shadow:0 10px 26px rgba(61,90,241,.08)}h1{margin:0 0 12px;font-size:clamp(2.1rem,5vw,3.4rem)}p{line-height:1.7}.swatches{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-top:22px}.swatch{padding:18px;border-radius:16px;color:#fff;text-align:center;font-weight:700}.swatch:nth-child(1){background:#3d5af1}.swatch:nth-child(2){background:#5ca7ff}.swatch:nth-child(3){background:#8c6dfc}.swatch:nth-child(4){background:#4ec6b3}.tag{display:inline-block;padding:8px 12px;border-radius:999px;background:var(--soft);color:var(--accent);font-weight:700}</style></head><body><main><div class=\"panel\"><span class=\"tag\">Week 3_1</span><h1>Color and Layout</h1><p>Explore the relationship between color, spacing, and structure in a polished web page.</p><div class=\"swatches\"><div class=\"swatch\">Primary</div><div class=\"swatch\">Accent</div><div class=\"swatch\">Violet</div><div class=\"swatch\">Mint</div></div></div></main></body></html>"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wk32",
+      "title": "Week 3_2",
+      "tasks": [
+        {
+          "id": "t-wk32",
+          "text": "CSS depth",
+          "done": false,
+          "files": [
+            {
+              "id": "f-wk32",
+              "name": "index.html",
+              "code": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Week 3_2</title><style>:root{--bg:#fff7f8;--ink:#2a1d21;--card:#fff;--accent:#d85d75;--soft:#ffdfe6;--line:#f6d4db}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#fffaf8,#fff1f5);color:var(--ink)}main{max-width:900px;margin:0 auto;padding:60px 22px}.card{padding:28px;border:1px solid var(--line);border-radius:22px;background:var(--card);box-shadow:0 10px 20px rgba(216,93,117,.08)}h1{margin:0 0 12px;font-size:clamp(2rem,5vw,3.2rem)}.meta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}.meta span{padding:8px 12px;border-radius:999px;background:var(--soft);color:var(--accent);font-weight:700}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px}.item{padding:18px;border-radius:16px;background:#fff7fa;border:1px solid var(--line)}.item h2{margin:0 0 10px;font-size:1.1rem}</style></head><body><main><div class=\"card\"><div class=\"meta\"><span>Week 3_2</span><span>CSS Extension</span></div><h1>Creative Styling</h1><p>Use borders, soft shadows, color accents, and structured blocks to create a modern and approachable interface.</p><div class=\"grid\"><div class=\"item\"><h2>Shadow</h2><p>Depth makes layouts feel tactile and intentional.</p></div><div class=\"item\"><h2>Contrast</h2><p>Strong text and background balance improves readability.</p></div><div class=\"item\"><h2>Rhythm</h2><p>Consistent spacing keeps the design calm and organized.</p></div></div></div></main></body></html>"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wk42",
+      "title": "Week 4_2",
+      "tasks": [
+        {
+          "id": "t-wk42",
+          "text": "DOM and events",
+          "done": false,
+          "files": [
+            {
+              "id": "f-wk42",
+              "name": "index.html",
+              "code": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Week 4_2</title><style>:root{--bg:#f4f4ff;--ink:#202334;--card:#ffffff;--accent:#6b5ef5;--soft:#e5e0ff;--line:#ddd7ff}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#f6f5ff,#ededff);color:var(--ink)}main{max-width:900px;margin:0 auto;padding:60px 22px}.wrapper{padding:28px;border:1px solid var(--line);border-radius:22px;background:var(--card);box-shadow:0 12px 28px rgba(107,94,245,.08)}h1{margin:0 0 18px;font-size:clamp(2.1rem,5vw,3.2rem)}.button{display:inline-block;padding:12px 18px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-weight:700;cursor:pointer}.list{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:24px}.item{padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--soft)}.item h2{margin:0 0 12px;font-size:1.08rem}</style></head><body><main><div class=\"wrapper\"><h1>Week 4_2</h1><p>JavaScript is used to update the document, react to events, and create interactive experiences.</p><button class=\"button\">Click me</button><div class=\"list\"><div class=\"item\"><h2>DOM</h2><p>Select, inspect, and change elements as needed.</p></div><div class=\"item\"><h2>Events</h2><p>Respond to clicks, input changes, and user actions.</p></div><div class=\"item\"><h2>Interaction</h2><p>Give pages real behavior and better responsiveness.</p></div></div></div></main></body></html>"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wk51",
+      "title": "Week 5_1",
+      "tasks": [
+        {
+          "id": "t-wk51",
+          "text": "JavaScript basics",
+          "done": false,
+          "files": [
+            {
+              "id": "f-wk51",
+              "name": "index.html",
+              "code": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Week 5_1</title><style>:root{--bg:#f4fbf7;--ink:#1d2d2a;--card:#ffffff;--accent:#1ea676;--soft:#dff6ed;--line:#d2efdf}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#f6fdf9,#ecf9f2);color:var(--ink)}main{max-width:920px;margin:0 auto;padding:60px 22px}.panel{padding:30px;border:1px solid var(--line);border-radius:22px;background:var(--card);box-shadow:0 12px 22px rgba(30,166,118,.08)}h1{margin:0 0 10px;font-size:clamp(2.1rem,5vw,3.3rem)}.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.chip{padding:9px 12px;border-radius:999px;background:var(--soft);color:var(--accent);font-weight:700}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin-top:20px}.item{padding:18px;border:1px solid var(--line);border-radius:16px;background:#f8fffb} .item h2{margin:0 0 10px;font-size:1.1rem}</style></head><body><main><div class=\"panel\"><h1>Week 5_1</h1><p>Practice conditionals, loops, variables, and logic to make pages react to user input.</p><div class=\"chips\"><span class=\"chip\">Variables</span><span class=\"chip\">Conditions</span><span class=\"chip\">Loops</span><span class=\"chip\">Storage</span></div><div class=\"grid\"><div class=\"item\"><h2>Inputs</h2><p>Collect values and respond with feedback.</p></div><div class=\"item\"><h2>Decisions</h2><p>Use conditions to control outcomes.</p></div><div class=\"item\"><h2>Iteration</h2><p>Repeat actions efficiently with loops.</p></div></div></div></main></body></html>"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wk62",
+      "title": "Week 6_2",
+      "tasks": [
+        {
+          "id": "t-wk62",
+          "text": "Working with APIs",
+          "done": false,
+          "files": [
+            {
+              "id": "f-wk62",
+              "name": "index.html",
+              "code": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Week 6_2</title><style>:root{--bg:#fdf5ef;--ink:#2a1e1a;--card:#fff;--accent:#ea7d38;--soft:#ffe7d7;--line:#f7d9c6}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#fff8f4,#fff1eb);color:var(--ink)}main{max-width:960px;margin:0 auto;padding:60px 22px}.panel{padding:30px;border:1px solid var(--line);border-radius:22px;background:var(--card);box-shadow:0 12px 24px rgba(234,125,56,.08)}h1{margin:0 0 12px;font-size:clamp(2.1rem,5vw,3.3rem)}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin-top:20px}.card{padding:18px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#fff,#fff8f4)}.card h2{margin:0 0 8px;font-size:1.08rem}.tag{display:inline-block;padding:8px 12px;border-radius:999px;background:var(--soft);color:var(--accent);font-weight:700}</style></head><body><main><div class=\"panel\"><span class=\"tag\">Week 6_2</span><h1>API Requests</h1><p>Fetch external data, work with JSON responses, and turn live information into useful interface elements.</p><div class=\"cards\"><div class=\"card\"><h2>Fetch</h2><p>Request data from remote services.</p></div><div class=\"card\"><h2>JSON</h2><p>Read structured information and display it.</p></div><div class=\"card\"><h2>UI</h2><p>Present the result in a readable experience.</p></div></div></div></main></body></html>"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wk71",
+      "title": "Week 7_1",
+      "tasks": [
+        {
+          "id": "t-wk71",
+          "text": "Search and display data",
+          "done": false,
+          "files": [
+            {
+              "id": "f-wk71",
+              "name": "index.html",
+              "code": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Week 7_1</title><style>:root{--bg:#f8f6ff;--ink:#201d2d;--card:#fff;--accent:#7558d6;--soft:#ece4ff;--line:#ddd0ff}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#f9f7ff,#f1ebff);color:var(--ink)}main{max-width:960px;margin:0 auto;padding:60px 22px}.panel{padding:30px;border:1px solid var(--line);border-radius:22px;background:var(--card);box-shadow:0 12px 24px rgba(117,88,214,.08)}h1{margin:0 0 12px;font-size:clamp(2.1rem,5vw,3.2rem)}.search{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}.search input{flex:1;min-width:180px;padding:12px 14px;border:1px solid var(--line);border-radius:12px}.button{padding:12px 18px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-weight:700}.results{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-top:22px}.item{padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--soft)}h2{margin:0 0 8px;font-size:1.08rem}.tag{display:inline-block;padding:8px 12px;border-radius:999px;background:var(--soft);color:var(--accent);font-weight:700}</style></head><body><main><div class=\"panel\"><span class=\"tag\">Week 7_1</span><h1>Smart Search</h1><p>Search, filter, and display results in a clean and useful layout.</p><div class=\"search\"><input type=\"text\" value=\"search books\"><button class=\"button\">Search</button></div><div class=\"results\"><div class=\"item\"><h2>Result 1</h2><p>Clean and readable content.</p></div><div class=\"item\"><h2>Result 2</h2><p>Focused data display.</p></div><div class=\"item\"><h2>Result 3</h2><p>Useful search feedback.</p></div></div></div></main></body></html>"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wk81",
+      "title": "Week 8_1",
+      "tasks": [
+        {
+          "id": "t-wk81",
+          "text": "Form design",
+          "done": false,
+          "files": [
+            {
+              "id": "f-wk81",
+              "name": "index.html",
+              "code": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Week 8_1</title><style>:root{--bg:#edf8ff;--ink:#1a2430;--card:#fff;--accent:#1e8fc8;--soft:#dff3ff;--line:#d8ebf8}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#f1fbff,#e8f4ff);color:var(--ink)}main{max-width:900px;margin:0 auto;padding:60px 22px}.panel{padding:32px;border:1px solid var(--line);border-radius:24px;background:var(--card);box-shadow:0 12px 24px rgba(30,143,200,.08)}h1{margin:0 0 10px;font-size:clamp(2.1rem,5vw,3.3rem)}form{display:grid;gap:14px;margin-top:18px}.input,button{padding:12px 14px;border-radius:12px;font:inherit}.input{border:1px solid var(--line);background:#fdfefe}.button{border:none;background:var(--accent);color:#fff;font-weight:700}.tag{display:inline-block;padding:8px 12px;border-radius:999px;background:var(--soft);color:var(--accent);font-weight:700}</style></head><body><main><div class=\"panel\"><span class=\"tag\">Week 8_1</span><h1>Accessible Form</h1><p>Clear fields, good labels, and helpful feedback create a smoother experience for users.</p><form><input class=\"input\" type=\"text\" placeholder=\"Full name\"><input class=\"input\" type=\"email\" placeholder=\"Email address\"><button class=\"button\" type=\"button\">Submit</button></form></div></main></body></html>"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wk91",
+      "title": "Week 9_1",
+      "tasks": [
+        {
+          "id": "t-wk91",
+          "text": "Accessibility and UX",
+          "done": false,
+          "files": [
+            {
+              "id": "f-wk91",
+              "name": "index.html",
+              "code": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Week 9_1</title><style>:root{--bg:#f6f3ea;--ink:#1d1d1d;--card:#fffdf7;--accent:#b38b00;--soft:#f9ecbc;--line:#e9ddac}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#f9f5ea,#f2ecde);color:var(--ink)}main{max-width:930px;margin:0 auto;padding:60px 20px}.panel{padding:30px;border:1px solid var(--line);border-radius:22px;background:var(--card);box-shadow:0 12px 24px rgba(179,139,0,.08)}h1{margin:0 0 12px;font-size:clamp(2rem,5vw,3.3rem)}.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-top:22px}.stat{padding:18px;border:1px solid var(--line);border-radius:16px;background:#fffaf0}.stat strong{display:block;font-size:1.8rem;margin-bottom:8px;color:var(--accent)}.tag{display:inline-block;padding:8px 12px;border-radius:999px;background:var(--soft);color:#7d6200;font-weight:700}</style></head><body><main><div class=\"panel\"><span class=\"tag\">Week 9_1</span><h1>Inclusive Design</h1><p>Accessible interfaces help more people complete tasks with confidence and ease.</p><div class=\"stat-grid\"><div class=\"stat\"><strong>01</strong><span>Keyboard friendly</span></div><div class=\"stat\"><strong>02</strong><span>Clear labels</span></div><div class=\"stat\"><strong>03</strong><span>Good contrast</span></div></div></div></main></body></html>"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wk92",
+      "title": "Week 9_2",
+      "tasks": [
+        {
+          "id": "t-wk92",
+          "text": "Audit and accessibility review",
+          "done": false,
+          "files": [
+            {
+              "id": "f-wk92",
+              "name": "index.html",
+              "code": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Week 9_2</title><style>:root{--bg:#f5f3f9;--ink:#211d2d;--card:#fff;--accent:#7b5ec9;--soft:#ece3ff;--line:#e1d8f6}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#f8f4ff,#f2edff);color:var(--ink)}main{max-width:940px;margin:0 auto;padding:60px 22px}.panel{padding:32px;border:1px solid var(--line);border-radius:24px;background:var(--card);box-shadow:0 12px 24px rgba(123,94,201,.08)}h1{margin:0 0 12px;font-size:clamp(2.1rem,5vw,3.4rem)}.audit{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-top:22px}.box{padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--soft)}.box strong{display:block;font-size:2rem;color:var(--accent);margin-bottom:8px}.tag{display:inline-block;padding:8px 12px;border-radius:999px;background:var(--soft);color:var(--accent);font-weight:700}</style></head><body><main><div class=\"panel\"><span class=\"tag\">Week 9_2</span><h1>Accessibility Audit</h1><p>Review common issues, improve the experience, and test the result across real user needs.</p><div class=\"audit\"><div class=\"box\"><strong>84</strong><span>Before</span></div><div class=\"box\"><strong>100</strong><span>After</span></div><div class=\"box\"><strong>7</strong><span>Improvements</span></div></div></div></main></body></html>"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wk101",
+      "title": "Week 10_1",
+      "tasks": [
+        {
+          "id": "t-wk101",
+          "text": "GitHub and deployment",
+          "done": false,
+          "files": [
+            {
+              "id": "f-wk101",
+              "name": "index.html",
+              "code": "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Week 10_1</title><style>:root{--bg:#edf5f2;--ink:#192723;--card:#ffffff;--accent:#1d9b7d;--soft:#d9f3eb;--line:#d0ebdf}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#f3faf7,#ebf6f2);color:var(--ink)}main{max-width:960px;margin:0 auto;padding:60px 22px}.panel{padding:30px;border:1px solid var(--line);border-radius:22px;background:var(--card);box-shadow:0 12px 24px rgba(29,155,125,.08)}h1{margin:0 0 12px;font-size:clamp(2.2rem,5vw,3.5rem)}.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-top:24px}.step{padding:18px;border-radius:16px;border:1px solid var(--line);background:var(--soft)}.step strong{display:block;font-size:1.6rem;margin-bottom:8px;color:var(--accent)}.tag{display:inline-block;padding:8px 12px;border-radius:999px;background:var(--soft);color:var(--accent);font-weight:700}</style></head><body><main><div class=\"panel\"><span class=\"tag\">Week 10_1</span><h1>Git, GitHub & Deployment</h1><p>Track project progress, collaborate clearly, and publish work to the web with confidence.</p><div class=\"steps\"><div class=\"step\"><strong>01</strong><span>Commit</span></div><div class=\"step\"><strong>02</strong><span>Branch</span></div><div class=\"step\"><strong>03</strong><span>Deploy</span></div></div></div></main></body></html>"
             }
           ]
         }
