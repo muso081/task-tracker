@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>Coursework Library | Muhammadmuso</title>
+  <style>
+    :root{color-scheme:dark;--page:#101827;--panel:#172337;--panel2:#1d2b41;--ink:#f3f6fb;--muted:#a9b5c7;--line:#34445c;--accent:#ffbd59;--cyan:#7cdece;--danger:#ff8b87}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 10% 0%,#253656 0,transparent 36rem),var(--page);color:var(--ink);font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+    main{width:min(1120px,100% - 32px);margin:0 auto;padding:48px 0 72px}
+    .masthead{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;padding:clamp(24px,5vw,48px);border:1px solid var(--line);border-radius:26px;background:linear-gradient(125deg,#243b59,#18253a 65%,#30284c);box-shadow:0 24px 60px #050a1380}
+    .eyebrow{margin:0 0 12px;color:var(--cyan);font-size:.75rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase}
+    h1{max-width:680px;margin:0;font-size:clamp(2.2rem,6vw,4.2rem);line-height:1.04;letter-spacing:-.055em}
+    .intro{max-width:65ch;margin:16px 0 0;color:#d0d9e7}
+    .student{flex:none;padding:10px 14px;border:1px solid #ffffff30;border-radius:999px;color:#fff;font-size:.85rem;font-weight:700;white-space:nowrap}
+    .toolbar{display:flex;gap:12px;align-items:center;margin:24px 0}
+    .toolbar input{flex:1;min-width:0;padding:13px 15px;border:1px solid var(--line);border-radius:13px;background:var(--panel);color:var(--ink);font:inherit}
+    .summary{color:var(--muted);font-size:.9rem;white-space:nowrap}
+    .weeks{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,480px),1fr));gap:18px;align-items:start}
+    .week{overflow:hidden;border:1px solid var(--line);border-radius:19px;background:linear-gradient(180deg,var(--panel),#141f30);box-shadow:0 12px 30px #03081145}
+    .week-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid var(--line);background:#ffffff05}
+    .week-head h2{margin:0;font-size:1.25rem;letter-spacing:-.025em}
+    .badge{padding:5px 9px;border-radius:999px;background:#ffbd5918;color:var(--accent);font-size:.75rem;font-weight:800}
+    .tasks{display:grid;gap:1px;background:var(--line)}
+    .task{display:grid;grid-template-columns:36px minmax(0,1fr) auto;align-items:center;gap:12px;padding:13px 16px;background:var(--panel)}
+    .number{display:grid;width:32px;height:32px;place-items:center;border:1px solid var(--line);border-radius:10px;color:var(--cyan);font-size:.72rem;font-weight:800}
+    .task-title{display:block;overflow-wrap:anywhere;font-weight:700}
+    .task-kind{display:block;margin-top:2px;color:var(--muted);font-size:.78rem}
+    .task a{padding:7px 10px;border:1px solid #ffbd5950;border-radius:10px;color:var(--accent);font-size:.82rem;font-weight:800;text-decoration:none;white-space:nowrap}
+    .task a:hover{background:#ffbd5918}
+    a:focus-visible,input:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+    .notice{margin:16px 0 0;padding:13px 15px;border:1px solid var(--line);border-radius:12px;color:var(--muted);font-size:.88rem}
+    .notice.error{border-color:#ff8b8760;color:var(--danger)}
+    .empty{grid-column:1/-1;padding:32px;text-align:center;color:var(--muted)}
+    footer{margin-top:32px;color:var(--muted);font-size:.85rem;text-align:center}
+    @media(max-width:620px){main{width:min(100% - 22px,1120px);padding-top:22px}.masthead{display:block;border-radius:20px}.student{display:inline-block;margin-top:18px}.toolbar{align-items:stretch;flex-direction:column}.summary{white-space:normal}.task{grid-template-columns:32px minmax(0,1fr)}.task a{grid-column:2;justify-self:start}}
+  </style>
+</head>
+<body>
+  <main>
+    <header class="masthead">
+      <div>
+        <p class="eyebrow">Web programming · coursework archive</p>
+        <h1>Every week.<br>Every exercise.</h1>
+        <p class="intro">Browse the actual exercise and sample files by week. Each item opens its source file in the original repository so the full assignment content is available.</p>
+      </div>
+      <span class="student">Muhammadmuso · ID 202637351</span>
+    </header>
+    <div class="toolbar">
+      <input id="filter" type="search" placeholder="Filter tasks or weeks…" aria-label="Filter coursework">
+      <span class="summary" id="summary" role="status">Loading coursework list…</span>
+    </div>
+    <div class="weeks" id="weeks" aria-live="polite"></div>
+    <p class="notice" id="notice">Source: <a href="https://github.com/Xushnudbek76/week2" target="_blank" rel="noopener noreferrer">Xushnudbek76/week2</a>. Coursework files are linked to their original paths and attribution is retained.</p>
+    <footer>Coursework Library · Original source files remain credited to their repository.</footer>
+  </main>
+  <script>
+    const owner = "Xushnudbek76";
+    const repo = "week2";
+    const treeUrl = `https://api.github.com/repos/${owner}/${repo}/git/trees/main?recursive=1`;
+    const weeksRoot = document.getElementById("weeks");
+    const summary = document.getElementById("summary");
+    const notice = document.getElementById("notice");
+    const filter = document.getElementById("filter");
+    let groups = [];
+
+    function taskKind(path) {
+      if (path.includes("/exercises/")) return "Exercise";
+      if (path.includes("/samples/")) return "Sample";
+      return "Project file";
+    }
+
+    function taskLabel(path) {
+      const file = path.split("/").pop();
+      const kind = taskKind(path);
+      return `${kind} · ${file}`;
+    }
+
+    function render() {
+      const q = filter.value.trim().toLowerCase();
+      weeksRoot.replaceChildren();
+      let shown = 0;
+      for (const group of groups) {
+        const tasks = group.tasks.filter(task => `${group.title} ${task.path} ${taskKind(task.path)}`.toLowerCase().includes(q));
+        if (!tasks.length) continue;
+        shown += tasks.length;
+        const section = document.createElement("section");
+        section.className = "week";
+        const head = document.createElement("div");
+        head.className = "week-head";
+        const title = document.createElement("h2");
+        title.textContent = group.title.replaceAll("_", " · ");
+        const badge = document.createElement("span");
+        badge.className = "badge";
+        badge.textContent = `${tasks.length} tasks`;
+        head.append(title, badge);
+        const list = document.createElement("div");
+        list.className = "tasks";
+        tasks.forEach((task, index) => {
+          const row = document.createElement("article");
+          row.className = "task";
+          const number = document.createElement("span");
+          number.className = "number";
+          number.textContent = String(index + 1).padStart(2, "0");
+          const details = document.createElement("span");
+          const label = document.createElement("span");
+          label.className = "task-title";
+          label.textContent = taskLabel(task.path);
+          const kind = document.createElement("span");
+          kind.className = "task-kind";
+          kind.textContent = task.path;
+          details.append(label, kind);
+          const link = document.createElement("a");
+          link.href = `https://github.com/${owner}/${repo}/blob/main/${task.path}`;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.textContent = "Open file ↗";
+          link.setAttribute("aria-label", `Open ${task.path} on GitHub`);
+          row.append(number, details, link);
+          list.appendChild(row);
+        });
+        section.append(head, list);
+        weeksRoot.appendChild(section);
+      }
+      summary.textContent = `${shown} coursework files across ${weeksRoot.children.length} weeks`;
+      if (!shown) {
+        const empty = document.createElement("p");
+        empty.className = "empty";
+        empty.textContent = "No matching tasks. Try a different search.";
+        weeksRoot.appendChild(empty);
+      }
+    }
+
+    filter.addEventListener("input", render);
+    fetch(treeUrl, { headers: { Accept: "application/vnd.github+json" }, cache: "no-store" })
+      .then(response => {
+        if (!response.ok) throw new Error(`GitHub returned ${response.status}`);
+        return response.json();
+      })
+      .then(data => {
+        const paths = (data.tree || []).filter(entry => entry.type === "blob" && /^week\d+_\d+\/.+\.html$/i.test(entry.path) && !/^week\d+_\d+\/index\.html$/i.test(entry.path));
+        const grouped = new Map();
+        for (const entry of paths) {
+          const title = entry.path.split("/")[0];
+          if (!grouped.has(title)) grouped.set(title, []);
+          grouped.get(title).push({ path: entry.path });
+        }
+        groups = [...grouped.entries()]
+          .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))
+          .map(([title, tasks]) => ({ title, tasks: tasks.sort((a, b) => a.path.localeCompare(b.path, undefined, { numeric: true })) }));
+        if (!groups.length) throw new Error("No week task files were found in the source repository.");
+        notice.classList.remove("error");
+        render();
+      })
+      .catch(error => {
+        summary.textContent = "Coursework list could not be loaded";
+        notice.classList.add("error");
+        notice.textContent = `${error.message}. Check your internet connection, then reload this page.`;
+        const message = document.createElement("p");
+        message.className = "empty";
+        message.textContent = "The live source listing is unavailable right now.";
+        weeksRoot.replaceChildren(message);
+      });
+  </script>
+</body>
+</html>
