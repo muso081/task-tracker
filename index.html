@@ -1,839 +1,175 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Weekly Task Tracker</title>
-<style>
-  :root {
-    --bg: #eef4ff;
-    --bg-2: #f8f7ff;
-    --card: rgba(255, 255, 255, 0.82);
-    --card-strong: #ffffff;
-    --ink: #152336;
-    --muted: #5a6f88;
-    --line: rgba(121, 140, 175, 0.22);
-    --accent: #5d6bff;
-    --accent-2: #8059ff;
-    --accent-soft: rgba(93, 107, 255, 0.12);
-    --done: #1ea96d;
-    --danger: #ea5f5f;
-    --shadow: 0 20px 50px rgba(39, 60, 88, 0.14);
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0d1420;
-      --bg-2: #121d2d;
-      --card: rgba(17, 25, 35, 0.8);
-      --card-strong: #141f2b;
-      --ink: #edf3ff;
-      --muted: #9aaac0;
-      --line: rgba(157, 177, 206, 0.18);
-      --accent: #7d8bff;
-      --accent-2: #b07dff;
-      --accent-soft: rgba(125, 139, 255, 0.15);
-      --done: #3cc785;
-      --danger: #ff7a7a;
-      --shadow: 0 24px 58px rgba(1, 4, 10, 0.45);
-    }
-  }
-
-  * { box-sizing: border-box; }
-
-  html {
-    padding-top: env(safe-area-inset-top, 0px);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-
-  body {
-    margin: 0;
-    min-height: 100vh;
-    background:
-      radial-gradient(circle at top left, rgba(128, 89, 255, 0.16), transparent 26%),
-      radial-gradient(circle at top right, rgba(93, 107, 255, 0.14), transparent 24%),
-      linear-gradient(180deg, var(--bg-2), var(--bg));
-    color: var(--ink);
-    font: 16px/1.5 "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-  }
-
-  main {
-    max-width: 920px;
-    margin: 0 auto;
-    padding: 32px 18px 70px;
-  }
-
-  header {
-    position: relative;
-    margin-bottom: 24px;
-    padding: 28px 26px 24px;
-    border: 1px solid var(--line);
-    border-radius: 28px;
-    background: linear-gradient(135deg, rgba(93, 107, 255, 0.95), rgba(128, 89, 255, 0.92));
-    box-shadow: var(--shadow);
-    color: #fff;
-    overflow: hidden;
-  }
-
-  header::before,
-  header::after {
-    content: "";
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.12);
-    pointer-events: none;
-  }
-
-  header::before {
-    width: 220px;
-    height: 220px;
-    right: -58px;
-    top: -72px;
-  }
-
-  header::after {
-    width: 160px;
-    height: 160px;
-    left: -40px;
-    bottom: -70px;
-  }
-
-  h1 {
-    position: relative;
-    z-index: 1;
-    margin: 0;
-    font-size: clamp(2rem, 4vw, 3rem);
-    line-height: 1.1;
-    letter-spacing: -0.06em;
-  }
-
-  .owner {
-    position: relative;
-    z-index: 1;
-    margin: 10px 0 0;
-    color: rgba(255,255,255,0.85);
-    font-weight: 600;
-    letter-spacing: 0.01em;
-  }
-
-  .status {
-    margin: 0 0 16px;
-    padding: 12px 14px;
-    border: 1px solid var(--line);
-    border-left: 4px solid var(--accent);
-    border-radius: 14px;
-    background: rgba(255,255,255,0.72);
-    color: var(--ink);
-    font-size: 0.92rem;
-  }
-
-  .status.error {
-    border-left-color: var(--danger);
-    color: var(--danger);
-    background: rgba(234, 95, 95, 0.06);
-  }
-
-  .row {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    align-items: center;
-    margin-bottom: 16px;
-  }
-
-  input[type=text], input[type=password] {
-    flex: 1 1 200px;
-    min-width: 0;
-    padding: 12px 14px;
-    font: inherit;
-    color: var(--ink);
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    box-shadow: inset 0 1px 1px rgba(0,0,0,0.02);
-  }
-
-  input:focus-visible,
-  button:focus-visible,
-  textarea:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-
-  button {
-    font: inherit;
-    cursor: pointer;
-    border-radius: 12px;
-    border: 1px solid var(--line);
-    background: var(--card);
-    color: var(--ink);
-    padding: 10px 14px;
-    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-  }
-
-  button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 16px rgba(42, 65, 101, 0.08);
-  }
-
-  button.primary {
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    border-color: transparent;
-    color: #fff;
-    font-weight: 700;
-  }
-
-  .week {
-    position: relative;
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 22px;
-    padding: 18px 18px 12px;
-    margin-bottom: 18px;
-    box-shadow: var(--shadow);
-    backdrop-filter: blur(8px);
-  }
-
-  .week-head {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    border-bottom: 1px solid var(--line);
-    padding-bottom: 12px;
-    margin-bottom: 12px;
-  }
-
-  .week-head h2 {
-    margin: 0;
-    flex: 1;
-    font-size: clamp(1.15rem, 2vw, 1.5rem);
-    letter-spacing: -0.04em;
-  }
-
-  .count {
-    color: var(--muted);
-    font-size: 0.9rem;
-    font-weight: 600;
-  }
-
-  .icon {
-    padding: 8px 10px;
-    color: var(--muted);
-    background: transparent;
-    border-color: var(--line);
-  }
-
-  .icon:hover {
-    color: var(--danger);
-    border-color: rgba(234, 95, 95, 0.45);
-  }
-
-  .codebtn {
-    padding: 7px 12px;
-    color: var(--accent);
-    font-size: 0.9rem;
-    font-weight: 700;
-    border-color: rgba(93, 107, 255, 0.26);
-    background: var(--accent-soft);
-  }
-
-  .progress {
-    height: 9px;
-    background: rgba(144, 163, 187, 0.18);
-    border-radius: 999px;
-    margin: 10px 0 14px;
-    overflow: hidden;
-  }
-
-  .progress > div {
-    height: 100%;
-    background: linear-gradient(90deg, var(--done), #7ad8a3);
-    border-radius: inherit;
-    transition: width 0.25s ease;
-  }
-
-  ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  li {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--line);
-  }
-
-  li:last-child {
-    border-bottom: 0;
-  }
-
-  li input[type=checkbox] {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--done);
-    flex: none;
-  }
-
-  li span {
-    flex: 1;
-    min-width: 0;
-    font-weight: 500;
-    overflow-wrap: anywhere;
-  }
-
-  li.done span {
-    text-decoration: line-through;
-    color: var(--muted);
-  }
-
-  .code-area {
-    flex: 1 0 100%;
-    min-height: 170px;
-    padding: 14px 12px;
-    font: 13px/1.5 "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-    color: var(--ink);
-    background: rgba(148, 163, 184, 0.08);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    resize: vertical;
-  }
-
-  .code-wrap {
-    flex: 1 0 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 10px;
-  }
-
-  .code-wrap .code-area {
-    flex: none;
-  }
-
-  .code-bar {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
-  .code-bar select {
-    font: inherit;
-    padding: 9px 10px;
-    color: var(--ink);
-    background: var(--card-strong);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-  }
-
-  .tab {
-    padding: 8px 12px;
-    font-size: 0.9rem;
-    color: var(--muted);
-    background: rgba(148, 163, 184, 0.06);
-    border-color: var(--line);
-  }
-
-  .tab.on {
-    color: var(--accent);
-    border-color: rgba(93, 107, 255, 0.3);
-    background: var(--accent-soft);
-    font-weight: 700;
-  }
-
-  .code-bar .newfile,
-  .code-bar .fname {
-    flex: 1 1 180px;
-    min-width: 140px;
-    padding: 8px 10px;
-    font: inherit;
-  }
-
-  .preview {
-    width: 100%;
-    height: 260px;
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    background: #fff;
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.02);
-    resize: vertical;
-  }
-
-  .add-task {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-  }
-
-  .empty {
-    color: var(--muted);
-    padding: 28px 0;
-    text-align: center;
-    font-weight: 600;
-  }
-
-  .panel {
-    background: var(--card);
-    border: 1px solid rgba(93, 107, 255, 0.26);
-    border-radius: 18px;
-    padding: 18px 18px 14px;
-    margin-bottom: 18px;
-    box-shadow: var(--shadow);
-  }
-
-  .panel .row {
-    margin-top: 12px;
-    margin-bottom: 0;
-  }
-
-  footer {
-    margin-top: 26px;
-    text-align: center;
-  }
-
-  footer button {
-    border: 0;
-    background: transparent;
-    color: var(--muted);
-    font-weight: 600;
-    text-decoration: underline;
-    padding: 0;
-  }
-
-  @media (max-width: 560px) {
-    main {
-      padding-left: 12px;
-      padding-right: 12px;
-    }
-
-    header {
-      padding: 22px 18px 20px;
-      border-radius: 20px;
-    }
-
-    .week {
-      border-radius: 18px;
-      padding: 14px 14px 10px;
-    }
-
-    .add-task {
-      flex-direction: column;
-    }
-  }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>Coursework Tracker | Muhammadmuso</title>
+  <style>
+    :root{color-scheme:dark;--page:#101827;--panel:#172337;--ink:#f3f6fb;--muted:#a9b5c7;--line:#34445c;--accent:#ffbd59;--cyan:#7cdece;--danger:#ff8b87}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 10% 0%,#253656 0,transparent 36rem),var(--page);color:var(--ink);font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+    main{width:min(1120px,100% - 32px);margin:0 auto;padding:40px 0 64px}
+    .masthead{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;padding:clamp(24px,5vw,46px);border:1px solid var(--line);border-radius:26px;background:linear-gradient(125deg,#243b59,#18253a 65%,#30284c);box-shadow:0 24px 60px #050a1380}
+    .eyebrow{margin:0 0 12px;color:var(--cyan);font-size:.75rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase}
+    h1{max-width:680px;margin:0;font-size:clamp(2.2rem,6vw,4.2rem);line-height:1.04;letter-spacing:-.055em}
+    .intro{max-width:65ch;margin:16px 0 0;color:#d0d9e7}
+    .student{flex:none;padding:10px 14px;border:1px solid #ffffff30;border-radius:999px;color:#fff;font-size:.85rem;font-weight:700;white-space:nowrap}
+    .toolbar{display:flex;gap:12px;align-items:center;margin:24px 0}
+    .toolbar input{flex:1;min-width:0;padding:13px 15px;border:1px solid var(--line);border-radius:13px;background:var(--panel);color:var(--ink);font:inherit}
+    .summary{color:var(--muted);font-size:.9rem;white-space:nowrap}
+    .weeks{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,480px),1fr));gap:18px;align-items:start}
+    .week{overflow:hidden;border:1px solid var(--line);border-radius:19px;background:linear-gradient(180deg,var(--panel),#141f30);box-shadow:0 12px 30px #03081145}
+    .week-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid var(--line);background:#ffffff05}
+    .week-head h2{margin:0;font-size:1.25rem;letter-spacing:-.025em}
+    .badge{padding:5px 9px;border-radius:999px;background:#ffbd5918;color:var(--accent);font-size:.75rem;font-weight:800;white-space:nowrap}
+    .tasks{display:grid;gap:1px;background:var(--line)}
+    .task{display:grid;grid-template-columns:36px minmax(0,1fr) auto;align-items:center;gap:12px;padding:12px 16px;background:var(--panel)}
+    .number{display:grid;width:32px;height:32px;place-items:center;border:1px solid var(--line);border-radius:10px;color:var(--cyan);font-size:.72rem;font-weight:800}
+    .task-title{display:block;overflow-wrap:anywhere;font-weight:700}
+    .task-path{display:block;margin-top:2px;color:var(--muted);font-size:.76rem;overflow-wrap:anywhere}
+    .task a{padding:7px 10px;border:1px solid #ffbd5950;border-radius:10px;color:var(--accent);font-size:.82rem;font-weight:800;text-decoration:none;white-space:nowrap}
+    .task a:hover{background:#ffbd5918}
+    a:focus-visible,input:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+    .notice{margin:16px 0 0;padding:13px 15px;border:1px solid var(--line);border-radius:12px;color:var(--muted);font-size:.88rem}
+    .notice a{color:var(--cyan)}
+    .notice.error{border-color:#ff8b8760;color:var(--danger)}
+    .empty{grid-column:1/-1;padding:32px;text-align:center;color:var(--muted)}
+    footer{margin-top:28px;color:var(--muted);font-size:.85rem;text-align:center}
+    @media(max-width:620px){main{width:min(100% - 22px,1120px);padding-top:22px}.masthead{display:block;border-radius:20px}.student{display:inline-block;margin-top:18px}.toolbar{align-items:stretch;flex-direction:column}.summary{white-space:normal}.task{grid-template-columns:32px minmax(0,1fr)}.task a{grid-column:2;justify-self:start}}
+  </style>
 </head>
 <body>
-<main>
-  <header>
-    <h1>Weekly Task Tracker</h1>
-    <p class="owner">Muhammadmuso &middot; Student ID 202637351</p>
-  </header>
-
-  <p class="status" id="status" hidden></p>
-
-  <div id="editTools" hidden>
-    <div class="row">
-      <input type="text" id="weekTitle" placeholder="Week name, e.g. Week 2" aria-label="New week name">
-      <button class="primary" id="addWeek">Add week</button>
-      <button id="saveNow">Save now</button>
-      <button id="disconnect">Sign out</button>
+  <main>
+    <header class="masthead">
+      <div>
+        <p class="eyebrow">Web programming · coursework archive</p>
+        <h1>Every week.<br>Every task.</h1>
+        <p class="intro">The coursework is now shown right here in your tracker. Browse week overviews, exercises, and samples; open a task to view its working page, with its supporting files loaded from the source repository.</p>
+      </div>
+      <span class="student">Muhammadmuso · ID 202637351</span>
+    </header>
+    <div class="toolbar">
+      <input id="filter" type="search" placeholder="Filter by week, task, or file…" aria-label="Filter coursework">
+      <span class="summary" id="summary" role="status">Loading the coursework…</span>
     </div>
-  </div>
+    <div class="weeks" id="weeks" aria-live="polite"></div>
+    <p class="notice" id="notice">Coursework source: <a href="https://github.com/Xushnudbek76/week2" target="_blank" rel="noopener noreferrer">Xushnudbek76/week2</a>. Source attribution is retained.</p>
+    <footer>Coursework Tracker · Muhammadmuso · Student ID 202637351</footer>
+  </main>
+  <script>
+    const sourceOwner = "Xushnudbek76";
+    const sourceRepo = "week2";
+    const treeUrl = `https://api.github.com/repos/${sourceOwner}/${sourceRepo}/git/trees/main?recursive=1`;
+    const weeksRoot = document.getElementById("weeks");
+    const summary = document.getElementById("summary");
+    const notice = document.getElementById("notice");
+    const filter = document.getElementById("filter");
+    let groups = [];
 
-  <div id="weeks"></div>
-
-  <div class="panel" id="signin" hidden>
-    <strong>Owner sign in.</strong> Paste your GitHub token to edit and save to your repository. It stays in this browser only.
-    <div class="row"><input type="text" id="ghOwner" placeholder="GitHub username" aria-label="GitHub username"><input type="text" id="ghRepo" placeholder="Repository name" aria-label="Repository name"></div>
-    <div class="row"><input type="password" id="ghToken" placeholder="Token (starts with github_pat_)" aria-label="GitHub token" autocomplete="off"><button class="primary" id="connect">Connect</button></div>
-    <p class="status" id="signinMsg"></p>
-  </div>
-
-  <footer><button id="signinBtn">Owner sign in</button></footer>
-</main>
-
-<script>
-  const CFG_KEY = "tracker-github-v1";
-  const $ = id => document.getElementById(id);
-  const uid = () => Math.random().toString(36).slice(2, 10);
-  const b64 = s => btoa(unescape(encodeURIComponent(s)));
-  const unb64 = s => decodeURIComponent(escape(atob(s.replace(/\s/g, ""))));
-
-  function guessRepo() {
-    const host = location.hostname, first = location.pathname.split("/").filter(Boolean)[0];
-    if (host.endsWith(".github.io"))
-      return { owner: host.replace(".github.io", ""), repo: first && !first.includes(".") ? first : host };
-    return { owner: "muso081", repo: "task-tracker" };
-  }
-  let cfg = {};
-  try { cfg = JSON.parse(localStorage.getItem(CFG_KEY)) || {}; } catch (e) {}
-  const guess = guessRepo();
-  cfg.owner = cfg.owner || guess.owner;
-  cfg.repo = cfg.repo || guess.repo;
-
-  let weeks = [], sha = null, canEdit = false, dirty = false, saving = false, timer;
-  const open = new Set();
-  const running = new Set();
-  const activeFile = {};
-
-  const defaultWeeks = () => [{ id: uid(), title: "Week 1", tasks: [
-    { id: uid(), text: "Task 1", done: false, files: [] },
-    { id: uid(), text: "Task 2", done: false, files: [] },
-    { id: uid(), text: "Task 3", done: false, files: [] }
-  ]}];
-
-  function setStatus(text, isError) {
-    const el = $("status");
-    el.hidden = !text;
-    el.textContent = text || "";
-    el.className = "status" + (isError ? " error" : "");
-  }
-
-  function gh(method, payload) {
-    const headers = { Authorization: "Bearer " + cfg.token, Accept: "application/vnd.github+json" };
-    if (payload) headers["Content-Type"] = "application/json";
-    return fetch("https://api.github.com/repos/" + cfg.owner + "/" + cfg.repo + "/contents/data.json", {
-      method, headers, cache: "no-store", body: payload ? JSON.stringify(payload) : undefined
-    });
-  }
-
-  async function load() {
-    canEdit = false;
-    if (cfg.token) {
-      let msg = "";
-      try {
-        const r = await gh("GET");
-        if (r.ok) {
-          const j = await r.json();
-          sha = j.sha; weeks = JSON.parse(unb64(j.content)).weeks || []; canEdit = true;
-          setStatus("Signed in. Every change is saved to GitHub."); return;
-        }
-        if (r.status === 404) { sha = null; weeks = defaultWeeks(); canEdit = true; setStatus("Signed in. Your first change creates data.json in the repository."); return; }
-        msg = r.status === 401 ? "GitHub rejected your token. Sign in again." : "Could not reach your repository (error " + r.status + ").";
-      } catch (e) { msg = "No connection to GitHub."; }
-      setStatus(msg, true);
-    } else setStatus("");
-    try {
-      const r = await fetch("https://api.github.com/repos/" + cfg.owner + "/" + cfg.repo + "/contents/data.json",
-        { cache: "no-store", headers: { Accept: "application/vnd.github.raw+json" } });
-      if (r.ok) { weeks = (await r.json()).weeks || []; return; }
-    } catch (e) {}
-    try {
-      const r = await fetch("data.json?ts=" + Date.now(), { cache: "no-store" });
-      if (r.ok) { weeks = (await r.json()).weeks || []; return; }
-    } catch (e) {}
-    weeks = [];
-  }
-
-  function changed() {
-    dirty = true;
-    setStatus("Unsaved changes...");
-    clearTimeout(timer);
-    timer = setTimeout(saveNow, 1500);
-  }
-
-  async function saveNow() {
-    clearTimeout(timer);
-    if (!canEdit || saving || !dirty) return;
-    saving = true; dirty = false;
-    setStatus("Saving to GitHub...");
-    const body = JSON.stringify({ weeks }, null, 2);
-    const put = () => gh("PUT", { message: "Update tasks", content: b64(body), ...(sha ? { sha } : {}) });
-    let ok = false;
-    try {
-      let res = await put();
-      if (res.status === 409 || res.status === 422) {
-        const g = await gh("GET");
-        sha = g.ok ? (await g.json()).sha : null;
-        res = await put();
-      }
-      if (res.ok) {
-        sha = (await res.json()).content.sha; ok = true;
-        setStatus("Saved to GitHub at " + new Date().toLocaleTimeString() + ".");
-      } else {
-        dirty = true;
-        setStatus("Save failed (error " + res.status + "). Check the token allows Contents: Read and write, then click Save now.", true);
-      }
-    } catch (e) {
-      dirty = true;
-      setStatus("Save failed: no connection. Click Save now to try again.", true);
+    function category(path) {
+      if (/\/exercises\//i.test(path)) return "Exercise";
+      if (/\/samples\//i.test(path)) return "Sample";
+      return "Week overview";
     }
-    saving = false;
-    if (ok && dirty) saveNow();
-  }
 
-  function detectMode(c) {
-    if (/<[a-z!][^>]*>/i.test(c)) return "html";
-    if (!/\b(function|const|let|var|console|document|window|if|for|while)\b|=>/.test(c) && /[^{}]+\{[^{}]*:[^{}]*\}/.test(c)) return "css";
-    return "js";
-  }
+    function displayName(path) {
+      const file = path.split("/").pop();
+      if (file.toLowerCase() === "index.html") return "Week overview";
+      return `${category(path)} ${file.replace(/\.html$/i, "").replace(/^(exer|sample)/i, "")}`;
+    }
 
-  const SHIM = '(function(){var o=document.getElementById("o");function p(c,a){var s=[].map.call(a,function(x){try{return typeof x==="object"?JSON.stringify(x):String(x)}catch(e){return String(x)}});if(c){o&&o.insertAdjacentHTML("beforeend","<span class=\""+c+"\">"+s.join(" ")+"</span>\n")}else{o&&o.insertAdjacentText("beforeend",s.join(" ")+"\n")}};console.log=function(){p("",arguments)};console.info=console.log;console.warn=function(){p("w",arguments)};console.error=function(){p("e",arguments)};window.onerror=function(m,u,l){p("e",["Error: "+m+(l?" (line "+l+")":"")]);return true}})();';
-  const ext = n => (n.split(".").pop() || "").toLowerCase();
-  const baseName = n => n.split("/").pop().toLowerCase();
-  const safeJs = s => s.replace(/<\/script/gi, "<\\/script");
-  const safeCss = s => s.replace(/<\/style/gi, "<\\/style");
+    function render() {
+      const query = filter.value.trim().toLowerCase();
+      weeksRoot.replaceChildren();
+      let visibleCount = 0;
+      let visibleWeeks = 0;
+      for (const group of groups) {
+        const tasks = group.tasks.filter(task => `${group.title} ${task.path} ${displayName(task.path)}`.toLowerCase().includes(query));
+        if (!tasks.length) continue;
+        visibleWeeks++;
+        visibleCount += tasks.length;
+        const section = document.createElement("section");
+        section.className = "week";
+        const head = document.createElement("div");
+        head.className = "week-head";
+        const title = document.createElement("h2");
+        title.textContent = group.title.replaceAll("_", " · ");
+        const badge = document.createElement("span");
+        badge.className = "badge";
+        badge.textContent = `${tasks.length} files`;
+        head.append(title, badge);
+        const list = document.createElement("div");
+        list.className = "tasks";
+        tasks.forEach((task, index) => {
+          const row = document.createElement("article");
+          row.className = "task";
+          const number = document.createElement("span");
+          number.className = "number";
+          number.textContent = String(index + 1).padStart(2, "0");
+          const details = document.createElement("span");
+          const label = document.createElement("span");
+          label.className = "task-title";
+          label.textContent = displayName(task.path);
+          const pathLabel = document.createElement("span");
+          pathLabel.className = "task-path";
+          pathLabel.textContent = task.path;
+          details.append(label, pathLabel);
+          const link = document.createElement("a");
+          link.href = `https://raw.githubusercontent.com/${sourceOwner}/${sourceRepo}/main/${task.path}`;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.textContent = "Open task ↗";
+          link.setAttribute("aria-label", `Open ${task.path}`);
+          row.append(number, details, link);
+          list.appendChild(row);
+        });
+        section.append(head, list);
+        weeksRoot.appendChild(section);
+      }
+      summary.textContent = `${visibleCount} coursework files · ${visibleWeeks} weeks`;
+      if (!visibleCount) {
+        const empty = document.createElement("p");
+        empty.className = "empty";
+        empty.textContent = query ? "No matching tasks. Try another search." : "No coursework files found.";
+        weeksRoot.appendChild(empty);
+      }
+    }
 
-  function buildProject(files) {
-    const html = files.filter(f => ext(f.name) === "html" || ext(f.name) === "htm");
-    const css = files.filter(f => ext(f.name) === "css");
-    const js = files.filter(f => ext(f.name) === "js");
-    const find = (list, ref) => list.find(f => baseName(f.name) === ref.split("?")[0].split("#")[0].split("/").pop().toLowerCase());
-    const main = html.find(f => baseName(f.name) === "index.html") || html[0];
-
-    if (main) {
-      const used = new Set();
-      let doc = main.code;
-      doc = doc.replace(/<link\b[^>]*href\s*=\s*["']([^"']+)["'][^>]*>/gi, (m, href) => {
-        const f = find(css, href);
-        if (!f) return m;
-        used.add(f.id);
-        return "<style>" + safeCss(f.code) + "</style>";
+    filter.addEventListener("input", render);
+    fetch(treeUrl, { headers: { Accept: "application/vnd.github+json" }, cache: "no-store" })
+      .then(response => {
+        if (!response.ok) throw new Error(`GitHub returned HTTP ${response.status}`);
+        return response.json();
+      })
+      .then(data => {
+        const entries = (data.tree || []).filter(entry => entry.type === "blob" && /^week\d+_\d+\/.+\.html$/i.test(entry.path));
+        const grouped = new Map();
+        for (const entry of entries) {
+          const week = entry.path.split("/")[0];
+          if (!grouped.has(week)) grouped.set(week, []);
+          grouped.get(week).push({ path: entry.path });
+        }
+        groups = [...grouped.entries()]
+          .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))
+          .map(([title, tasks]) => ({ title, tasks: tasks.sort((a, b) => a.path.localeCompare(b.path, undefined, { numeric: true })) }));
+        if (!groups.length) throw new Error("No week task pages were found in the source repository.");
+        notice.classList.remove("error");
+        render();
+      })
+      .catch(error => {
+        summary.textContent = "Unable to load coursework";
+        notice.classList.add("error");
+        notice.textContent = `${error.message}. Check your internet connection and reload. You can still browse the source repository directly: `;
+        const source = document.createElement("a");
+        source.href = `https://github.com/${sourceOwner}/${sourceRepo}`;
+        source.textContent = `${sourceOwner}/${sourceRepo}`;
+        notice.appendChild(source);
+        const message = document.createElement("p");
+        message.className = "empty";
+        message.textContent = "The task list needs access to GitHub's public repository listing. Reload once the connection is available.";
+        weeksRoot.replaceChildren(message);
       });
-      doc = doc.replace(/<script\b[^>]*?src\s*=\s*["']([^"']+)["'][^>]*>\s*<\/script>/gi, (m, src) => {
-        const f = find(js, src);
-        if (!f) return m;
-        used.add(f.id);
-        return "<script>" + safeJs(f.code) + "<\/script>";
-      });
-      const extraCss = css.filter(f => !used.has(f.id)).map(f => "<style>" + safeCss(f.code) + "</style>").join("");
-      const extraJs = js.filter(f => !used.has(f.id)).map(f => "<script>" + safeJs(f.code) + "<\/script>").join("");
-      if (extraCss) doc = /<\/head>/i.test(doc) ? doc.replace(/<\/head>/i, () => extraCss + "</head>") : extraCss + doc;
-      if (extraJs) doc = /<\/body>/i.test(doc) ? doc.replace(/<\/body>/i, () => extraJs + "</body>") : doc + extraJs;
-      return doc;
-    }
-
-    const cssAll = css.map(f => "<style>" + safeCss(f.code) + "</style>").join("");
-    if (js.length) {
-      return '<!doctype html><meta charset="utf-8"><style>body{font:14px/1.5 ui-monospace,Consolas,monospace;margin:8px;color:#1b2430;background:#fff}.e{color:#c0392b}.w{color:#b7791f}</style>' +
-        '<pre id="o" style="margin:0;white-space:pre-wrap"></pre><script>' + SHIM + '<\/script>' +
-        js.map(f => "<script>" + safeJs(f.code) + "<\/script>").join("");
-    }
-    return '<!doctype html><meta charset="utf-8">' + cssAll +
-      '<h1>Heading</h1><p>A paragraph with <a href="#">a link</a> and <strong>bold text</strong>.</p>' +
-      '<button>Button</button><ul><li>List item one</li><li>List item two</li></ul><div class="box">.box</div>';
-  }
-
-  function render() {
-    $("editTools").hidden = !canEdit;
-    $("signinBtn").hidden = canEdit;
-    weeks.forEach(w => w.tasks.forEach(t => {
-      if (!Array.isArray(t.files)) {
-        const c = t.code || "";
-        const mode = (t.lang && t.lang !== "auto") ? t.lang : detectMode(c);
-        t.files = c ? [{ id: uid(), name: mode === "css" ? "style.css" : mode === "js" ? "script.js" : "index.html", code: c }] : [];
-        delete t.code; delete t.lang;
-      }
-    }));
-    const root = $("weeks");
-    root.innerHTML = "";
-    if (!weeks.length) {
-      root.innerHTML = '<p class="empty">' + (canEdit ? "No weeks yet. Add your first week above." : "No tasks published yet.") + "</p>";
-      return;
-    }
-    weeks.forEach(w => {
-      const el = document.createElement("section");
-      el.className = "week";
-      el.innerHTML =
-        '<div class="week-head"><h2></h2>' +
-        (canEdit ? '<button class="icon" data-del aria-label="Delete week">Delete</button>' : "") + "</div><ul></ul>" +
-        (canEdit ? '<div class="add-task"><input type="text" placeholder="New task" aria-label="New task"><button>Add task</button></div>' : "");
-      el.querySelector("h2").textContent = w.title;
-
-      const ul = el.querySelector("ul");
-      w.tasks.forEach(t => {
-        const li = document.createElement("li");
-        const hasCode = t.files.some(f => f.code);
-        const showCodeBtn = canEdit || hasCode;
-        li.innerHTML = '<span></span>' +
-          (showCodeBtn ? '<button class="codebtn"></button>' : "") +
-          (canEdit ? '<button class="icon rm" aria-label="Delete task">Remove</button>' : "");
-        li.querySelector("span").textContent = t.text;
-        if (canEdit) {
-          li.querySelector(".rm").onclick = () => { w.tasks = w.tasks.filter(x => x.id !== t.id); changed(); render(); };
-        }
-        if (showCodeBtn) {
-          const btn = li.querySelector(".codebtn");
-          btn.textContent = open.has(t.id) ? "Hide code" : (hasCode ? "View code" : "Add code");
-          btn.onclick = () => {
-            if (open.has(t.id)) open.delete(t.id);
-            else {
-              open.add(t.id);
-              if (canEdit && !t.files.length) { t.files.push({ id: uid(), name: "index.html", code: "" }); changed(); }
-            }
-            render();
-          };
-        }
-        if (open.has(t.id)) {
-          const wrap = document.createElement("div");
-          wrap.className = "code-wrap";
-          if (!t.files.some(f => f.id === activeFile[t.id])) activeFile[t.id] = t.files.length ? t.files[0].id : null;
-          const cur = t.files.find(f => f.id === activeFile[t.id]);
-
-          const tabs = document.createElement("div");
-          tabs.className = "code-bar";
-          t.files.forEach(f => {
-            const b = document.createElement("button");
-            b.className = "tab" + (f.id === activeFile[t.id] ? " on" : "");
-            b.textContent = f.name;
-            b.onclick = () => { activeFile[t.id] = f.id; render(); };
-            tabs.appendChild(b);
-          });
-          if (canEdit) {
-            const nf = document.createElement("input");
-            nf.type = "text"; nf.className = "newfile"; nf.placeholder = "New file, e.g. style.css";
-            nf.setAttribute("aria-label", "New file name");
-            const addf = document.createElement("button");
-            addf.textContent = "+ File";
-            const addFile = () => {
-              const name = nf.value.trim();
-              if (!name) return;
-              if (t.files.some(f => f.name.toLowerCase() === name.toLowerCase())) { setStatus("A file named " + name + " already exists.", true); return; }
-              const f = { id: uid(), name, code: "" };
-              t.files.push(f); activeFile[t.id] = f.id; changed(); render();
-            };
-            addf.onclick = addFile;
-            nf.onkeydown = e => { if (e.key === "Enter") addFile(); };
-            tabs.append(nf, addf);
-          }
-          wrap.appendChild(tabs);
-
-          const bar = document.createElement("div");
-          bar.className = "code-bar";
-          const run = document.createElement("button");
-          run.className = "primary";
-          run.textContent = running.has(t.id) ? "Stop" : "Run";
-          run.onclick = () => { running.has(t.id) ? running.delete(t.id) : running.add(t.id); render(); };
-          bar.appendChild(run);
-
-          if (canEdit && cur) {
-            const nameIn = document.createElement("input");
-            nameIn.type = "text"; nameIn.className = "fname"; nameIn.value = cur.name;
-            nameIn.setAttribute("aria-label", "File name");
-            nameIn.onchange = () => {
-              const v = nameIn.value.trim();
-              if (!v || t.files.some(f => f.id !== cur.id && f.name.toLowerCase() === v.toLowerCase())) { nameIn.value = cur.name; return; }
-              cur.name = v; changed(); render();
-            };
-            const delF = document.createElement("button");
-            delF.className = "icon";
-            delF.textContent = "Delete file";
-            let armedF = false, tF;
-            delF.onclick = () => {
-              if (!armedF) {
-                armedF = true; delF.textContent = "Click again to delete";
-                delF.style.color = delF.style.borderColor = "var(--danger)";
-                tF = setTimeout(() => { armedF = false; delF.textContent = "Delete file"; delF.style.color = delF.style.borderColor = ""; }, 3000);
-                return;
-              }
-              clearTimeout(tF);
-              t.files = t.files.filter(f => f.id !== cur.id); activeFile[t.id] = null; changed(); render();
-            };
-            bar.append(nameIn, delF);
-          }
-          wrap.appendChild(bar);
-
-          const ta = document.createElement("textarea");
-          ta.className = "code-area";
-          ta.spellcheck = false;
-          let frame = null, timer2;
-          const refresh = () => { if (frame) frame.srcdoc = buildProject(t.files); };
-          if (cur) {
-            ta.value = cur.code || "";
-            if (canEdit) {
-              ta.placeholder = "Paste the code for " + cur.name + " here";
-              ta.oninput = () => { cur.code = ta.value; changed(); clearTimeout(timer2); timer2 = setTimeout(refresh, 400); };
-            } else ta.readOnly = true;
-            wrap.appendChild(ta);
-          }
-          if (running.has(t.id)) {
-            frame = document.createElement("iframe");
-            frame.className = "preview";
-            frame.title = "Result";
-            frame.setAttribute("sandbox", "allow-scripts");
-            refresh();
-            wrap.appendChild(frame);
-          }
-          li.appendChild(wrap);
-        }
-        ul.appendChild(li);
-      });
-
-      if (canEdit) {
-        const input = el.querySelector(".add-task input");
-        const add = () => {
-          const text = input.value.trim();
-          if (!text) return;
-          w.tasks.push({ id: uid(), text, done: false, files: [] });
-          changed(); render();
-        };
-        el.querySelector(".add-task button").onclick = add;
-        input.onkeydown = e => { if (e.key === "Enter") add(); };
-
-        const del = el.querySelector("[data-del]");
-        let armed = false, t2;
-        del.onclick = () => {
-          if (!armed) {
-            armed = true;
-            del.textContent = "Click again to delete";
-            del.style.color = del.style.borderColor = "var(--danger)";
-            t2 = setTimeout(() => { armed = false; del.textContent = "Delete"; del.style.color = del.style.borderColor = ""; }, 3000);
-            return;
-          }
-          clearTimeout(t2);
-          weeks = weeks.filter(x => x.id !== w.id); changed(); render();
-        };
-      }
-      root.appendChild(el);
-    });
-  }
-
-  const titleInput = $("weekTitle");
-  function addWeek() {
-    weeks.push({ id: uid(), title: titleInput.value.trim() || "Week " + (weeks.length + 1), tasks: [] });
-    titleInput.value = "";
-    changed(); render();
-  }
-  $("addWeek").onclick = addWeek;
-  titleInput.onkeydown = e => { if (e.key === "Enter") addWeek(); };
-  $("saveNow").onclick = () => { dirty = true; saveNow(); };
-
-  $("signinBtn").onclick = () => {
-    $("ghOwner").value = cfg.owner; $("ghRepo").value = cfg.repo;
-    $("signin").hidden = !$("signin").hidden;
-  };
-  $("connect").onclick = async () => {
-    const msg = (t, err) => { const m = $("signinMsg"); m.textContent = t; m.className = "status" + (err ? " error" : ""); };
-    const o = $("ghOwner").value.trim(), r = $("ghRepo").value.trim(), t = $("ghToken").value.trim();
-    if (!o || !r || !t) return msg("Fill in all three fields.", true);
-    msg("Checking...");
-    let test;
-    try {
-      test = await fetch("https://api.github.com/repos/" + o + "/" + r,
-        { headers: { Authorization: "Bearer " + t, Accept: "application/vnd.github+json" } });
-    } catch (e) { return msg("No connection to GitHub.", true); }
-    if (!test.ok) return msg(test.status === 401
-      ? "GitHub did not accept this token. Check that you copied all of it."
-      : "Repository not found, or the token has no access to it (error " + test.status + ").", true);
-    cfg = { owner: o, repo: r, token: t };
-    try { localStorage.setItem(CFG_KEY, JSON.stringify(cfg)); } catch (e) {}
-    $("ghToken").value = ""; msg(""); $("signin").hidden = true;
-    await load(); render();
-  };
-  $("disconnect").onclick = async () => {
-    if (dirty) await saveNow();
-    cfg.token = "";
-    try { localStorage.setItem(CFG_KEY, JSON.stringify(cfg)); } catch (e) {}
-    await load(); render();
-  };
-
-  window.addEventListener("beforeunload", e => { if (dirty || saving) { e.preventDefault(); e.returnValue = ""; } });
-
-  load().then(render);
-</script>
+  </script>
 </body>
 </html>
