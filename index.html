@@ -10,11 +10,10 @@
     *{box-sizing:border-box}
     body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 10% 0%,#253656 0,transparent 36rem),var(--page);color:var(--ink);font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
     main{width:min(1120px,100% - 32px);margin:0 auto;padding:40px 0 64px}
-    .masthead{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;padding:clamp(24px,5vw,46px);border:1px solid var(--line);border-radius:26px;background:linear-gradient(125deg,#243b59,#18253a 65%,#30284c);box-shadow:0 24px 60px #050a1380}
+    .masthead{padding:clamp(24px,5vw,46px);border:1px solid var(--line);border-radius:26px;background:linear-gradient(125deg,#1d2b41,#142033)}
     .eyebrow{margin:0 0 12px;color:var(--cyan);font-size:.75rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase}
-    h1{max-width:680px;margin:0;font-size:clamp(2.2rem,6vw,4.2rem);line-height:1.04;letter-spacing:-.055em}
+    h1{margin:0;font-size:clamp(2.2rem,6vw,4.2rem);line-height:1.04;letter-spacing:-.055em}
     .intro{max-width:65ch;margin:16px 0 0;color:#d0d9e7}
-    .student{flex:none;padding:10px 14px;border:1px solid #ffffff30;border-radius:999px;color:#fff;font-size:.85rem;font-weight:700;white-space:nowrap}
     .toolbar{display:flex;gap:12px;align-items:center;margin:24px 0}
     .toolbar input{flex:1;min-width:0;padding:13px 15px;border:1px solid var(--line);border-radius:13px;background:var(--panel);color:var(--ink);font:inherit}
     .summary{color:var(--muted);font-size:.9rem;white-space:nowrap}
@@ -30,122 +29,49 @@
     .task-path{display:block;margin-top:2px;color:var(--muted);font-size:.76rem;overflow-wrap:anywhere}
     button{padding:8px 11px;border:1px solid #ffbd5950;border-radius:10px;background:transparent;color:var(--accent);font:inherit;font-size:.82rem;font-weight:800;cursor:pointer}
     button:hover{background:#ffbd5918}
-    button:disabled{opacity:.6;cursor:wait}
     button:focus-visible,input:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
-    .preview{grid-column:1/-1;width:100%;height:min(75vh,720px);border:1px solid var(--line);border-radius:12px;background:#fff}
-    .task-message{grid-column:2/-1;color:var(--muted);font-size:.82rem}
-    .notice{margin:16px 0 0;padding:13px 15px;border:1px solid var(--line);border-radius:12px;color:var(--muted);font-size:.88rem}
-    .notice.error{border-color:#ff8b8760;color:var(--danger)}
+    .source{grid-column:1/-1;max-height:520px;overflow:auto;margin:4px 0 0;padding:16px;border:1px solid var(--line);border-radius:12px;background:#0b1220;color:#dce7f5;font:12px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
     .empty{grid-column:1/-1;padding:32px;text-align:center;color:var(--muted)}
     footer{margin-top:28px;color:var(--muted);font-size:.85rem;text-align:center}
-    @media(max-width:620px){main{width:min(100% - 22px,1120px);padding-top:22px}.masthead{display:block;border-radius:20px}.student{display:inline-block;margin-top:18px}.toolbar{align-items:stretch;flex-direction:column}.summary{white-space:normal}.task{grid-template-columns:32px minmax(0,1fr)}.task button{grid-column:2;justify-self:start}.preview{grid-column:1/-1}}
+    @media(max-width:620px){main{width:min(100% - 22px,1120px);padding-top:22px}.masthead{border-radius:20px}.toolbar{align-items:stretch;flex-direction:column}.summary{white-space:normal}.task{grid-template-columns:36px minmax(0,1fr)}.task button{grid-column:2;justify-self:start}}
   </style>
 </head>
 <body>
   <main>
     <header class="masthead">
-      <div>
-        <p class="eyebrow">Web programming · coursework archive</p>
-        <h1>Every week.<br>Every task.</h1>
-        <p class="intro">Open full coursework pages directly inside this tracker—no task links taking you away. Search weeks, exercises, and samples below.</p>
-      </div>
-      <span class="student">Muhammadmuso · ID 202637351</span>
+      <p class="eyebrow">Web programming · coursework archive</p>
+      <h1>Every week.<br>Every task.</h1>
+      <p class="intro">Browse your coursework weeks and open each saved file right here. Search by week, task, or filename.</p>
     </header>
     <div class="toolbar">
       <input id="filter" type="search" placeholder="Filter by week, task, or file…" aria-label="Filter coursework">
-      <span class="summary" id="summary" role="status">Loading the coursework…</span>
+      <span class="summary" id="summary" role="status">Loading coursework…</span>
     </div>
     <div class="weeks" id="weeks" aria-live="polite"></div>
-    <p class="notice" id="notice">Coursework source: Xushnudbek76/week2. The source credit is retained; task files open in the preview panels below.</p>
     <footer>Coursework Tracker · Muhammadmuso · Student ID 202637351</footer>
   </main>
   <script>
-    const sourceOwner = "Xushnudbek76";
-    const sourceRepo = "week2";
-    const treeUrl = `https://api.github.com/repos/${sourceOwner}/${sourceRepo}/git/trees/main?recursive=1`;
     const weeksRoot = document.getElementById("weeks");
     const summary = document.getElementById("summary");
-    const notice = document.getElementById("notice");
     const filter = document.getElementById("filter");
     let groups = [];
-
-    function category(path) {
-      if (/\/exercises\//i.test(path)) return "Exercise";
-      if (/\/samples\//i.test(path)) return "Sample";
-      return "Week overview";
-    }
-
-    function displayName(path) {
-      const file = path.split("/").pop();
-      if (file.toLowerCase() === "index.html") return "Week overview";
-      return `${category(path)} · ${file}`;
-    }
-
-    function redesignDocument(source, path) {
-      const base = `https://raw.githubusercontent.com/${sourceOwner}/${sourceRepo}/main/${path.split("/").slice(0,-1).join("/")}/`;
-      let doc = source;
-      const baseTag = `<base href="${base}">`;
-      const redesign = `<style id="tracker-redesign">
-        :root{color-scheme:light dark!important;--page:#f4f7fb;--surface:#fff;--ink:#17243a;--muted:#5e6f84;--line:#dce4ec;--accent:#405fe8;--accent-soft:#e9edff}
-        @media(prefers-color-scheme:dark){:root{--page:#101827;--surface:#172337;--ink:#f3f6fb;--muted:#a9b5c7;--line:#34445c;--accent:#ffbd59;--accent-soft:#29334a}}
-        html{background:var(--page)!important}body{min-height:100vh!important;margin:0!important;padding:clamp(22px,5vw,56px)!important;background:radial-gradient(ellipse at 10% 0%,color-mix(in srgb,var(--accent) 15%,transparent),transparent 30rem),var(--page)!important;color:var(--ink)!important;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif!important;line-height:1.65!important}
-        body>*{max-width:1000px!important;margin-left:auto!important;margin-right:auto!important}main,header,section,article,.panel,.card,.hero,.content-panel,.sample-panel,.feature-card{border-radius:18px!important}section,article,.panel,.card,.content-panel,.sample-panel,.feature-card{border:1px solid var(--line)!important;background:var(--surface)!important;box-shadow:0 12px 32px #00000012!important;padding:clamp(18px,3vw,30px)!important;margin-block:16px!important;color:var(--ink)!important}
-        h1,h2,h3{color:var(--ink)!important;letter-spacing:-.035em!important}p,li,small{color:inherit}a{color:var(--accent)!important;text-underline-offset:3px}button{border-radius:11px!important;background:var(--accent)!important;color:white!important;border:0!important;padding:10px 15px!important;font:inherit!important;font-weight:700!important}input,textarea,select{max-width:100%;border:1px solid var(--line)!important;border-radius:10px!important;padding:10px 12px!important;background:var(--page)!important;color:var(--ink)!important;font:inherit!important}img,svg,iframe,video{max-width:100%} :focus-visible{outline:3px solid var(--accent)!important;outline-offset:3px!important}
-      </style>`;
-      if (/<head\b[^>]*>/i.test(doc)) {
-        doc = doc.replace(/<head\b[^>]*>/i, match => match + baseTag);
-        doc = doc.replace(/<\/head>/i, redesign + "</head>");
-      } else {
-        doc = `<!doctype html><html><head>${baseTag}${redesign}</head><body>${doc}</body></html>`;
-      }
-      return doc;
-    }
-
-    function openTask(task, row, button) {
-      const existing = row.querySelector("iframe");
-      if (existing) {
-        existing.remove();
-        button.textContent = "Open full task";
-        return;
-      }
-      button.disabled = true;
-      button.textContent = "Loading…";
-      const message = document.createElement("span");
-      message.className = "task-message";
-      message.textContent = "Loading the complete task file…";
-      row.appendChild(message);
-      fetch(`https://raw.githubusercontent.com/${sourceOwner}/${sourceRepo}/main/${task.path}`, { cache: "no-store" })
-        .then(response => {
-          if (!response.ok) throw new Error(`Could not load file (HTTP ${response.status})`);
-          return response.text();
-        })
-        .then(source => {
-          message.remove();
-          const frame = document.createElement("iframe");
-          frame.className = "preview";
-          frame.title = `Full task preview: ${task.path}`;
-          frame.setAttribute("sandbox", "allow-scripts allow-forms allow-popups");
-          frame.srcdoc = redesignDocument(source, task.path);
-          row.appendChild(frame);
-          button.textContent = "Close task";
-        })
-        .catch(error => {
-          message.textContent = `${error.message}. Check your internet connection and try again.`;
-          button.textContent = "Retry task";
-        })
-        .finally(() => { button.disabled = false; });
-    }
 
     function render() {
       const query = filter.value.trim().toLowerCase();
       weeksRoot.replaceChildren();
-      let visibleCount = 0;
+      let visibleFiles = 0;
       let visibleWeeks = 0;
+
       for (const group of groups) {
-        const tasks = group.tasks.filter(task => `${group.title} ${task.path} ${displayName(task.path)}`.toLowerCase().includes(query));
-        if (!tasks.length) continue;
+        const files = group.tasks.flatMap(task => task.files.map(file => ({
+          ...file,
+          taskText: task.text,
+          searchText: `${group.title} ${task.text} ${file.name}`.toLowerCase()
+        }))).filter(file => file.searchText.includes(query));
+        if (!files.length) continue;
         visibleWeeks++;
-        visibleCount += tasks.length;
+        visibleFiles += files.length;
+
         const section = document.createElement("section");
         section.className = "week";
         const head = document.createElement("div");
@@ -154,11 +80,12 @@
         title.textContent = group.title.replaceAll("_", " · ");
         const badge = document.createElement("span");
         badge.className = "badge";
-        badge.textContent = `${tasks.length} files`;
+        badge.textContent = `${files.length} files`;
         head.append(title, badge);
+
         const list = document.createElement("div");
         list.className = "tasks";
-        tasks.forEach((task, index) => {
+        files.forEach((file, index) => {
           const row = document.createElement("article");
           row.className = "task";
           const number = document.createElement("span");
@@ -167,24 +94,41 @@
           const details = document.createElement("span");
           const label = document.createElement("span");
           label.className = "task-title";
-          label.textContent = displayName(task.path);
-          const pathLabel = document.createElement("span");
-          pathLabel.className = "task-path";
-          pathLabel.textContent = task.path;
-          details.append(label, pathLabel);
+          label.textContent = file.name;
+          const path = document.createElement("span");
+          path.className = "task-path";
+          path.textContent = file.taskText;
+          details.append(label, path);
+
           const button = document.createElement("button");
           button.type = "button";
-          button.textContent = "Open full task";
-          button.setAttribute("aria-label", `Open the complete file ${task.path} inside the tracker`);
-          button.addEventListener("click", () => openTask(task, row, button));
+          button.textContent = "View file";
+          button.setAttribute("aria-expanded", "false");
+          button.addEventListener("click", () => {
+            const existing = row.querySelector("pre.source");
+            if (existing) {
+              existing.remove();
+              button.textContent = "View file";
+              button.setAttribute("aria-expanded", "false");
+              return;
+            }
+            const code = document.createElement("pre");
+            code.className = "source";
+            code.textContent = file.code || "No saved file content.";
+            code.setAttribute("aria-label", `Source code for ${file.name}`);
+            row.appendChild(code);
+            button.textContent = "Close file";
+            button.setAttribute("aria-expanded", "true");
+          });
           row.append(number, details, button);
           list.appendChild(row);
         });
         section.append(head, list);
         weeksRoot.appendChild(section);
       }
-      summary.textContent = `${visibleCount} coursework files · ${visibleWeeks} weeks`;
-      if (!visibleCount) {
+
+      summary.textContent = `${visibleFiles} coursework files · ${visibleWeeks} weeks`;
+      if (!visibleFiles) {
         const empty = document.createElement("p");
         empty.className = "empty";
         empty.textContent = query ? "No matching tasks. Try another search." : "No coursework files found.";
@@ -193,33 +137,21 @@
     }
 
     filter.addEventListener("input", render);
-    fetch(treeUrl, { headers: { Accept: "application/vnd.github+json" }, cache: "no-store" })
+    fetch("./data.json", { cache: "no-store" })
       .then(response => {
-        if (!response.ok) throw new Error(`GitHub returned HTTP ${response.status}`);
+        if (!response.ok) throw new Error(`Could not load tracker data (HTTP ${response.status})`);
         return response.json();
       })
       .then(data => {
-        const entries = (data.tree || []).filter(entry => entry.type === "blob" && /^week\d+_\d+\/.+\.html$/i.test(entry.path));
-        const grouped = new Map();
-        for (const entry of entries) {
-          const week = entry.path.split("/")[0];
-          if (!grouped.has(week)) grouped.set(week, []);
-          grouped.get(week).push({ path: entry.path });
-        }
-        groups = [...grouped.entries()]
-          .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))
-          .map(([title, tasks]) => ({ title, tasks: tasks.sort((a, b) => a.path.localeCompare(b.path, undefined, { numeric: true })) }));
-        if (!groups.length) throw new Error("No week task pages were found in the source repository.");
-        notice.classList.remove("error");
+        groups = Array.isArray(data.weeks) ? data.weeks : [];
+        if (!groups.length) throw new Error("No coursework weeks were found in data.json.");
         render();
       })
       .catch(error => {
-        summary.textContent = "Unable to load coursework";
-        notice.classList.add("error");
-        notice.textContent = `${error.message}. Check your internet connection and reload. The coursework source is Xushnudbek76/week2.`;
+        summary.textContent = "Coursework could not be loaded";
         const message = document.createElement("p");
         message.className = "empty";
-        message.textContent = "The task list needs access to GitHub's public repository listing. Reload once the connection is available.";
+        message.textContent = `${error.message}. Reload the tracker and try again.`;
         weeksRoot.replaceChildren(message);
       });
   </script>
