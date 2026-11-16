@@ -30,10 +30,25 @@
     button{padding:8px 11px;border:1px solid #ffbd5950;border-radius:10px;background:transparent;color:var(--accent);font:inherit;font-size:.82rem;font-weight:800;cursor:pointer}
     button:hover{background:#ffbd5918}
     button:focus-visible,input:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
-    .source{grid-column:1/-1;max-height:520px;overflow:auto;margin:4px 0 0;padding:16px;border:1px solid var(--line);border-radius:12px;background:#0b1220;color:#dce7f5;font:12px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+    .viewer{grid-column:1/-1;min-width:0;margin-top:5px;border:1px solid var(--line);border-radius:12px;background:#0b1220;overflow:hidden}
+    .viewer-toolbar{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--line);background:#ffffff08}
+    .viewer-toolbar button{padding:6px 10px;font-size:.75rem}
+    .viewer-toolbar button[aria-pressed="true"]{background:#ffbd5918}
+    .viewer-label{margin-left:auto;color:var(--muted);font-size:.72rem}
+    .source{max-height:520px;overflow:auto;margin:0;padding:16px;color:#dce7f5;font:12px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+    .preview{display:block;width:100%;height:min(70vh,620px);min-height:300px;border:0;background:#fff}
+    .markdown-preview{max-height:620px;overflow:auto;padding:20px;background:#fff;color:#20242b;font:16px/1.65 system-ui,sans-serif;overflow-wrap:anywhere}
+    .markdown-preview h1,.markdown-preview h2,.markdown-preview h3{margin:1em 0 .45em;line-height:1.2;letter-spacing:normal}
+    .markdown-preview h1{font-size:2em}.markdown-preview h2{font-size:1.55em}.markdown-preview h3{font-size:1.2em}
+    .markdown-preview pre{overflow:auto;padding:14px;border-radius:8px;background:#111827;color:#e5e7eb;font:13px/1.55 ui-monospace,monospace}
+    .markdown-preview code{padding:2px 4px;border-radius:4px;background:#e9edf2;font: .9em ui-monospace,monospace}
+    .markdown-preview pre code{padding:0;background:transparent}
+    .markdown-preview blockquote{margin:1em 0;padding-left:14px;border-left:3px solid #94a3b8;color:#475569}
+    .markdown-preview img{max-width:100%}.markdown-preview table{border-collapse:collapse}.markdown-preview td,.markdown-preview th{padding:6px 9px;border:1px solid #cbd5e1}
+    .no-preview{padding:18px;color:var(--muted);font-size:.88rem}
     .empty{grid-column:1/-1;padding:32px;text-align:center;color:var(--muted)}
     footer{margin-top:28px;color:var(--muted);font-size:.85rem;text-align:center}
-    @media(max-width:620px){main{width:min(100% - 22px,1120px);padding-top:22px}.masthead{border-radius:20px}.toolbar{align-items:stretch;flex-direction:column}.summary{white-space:normal}.task{grid-template-columns:36px minmax(0,1fr)}.task button{grid-column:2;justify-self:start}}
+    @media(max-width:620px){main{width:min(100% - 22px,1120px);padding-top:22px}.masthead{border-radius:20px}.toolbar{align-items:stretch;flex-direction:column}.summary{white-space:normal}.task{grid-template-columns:36px minmax(0,1fr)}.task>button{grid-column:2;justify-self:start}.preview{min-height:240px}}
   </style>
 </head>
 <body>
@@ -41,7 +56,7 @@
     <header class="masthead">
       <p class="eyebrow">Web programming · coursework archive</p>
       <h1>Every week.<br>Every task.</h1>
-      <p class="intro">Browse your coursework weeks and open each saved file right here. Search by week, task, or filename.</p>
+      <p class="intro">Browse your coursework weeks and preview saved files here. HTML and SVG files render in an isolated preview, Markdown is formatted, and every file keeps a source view.</p>
     </header>
     <div class="toolbar">
       <input id="filter" type="search" placeholder="Filter by week, task, or file…" aria-label="Filter coursework">
@@ -56,22 +71,91 @@
     const filter = document.getElementById("filter");
     let groups = [];
 
+    function extension(file) {
+      const path = file.path || file.name || "";
+      return path.split("?")[0].split("#")[0].split(".").pop().toLowerCase();
+    }
+
+    function supportsPreview(file) {
+      return ["html", "htm", "svg", "md", "markdown", "json"].includes(extension(file));
+    }
+
+    function escapeHtml(text) {
+      return text.replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[char]));
+    }
+
+    function markdownToHtml(markdown) {
+      const lines = markdown.replace(/\r\n?/g, "\n").split("\n");
+      const out = [];
+      let inCode = false, code = [], list = "";
+      const closeList = () => { if (list) { out.push(`</${list}>`); list = ""; } };
+      const inline = value => escapeHtml(value)
+        .replace(/`([^`]+)`/g, "<code>$1</code>")
+        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+        .replace(/__(.+?)__/g, "<strong>$1</strong>")
+        .replace(/\*(.+?)\*/g, "<em>$1</em>")
+        .replace(/_(.+?)_/g, "<em>$1</em>")
+        .replace(/\[(.+?)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+      for (const line of lines) {
+        if (/^\s*```/.test(line)) {
+          closeList();
+          if (inCode) { out.push(`<pre><code>${escapeHtml(code.join("\n"))}</code></pre>`); code = []; inCode = false; }
+          else inCode = true;
+          continue;
+        }
+        if (inCode) { code.push(line); continue; }
+        if (!line.trim()) { closeList(); continue; }
+        const heading = line.match(/^(#{1,6})\s+(.+)$/);
+        if (heading) { closeList(); const level = heading[1].length; out.push(`<h${level}>${inline(heading[2])}</h${level}>`); continue; }
+        if (/^\s*([-*_])\1\1+\s*$/.test(line)) { closeList(); out.push("<hr>"); continue; }
+        const item = line.match(/^\s*([-*+] |\d+\. )(.*)$/);
+        if (item) { const kind = /^\s*\d/.test(line) ? "ol" : "ul"; if (list && list !== kind) closeList(); if (!list) { list = kind; out.push(`<${list}>`); } out.push(`<li>${inline(item[2])}</li>`); continue; }
+        if (/^>\s?/.test(line)) { closeList(); out.push(`<blockquote>${inline(line.replace(/^>\s?/, ""))}</blockquote>`); continue; }
+        closeList(); out.push(`<p>${inline(line)}</p>`);
+      }
+      if (inCode) out.push(`<pre><code>${escapeHtml(code.join("\n"))}</code></pre>`);
+      closeList();
+      return out.join("\n");
+    }
+
+    function makePreview(file) {
+      const kind = extension(file), text = typeof file.code === "string" ? file.code : "";
+      if (["html", "htm", "svg"].includes(kind)) {
+        const frame = document.createElement("iframe");
+        frame.className = "preview";
+        frame.title = `Rendered preview of ${file.name}`;
+        frame.setAttribute("sandbox", "allow-scripts");
+        frame.srcdoc = text;
+        return frame;
+      }
+      if (["md", "markdown"].includes(kind)) {
+        const article = document.createElement("article");
+        article.className = "markdown-preview";
+        article.innerHTML = markdownToHtml(text);
+        return article;
+      }
+      if (kind === "json") {
+        const pre = document.createElement("pre");
+        pre.className = "source";
+        try { pre.textContent = JSON.stringify(JSON.parse(text), null, 2); }
+        catch { pre.textContent = text; }
+        return pre;
+      }
+      const note = document.createElement("div");
+      note.className = "no-preview";
+      note.textContent = `No visual preview is available for .${kind || "unknown"} files. Open Source to inspect the complete file content.`;
+      return note;
+    }
+
     function render() {
       const query = filter.value.trim().toLowerCase();
       weeksRoot.replaceChildren();
-      let visibleFiles = 0;
-      let visibleWeeks = 0;
-
+      let visibleFiles = 0, visibleWeeks = 0;
       for (const group of groups) {
-        const files = group.tasks.flatMap(task => task.files.map(file => ({
-          ...file,
-          taskText: task.text,
-          searchText: `${group.title} ${task.text} ${file.name}`.toLowerCase()
-        }))).filter(file => file.searchText.includes(query));
+        const files = group.tasks.flatMap(task => task.files.map(file => ({...file, taskText: task.text, searchText: `${group.title} ${task.text} ${file.name}`.toLowerCase()}))).filter(file => file.searchText.includes(query));
         if (!files.length) continue;
         visibleWeeks++;
         visibleFiles += files.length;
-
         const section = document.createElement("section");
         section.className = "week";
         const head = document.createElement("div");
@@ -82,7 +166,6 @@
         badge.className = "badge";
         badge.textContent = `${files.length} files`;
         head.append(title, badge);
-
         const list = document.createElement("div");
         list.className = "tasks";
         files.forEach((file, index) => {
@@ -99,24 +182,52 @@
           path.className = "task-path";
           path.textContent = file.taskText;
           details.append(label, path);
-
           const button = document.createElement("button");
           button.type = "button";
           button.textContent = "View file";
           button.setAttribute("aria-expanded", "false");
           button.addEventListener("click", () => {
-            const existing = row.querySelector("pre.source");
-            if (existing) {
-              existing.remove();
-              button.textContent = "View file";
-              button.setAttribute("aria-expanded", "false");
-              return;
+            const existing = row.querySelector(".viewer");
+            if (existing) { existing.remove(); button.textContent = "View file"; button.setAttribute("aria-expanded", "false"); return; }
+            const viewer = document.createElement("div");
+            viewer.className = "viewer";
+            const toolbar = document.createElement("div");
+            toolbar.className = "viewer-toolbar";
+            const content = document.createElement("div");
+            const canPreview = supportsPreview(file);
+            let active = canPreview ? "preview" : "source";
+            const showMode = mode => {
+              active = mode;
+              content.replaceChildren();
+              if (mode === "preview") content.append(makePreview(file));
+              else {
+                const pre = document.createElement("pre");
+                pre.className = "source";
+                pre.textContent = file.code || "No saved file content.";
+                content.append(pre);
+              }
+              toolbar.querySelectorAll("button").forEach(control => control.setAttribute("aria-pressed", String(control.dataset.mode === mode)));
+            };
+            if (canPreview) {
+              for (const [mode, text] of [["preview", "Preview"], ["source", "Source"]]) {
+                const control = document.createElement("button");
+                control.type = "button"; control.dataset.mode = mode; control.textContent = text;
+                control.setAttribute("aria-pressed", "false");
+                control.addEventListener("click", () => showMode(mode));
+                toolbar.append(control);
+              }
+            } else {
+              const sourceLabel = document.createElement("span");
+              sourceLabel.className = "viewer-label"; sourceLabel.textContent = "Source · text file";
+              toolbar.append(sourceLabel);
             }
-            const code = document.createElement("pre");
-            code.className = "source";
-            code.textContent = file.code || "No saved file content.";
-            code.setAttribute("aria-label", `Source code for ${file.name}`);
-            row.appendChild(code);
+            const close = document.createElement("button");
+            close.type = "button"; close.textContent = "Close";
+            close.addEventListener("click", () => { viewer.remove(); button.textContent = "View file"; button.setAttribute("aria-expanded", "false"); button.focus(); });
+            toolbar.append(close);
+            viewer.append(toolbar, content);
+            row.append(viewer);
+            showMode(active);
             button.textContent = "Close file";
             button.setAttribute("aria-expanded", "true");
           });
@@ -126,7 +237,6 @@
         section.append(head, list);
         weeksRoot.appendChild(section);
       }
-
       summary.textContent = `${visibleFiles} coursework files · ${visibleWeeks} weeks`;
       if (!visibleFiles) {
         const empty = document.createElement("p");
