@@ -2,642 +2,70 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Task Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simple Task Viewer</title>
   <style>
-    :root {
-      --bg: #0f172a;
-      --panel: #111827;
-      --panel-2: #1f2937;
-      --line: #334155;
-      --text: #e5e7eb;
-      --muted: #94a3b8;
-      --accent: #22c55e;
-      --accent-2: #38bdf8;
-      --danger: #f87171;
-    }
-
-    * { box-sizing: border-box; }
-    html, body { height: 100%; margin: 0; }
-    body {
-      font-family: Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    .app {
-      display: grid;
-      grid-template-columns: 260px 1fr 1fr;
-      height: 100vh;
-    }
-
-    .sidebar {
-      background: var(--panel);
-      border-right: 1px solid var(--line);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .sidebar-header {
-      padding: 16px 12px;
-      border-bottom: 1px solid var(--line);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .sidebar-header h3 {
-      margin: 0;
-      font-size: 16px;
-    }
-
-    .small-btn {
-      background: var(--panel-2);
-      color: var(--text);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 6px 10px;
-      cursor: pointer;
-      font-size: 12px;
-    }
-
-    .small-btn:hover { background: #273548; }
-
-    .week-list {
-      overflow: auto;
-      padding: 12px;
-      flex: 1;
-    }
-
-    .week {
-      margin-bottom: 10px;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      background: rgba(255,255,255,0.02);
-      overflow: hidden;
-    }
-
-    .week-title {
-      width: 100%;
-      border: none;
-      background: transparent;
-      color: var(--text);
-      text-align: left;
-      padding: 10px 12px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 14px;
-    }
-
-    .week-title:hover { background: rgba(255,255,255,0.04); }
-
-    .tasks {
-      padding: 0 8px 8px;
-    }
-
-    .task-item {
-      display: block;
-      width: 100%;
-      text-align: left;
-      background: transparent;
-      border: 1px solid transparent;
-      border-radius: 8px;
-      color: var(--text);
-      padding: 8px 10px;
-      margin-top: 4px;
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    .task-item.active {
-      background: rgba(56, 189, 248, 0.12);
-      border-color: rgba(56, 189, 248, 0.4);
-    }
-
-    .task-item:hover { background: rgba(255,255,255,0.04); }
-
-    .main {
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-      border-right: 1px solid var(--line);
-    }
-
-    .toolbar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px;
-      border-bottom: 1px solid var(--line);
-      background: rgba(15, 23, 42, 0.8);
-    }
-
-    .top-input {
-      flex: 1;
-      background: var(--panel);
-      border: 1px solid var(--line);
-      color: var(--text);
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 14px;
-    }
-
-    .primary-btn {
-      border: none;
-      background: var(--accent);
-      color: #062c1a;
-      font-weight: 700;
-      border-radius: 8px;
-      padding: 10px 14px;
-      cursor: pointer;
-    }
-
-    .ghost-btn {
-      border: 1px solid var(--line);
-      background: var(--panel-2);
-      color: var(--text);
-      border-radius: 8px;
-      padding: 10px 12px;
-      cursor: pointer;
-    }
-
-    .meta {
-      padding: 8px 12px;
-      border-bottom: 1px solid var(--line);
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 12px;
-    }
-
-    .meta input {
-      flex: 1;
-      background: transparent;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      color: var(--text);
-      padding: 8px 10px;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 8px;
-      padding: 10px 12px 0;
-      overflow-x: auto;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .tab {
-      background: transparent;
-      border: 1px solid var(--line);
-      color: var(--muted);
-      border-bottom: none;
-      padding: 9px 12px;
-      border-top-left-radius: 8px;
-      border-top-right-radius: 8px;
-      cursor: pointer;
-      white-space: nowrap;
-      font-size: 12px;
-    }
-
-    .tab.active {
-      background: #111827;
-      color: var(--text);
-      border-color: var(--accent-2);
-    }
-
-    .editor-wrap {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-    }
-
-    .editor {
-      flex: 1;
-      width: 100%;
-      border: none;
-      outline: none;
-      resize: none;
-      background: #0b1220;
-      color: #e2e8f0;
-      font-size: 13px;
-      line-height: 1.6;
-      font-family: Consolas, monospace;
-      padding: 16px;
-    }
-
-    .preview {
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-      background: #0b1220;
-    }
-
-    .preview-header {
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--line);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .preview-frame {
-      flex: 1;
-      width: 100%;
-      border: none;
-      background: white;
-    }
-
-    .status {
-      padding: 10px 14px;
-      border-top: 1px solid var(--line);
-      color: var(--muted);
-      font-size: 12px;
-      background: rgba(15, 23, 42, 0.8);
-    }
-
-    .empty {
-      color: var(--muted);
-      padding: 20px 12px;
-      font-size: 13px;
-    }
-
-    @media (max-width: 980px) {
-      .app {
-        grid-template-columns: 220px 1fr;
-      }
-      .preview { display: none; }
-    }
+    *{box-sizing:border-box}body{margin:0;font:14px Arial,sans-serif;background:#0f172a;color:#e5e7eb}button,input,textarea{font:inherit}.app{height:100vh;display:grid;grid-template-columns:230px 1fr 1fr}.sidebar,.editor-panel,.preview-panel{min-width:0;display:flex;flex-direction:column}.sidebar{background:#111827;border-right:1px solid #334155}.heading,.toolbar,.preview-heading{padding:12px;border-bottom:1px solid #334155;display:flex;align-items:center;gap:8px}.heading{justify-content:space-between}.heading h2{font-size:16px;margin:0}.list{overflow:auto;padding:10px;flex:1}.week{margin-bottom:12px}.week-name{font-weight:bold;padding:6px;color:#93c5fd}.item{width:100%;display:block;text-align:left;background:transparent;color:#e5e7eb;border:0;border-radius:6px;padding:8px;cursor:pointer}.item:hover,.item.active{background:#263449}.toolbar input{flex:1;min-width:70px}.input,textarea{background:#0b1220;color:#e5e7eb;border:1px solid #334155;border-radius:6px;padding:9px}.btn{background:#1f2937;color:#e5e7eb;border:1px solid #475569;border-radius:6px;padding:8px 10px;cursor:pointer;white-space:nowrap}.btn:hover{background:#334155}.green{background:#22c55e;color:#052e16;border-color:#22c55e;font-weight:bold}.tabs{display:flex;gap:5px;padding:8px;border-bottom:1px solid #334155;overflow:auto}.tab{background:#1f2937;border:1px solid #475569;color:#cbd5e1;border-radius:5px;padding:7px;cursor:pointer;white-space:nowrap}.tab.active{border-color:#38bdf8;color:white}.editor{flex:1;min-height:0;width:100%;resize:none;border:0;border-radius:0;padding:14px;background:#0b1220;color:#e2e8f0;font:13px/1.5 Consolas,monospace;outline:none}.preview-panel{border-left:1px solid #334155}.preview-heading{justify-content:space-between}.frame{border:0;background:#fff;width:100%;flex:1}.status{padding:9px 12px;color:#94a3b8;font-size:12px;border-top:1px solid #334155}.note{padding:9px 12px;border-bottom:1px solid #334155}.note input{width:100%}.empty{color:#94a3b8;padding:10px;font-size:12px}@media(max-width:850px){.app{grid-template-columns:180px 1fr}.preview-panel{display:none}}@media(max-width:560px){.app{grid-template-columns:130px 1fr}.toolbar{flex-wrap:wrap}.toolbar input{flex-basis:100%}.btn{padding:7px}}
   </style>
 </head>
 <body>
   <div class="app">
     <aside class="sidebar">
-      <div class="sidebar-header">
-        <h3>Weeks</h3>
-        <button class="small-btn" id="addWeekBtn">+ week</button>
-      </div>
-      <div class="week-list" id="weekList"></div>
+      <div class="heading"><h2>Weeks & tasks</h2><button class="btn" id="addWeek">+ Week</button></div>
+      <div class="list" id="tree"></div>
     </aside>
-
-    <main class="main">
-      <div class="toolbar">
-        <input id="taskTitle" class="top-input" placeholder="Task title" />
-        <button id="saveTaskBtn" class="primary-btn">Save</button>
-        <button id="addTaskBtn" class="ghost-btn">+ task</button>
-        <button id="addFileBtn" class="ghost-btn">+ file</button>
-      </div>
-
-      <div class="meta">
-        <span>Task note</span>
-        <input id="taskNote" placeholder="Short description..." />
-      </div>
-
-      <div class="tabs" id="fileTabs"></div>
-
-      <div class="editor-wrap">
-        <textarea id="editor" class="editor" spellcheck="false"></textarea>
-      </div>
+    <main class="editor-panel">
+      <div class="toolbar"><input class="input" id="taskName" placeholder="Task name"><button class="btn" id="addTask">+ Task</button><button class="btn" id="addFile">+ File</button></div>
+      <div class="note"><input class="input" id="taskNote" placeholder="Task note (optional)"></div>
+      <div class="tabs" id="tabs"></div>
+      <textarea class="editor" id="code" spellcheck="false" placeholder="Choose a task or add a file"></textarea>
     </main>
-
-    <section class="preview">
-      <div class="preview-header">
-        <span>Preview</span>
-        <button id="runPreviewBtn" class="small-btn">Run</button>
-      </div>
-      <iframe id="previewFrame" class="preview-frame" title="Preview"></iframe>
-      <div class="status" id="statusText">No preview yet.</div>
+    <section class="preview-panel">
+      <div class="preview-heading"><strong>Preview</strong><button class="btn green" id="run">Run preview</button></div>
+      <iframe class="frame" id="frame" title="Code preview" sandbox="allow-scripts allow-forms allow-modals"></iframe>
+      <div class="status" id="status">Edit code and press Run preview.</div>
     </section>
   </div>
-
-  <script>
-    const STORAGE_KEY = 'taskviewer.v1';
-
-    const defaultState = {
-      weeks: [
-        {
-          id: genId(),
-          name: 'Week 1',
-          tasks: [
-            {
-              id: genId(),
-              title: 'First task',
-              note: 'Edit this file and run preview.',
-              files: [
-                {
-                  id: genId(),
-                  name: 'index.html',
-                  content: `<!doctype html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>My preview</title>
-    <style>
-      body { font-family: Arial; background: #f8fafc; padding: 40px; }
-      .card { max-width: 500px; margin: auto; background: white; border-radius: 16px; padding: 32px; box-shadow: 0 10px 30px rgba(0,0,0,.1); }
-      button { background: #2563eb; color: white; border: none; padding: 10px 14px; border-radius: 8px; cursor: pointer; }
-    </style>
-  </head>
-  <body>
-    <div class="card">
-      <h1>Hello from Task Viewer</h1>
-      <p>Press the Run button to refresh the preview.</p>
-      <button id="helloBtn">Click me</button>
-      <p id="message"></p>
-    </div>
-
-    <script>
-      document.getElementById('helloBtn').addEventListener('click', () => {
-        document.getElementById('message').textContent = 'It works!';
-      });
-    <\/script>
-  </body>
-</html>`
-                },
-                {
-                  id: genId(),
-                  name: 'style.css',
-                  content: `body { background: linear-gradient(135deg, #dbeafe, #dcfce7); }`
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    };
-
-    let state = loadState();
-    let currentWeekId = state.weeks[0]?.id || null;
-    let currentTaskId = state.weeks[0]?.tasks[0]?.id || null;
-    let currentFileId = state.weeks[0]?.tasks[0]?.files[0]?.id || null;
-
-    const weekList = document.getElementById('weekList');
-    const taskTitle = document.getElementById('taskTitle');
-    const taskNote = document.getElementById('taskNote');
-    const editor = document.getElementById('editor');
-    const fileTabs = document.getElementById('fileTabs');
-    const statusText = document.getElementById('statusText');
-    const previewFrame = document.getElementById('previewFrame');
-
-    function genId() {
-      return Math.random().toString(36).slice(2, 10);
-    }
-
-    function loadState() {
-      try {
-        const s = JSON.parse(localStorage.getItem(STORAGE_KEY));
-        if (s && Array.isArray(s.weeks)) return s;
-      } catch (e) {}
-      return JSON.parse(JSON.stringify(defaultState));
-    }
-
-    function saveState() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    }
-
-    function getCurrentWeek() {
-      return state.weeks.find(w => w.id === currentWeekId) || null;
-    }
-
-    function getCurrentTask() {
-      const week = getCurrentWeek();
-      if (!week) return null;
-      return week.tasks.find(t => t.id === currentTaskId) || null;
-    }
-
-    function getCurrentFile() {
-      const task = getCurrentTask();
-      if (!task) return null;
-      return task.files.find(f => f.id === currentFileId) || null;
-    }
-
-    function renderWeeks() {
-      weekList.innerHTML = '';
-      state.weeks.forEach(week => {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'week';
-
-        const header = document.createElement('button');
-        header.className = 'week-title';
-        header.innerHTML = `<span>${week.name}</span><span>▾</span>`;
-        header.addEventListener('click', () => {
-          if (week.tasks.length) {
-            currentWeekId = week.id;
-            currentTaskId = week.tasks[0].id;
-            currentFileId = week.tasks[0].files[0]?.id || null;
-            renderEverything();
-          }
-        });
-
-        const tasksWrap = document.createElement('div');
-        tasksWrap.className = 'tasks';
-
-        week.tasks.forEach(task => {
-          const btn = document.createElement('button');
-          btn.className = 'task-item' + (task.id === currentTaskId ? ' active' : '');
-          btn.textContent = task.title;
-          btn.addEventListener('click', () => {
-            currentWeekId = week.id;
-            currentTaskId = task.id;
-            currentFileId = task.files[0]?.id || null;
-            renderEverything();
-          });
-          tasksWrap.appendChild(btn);
-        });
-
-        wrapper.appendChild(header);
-        wrapper.appendChild(tasksWrap);
-        weekList.appendChild(wrapper);
-      });
-    }
-
-    function renderFiles() {
-      const task = getCurrentTask();
-      fileTabs.innerHTML = '';
-      if (!task) {
-        editor.value = '';
-        return;
-      }
-
-      task.files.forEach(file => {
-        const button = document.createElement('button');
-        button.className = 'tab' + (file.id === currentFileId ? ' active' : '');
-        button.textContent = file.name;
-        button.addEventListener('click', () => {
-          currentFileId = file.id;
-          renderEverything();
-        });
-        fileTabs.appendChild(button);
-      });
-
-      const file = getCurrentFile();
-      editor.value = file ? file.content : '';
-      editor.disabled = !file;
-    }
-
-    function renderTaskInfo() {
-      const task = getCurrentTask();
-      if (!task) {
-        taskTitle.value = '';
-        taskNote.value = '';
-        return;
-      }
-
-      taskTitle.value = task.title;
-      taskNote.value = task.note || '';
-    }
-
-    function renderEverything() {
-      renderWeeks();
-      renderTaskInfo();
-      renderFiles();
-    }
-
-    taskTitle.addEventListener('input', () => {
-      const task = getCurrentTask();
-      if (!task) return;
-      task.title = taskTitle.value;
-      saveState();
-      renderWeeks();
-    });
-
-    taskNote.addEventListener('input', () => {
-      const task = getCurrentTask();
-      if (!task) return;
-      task.note = taskNote.value;
-      saveState();
-    });
-
-    editor.addEventListener('input', () => {
-      const file = getCurrentFile();
-      if (!file) return;
-      file.content = editor.value;
-      saveState();
-    });
-
-    document.getElementById('saveTaskBtn').addEventListener('click', () => {
-      saveState();
-      statusText.textContent = 'Saved.';
-    });
-
-    document.getElementById('addWeekBtn').addEventListener('click', () => {
-      const name = prompt('Week name', 'Week ' + (state.weeks.length + 1));
-      if (!name) return;
-      const week = {
-        id: genId(),
-        name: name.trim() || 'New Week',
-        tasks: []
-      };
-      state.weeks.push(week);
-      currentWeekId = week.id;
-      currentTaskId = null;
-      currentFileId = null;
-      saveState();
-      renderEverything();
-    });
-
-    document.getElementById('addTaskBtn').addEventListener('click', () => {
-      const week = getCurrentWeek();
-      if (!week) {
-        alert('Create a week first.');
-        return;
-      }
-
-      const title = prompt('Task title', 'New task');
-      if (!title) return;
-
-      const task = {
-        id: genId(),
-        title: title.trim() || 'New task',
-        note: '',
-        files: [
-          { id: genId(), name: 'index.html', content: '<!doctype html><html><body><h1>Hello</h1></body></html>' }
-        ]
-      };
-
-      week.tasks.push(task);
-      currentTaskId = task.id;
-      currentFileId = task.files[0].id;
-      saveState();
-      renderEverything();
-    });
-
-    document.getElementById('addFileBtn').addEventListener('click', () => {
-      const task = getCurrentTask();
-      if (!task) {
-        alert('Create or select a task first.');
-        return;
-      }
-
-      const name = prompt('File name (for example index.html or style.css)', 'index.html');
-      if (!name) return;
-      const clean = name.trim();
-      if (!clean) return;
-
-      const exists = task.files.some(f => f.name === clean);
-      if (exists) {
-        alert('That file already exists in this task.');
-        return;
-      }
-
-      const file = {
-        id: genId(),
-        name: clean,
-        content: clean.endsWith('.html') ? '<!doctype html><html><body><h1>New file</h1></body></html>' : ''
-      };
-
-      task.files.push(file);
-      currentFileId = file.id;
-      saveState();
-      renderEverything();
-    });
-
-    function runPreview() {
-      const task = getCurrentTask();
-      if (!task || !task.files.length) {
-        previewFrame.srcdoc = '<h1>No task files</h1>';
-        statusText.textContent = 'Create a file first.';
-        return;
-      }
-
-      const htmlFile = task.files.find(f => f.name.toLowerCase() === 'index.html') ||
-        task.files.find(f => f.name.toLowerCase().endsWith('.html')) || null;
-
-      if (!htmlFile) {
-        previewFrame.srcdoc = '<h1>No HTML file</h1>';
-        statusText.textContent = 'Add an HTML file to preview.';
-        return;
-      }
-
-      let html = htmlFile.content;
-      const cssFiles = task.files.filter(f => f.name.toLowerCase().endsWith('.css'));
-      const jsFiles = task.files.filter(f => f.name.toLowerCase().endsWith('.js'));
-
-      if (cssFiles.length) {
-        const css = cssFiles.map(f => f.content).join('\n');
-        html = html.replace('</head>', '<style>' + css + '</style></head>');
-      }
-
-      if (jsFiles.length) {
-        const js = jsFiles.map(f => f.content).join('\n');
-        html = html.replace('</body>', '<script>' + js + '</script></body>');
-      }
-
-      previewFrame.srcdoc = html;
-      statusText.textContent = 'Preview updated: ' + htmlFile.name;
-    }
-
-    document.getElementById('runPreviewBtn').addEventListener('click', runPreview);
-
-    renderEverything();
-    runPreview();
-  </script>
+<script>
+(function(){
+  'use strict';
+  var KEY='simple-task-viewer-v1';
+  function id(){return Math.random().toString(36).slice(2,10)}
+  function starter(){var task={id:id(),name:'My first task',note:'Edit the files and press Run preview.',files:[{id:id(),name:'index.html',content:'<!doctype html>\n<html>\n<head><meta charset="utf-8"><title>Preview</title><link rel="stylesheet" href="style.css"></head>\n<body><h1>Hello!</h1><p>Edit this page and press Run preview.</p><button id="hello">Click me</button><p id="message"></p><script src="app.js"><\\/script></body>\n</html>'},{id:id(),name:'style.css',content:'body{font-family:Arial,sans-serif;padding:40px;background:#eef2ff;color:#172554}button{padding:10px 16px;background:#2563eb;color:white;border:0;border-radius:6px;cursor:pointer}'},{id:id(),name:'app.js',content:'document.getElementById("hello").onclick=function(){document.getElementById("message").textContent="JavaScript works!"};'}]};return {weeks:[{id:id(),name:'Week 1',tasks:[task]}]}}
+  var state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.weeks))state=starter();
+  state.weeks.forEach(function(w){w.tasks=w.tasks||[];w.tasks.forEach(function(t){t.files=t.files||[]})});
+  var weekId=state.weeks[0]&&state.weeks[0].id,taskId=state.weeks[0]&&state.weeks[0].tasks[0]&&state.weeks[0].tasks[0].id,fileId=null;
+  var $=function(x){return document.getElementById(x)};
+  function week(){return state.weeks.find(function(w){return w.id===weekId})||null}
+  function task(){var w=week();return w&&w.tasks.find(function(t){return t.id===taskId})||null}
+  function file(){var t=task();return t&&t.files.find(function(f){return f.id===fileId})||null}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(state));$('status').textContent='Saved in this browser.'}catch(e){$('status').textContent='Could not save: browser storage is full.'}}
+  function render(){
+    var tree=$('tree');tree.textContent='';
+    state.weeks.forEach(function(w){var box=document.createElement('section');box.className='week';var title=document.createElement('div');title.className='week-name';title.textContent=w.name;box.appendChild(title);
+      if(!w.tasks.length){var empty=document.createElement('div');empty.className='empty';empty.textContent='No tasks yet';box.appendChild(empty)}
+      w.tasks.forEach(function(t){var b=document.createElement('button');b.className='item'+(t.id===taskId?' active':'');b.textContent=t.name||'Untitled task';b.onclick=function(){weekId=w.id;taskId=t.id;fileId=t.files[0]&&t.files[0].id||null;render()};box.appendChild(b)});tree.appendChild(box)});
+    if(!state.weeks.length)tree.innerHTML='<div class="empty">Add a week to begin.</div>';
+    var t=task();$('taskName').value=t?t.name:'';$('taskNote').value=t?t.note||'':'';
+    var tabs=$('tabs');tabs.textContent='';if(t)t.files.forEach(function(f){var b=document.createElement('button');b.className='tab'+(f.id===fileId?' active':'');b.textContent=f.name;b.onclick=function(){fileId=f.id;render()};tabs.appendChild(b)});
+    if(t&& !t.files.some(function(f){return f.id===fileId}))fileId=t.files[0]&&t.files[0].id||null;
+    $('code').value=file()?file().content:'';$('code').disabled=!file();
+  }
+  $('addWeek').onclick=function(){var name=prompt('Week name:','Week '+(state.weeks.length+1));if(!name||!name.trim())return;var w={id:id(),name:name.trim(),tasks:[]};state.weeks.push(w);weekId=w.id;taskId=null;fileId=null;save();render()};
+  $('addTask').onclick=function(){var w=week();if(!w){alert('Add a week first.');return}var name=prompt('Task name:','New task');if(!name||!name.trim())return;var t={id:id(),name:name.trim(),note:'',files:[{id:id(),name:'index.html',content:'<!doctype html><html><head><meta charset="utf-8"><title>My task</title></head><body><h1>My new task</h1></body></html>'}]};w.tasks.push(t);taskId=t.id;fileId=t.files[0].id;save();render()};
+  $('addFile').onclick=function(){var t=task();if(!t){alert('Select or create a task first.');return}var name=prompt('File name, for example style.css or app.js:','style.css');if(!name||!name.trim())return;name=name.trim();if(t.files.some(function(f){return f.name.toLowerCase()===name.toLowerCase()})){alert('That file already exists.');return}var f={id:id(),name:name,content:''};t.files.push(f);fileId=f.id;save();render()};
+  $('taskName').oninput=function(){var t=task();if(t){t.name=this.value;save();renderTree()}};
+  function renderTree(){var active=$('tree').querySelector('.item.active');if(active&&task())active.textContent=task().name||'Untitled task'}
+  $('taskNote').oninput=function(){var t=task();if(t){t.note=this.value;save()}};
+  $('code').oninput=function(){var f=file();if(f){f.content=this.value;save()}};
+  $('run').onclick=run;
+  function run(){var t=task();if(!t){$('status').textContent='Select or create a task first.';return}var htmlFile=t.files.find(function(f){return f.name.toLowerCase()==='index.html'})||t.files.find(function(f){return /\\.html?$/i.test(f.name)});if(!htmlFile){$('status').textContent='Add an HTML file (for example index.html) first.';$('frame').srcdoc='<h2 style="font-family:Arial;padding:20px">No HTML file yet</h2>';return}
+    var html=htmlFile.content||'';var css=t.files.filter(function(f){return /\\.css$/i.test(f.name)}).map(function(f){return f.content}).join('\n');var js=t.files.filter(function(f){return /\\.js$/i.test(f.name)}).map(function(f){return f.content}).join('\n');
+    if(css){var style='<style>\n'+css+'\n</style>';if(/<\\/head>/i.test(html))html=html.replace(/<\\/head>/i,style+'</head>');else html=style+html}
+    if(js){var script='<scr'+'ipt>\n'+js+'\n<'+'/scr'+'ipt>';if(/<\\/body>/i.test(html))html=html.replace(/<\\/body>/i,script+'</body>');else html+=script}
+    $('frame').srcdoc=html;$('status').textContent='Preview updated from '+htmlFile.name+'.'}
+  render();run();
+})();
+</script>
 </body>
 </html>
