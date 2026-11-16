@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week Workbench</title>
+<style>
+:root{--bg:#eef1f5;--panel:#fff;--ink:#1b2430;--mute:#66758a;--line:#d5dce6;--acc:#0f766e;--accbg:#d9f0ed;--danger:#b42318}
+@media (prefers-color-scheme:dark){:root{--bg:#10161e;--panel:#18212c;--ink:#e6ebf2;--mute:#8d9bb0;--line:#2b3746;--acc:#4fd1c0;--accbg:#173a38;--danger:#ff8a80}}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);display:flex;flex-direction:column}
+button{font:inherit;color:inherit;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 10px;cursor:pointer}
+button:hover{border-color:var(--acc)}
+button:focus-visible,textarea:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+button.pri{background:var(--acc);color:var(--panel);border-color:var(--acc)}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel);flex-wrap:wrap}
+header h1{font-size:18px;margin:0}
+header div{display:flex;gap:6px;flex-wrap:wrap}
+main{flex:1;display:grid;grid-template-columns:290px 1fr;min-height:0}
+#side{overflow:auto;padding:12px;border-right:1px solid var(--line)}
+.week{margin-bottom:14px}
+.wh{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:4px 0}
+.wh span{display:flex;gap:4px}
+.wh button{padding:1px 7px;font-size:13px}
+.task{padding:6px 10px;margin:2px 0;border-radius:6px;cursor:pointer;display:flex;justify-content:space-between;border:1px solid transparent}
+.task:hover{border-color:var(--line)}
+.task.on{background:var(--accbg);border-color:var(--acc)}
+.task small,.muted{color:var(--mute)}
+#work{display:flex;flex-direction:column;min-width:0;min-height:0;padding:12px;gap:8px}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.bar h2{margin:0;font-size:18px}
+.bar div{display:flex;gap:6px;flex-wrap:wrap}
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tab{display:flex;align-items:center;gap:6px;padding:4px 8px;border:1px solid var(--line);border-radius:6px;background:var(--panel);cursor:pointer}
+.tab.on{border-color:var(--acc);background:var(--accbg)}
+.tab i{font-style:normal;font-size:12px;color:var(--mute)}
+.tab button{border:0;background:none;padding:0 2px;color:var(--mute)}
+.split{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:8px;min-height:0}
+textarea{width:100%;height:100%;resize:none;border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--panel);color:var(--ink);font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;tab-size:2}
+iframe{width:100%;height:100%;border:1px solid var(--line);border-radius:8px;background:#fff}
+.empty{margin:auto;text-align:center;color:var(--mute)}
+@media (max-width:800px){main{grid-template-columns:1fr;grid-template-rows:auto 1fr}#side{max-height:34vh;border-right:0;border-bottom:1px solid var(--line)}.split{grid-template-columns:1fr;grid-template-rows:1fr 1fr}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Week Workbench</h1>
+  <div>
+    <button class="pri" data-a="addWeek">+ Week</button>
+    <button data-a="export">Export backup</button>
+    <button data-a="import">Import backup</button>
+  </div>
+</header>
+<main>
+  <nav id="side" aria-label="Weeks and tasks"></nav>
+  <section id="work"></section>
+</main>
+<input type="file" id="up" multiple hidden>
+<input type="file" id="imp" accept=".json" hidden>
+
+<script>
+const KEY = 'week-workbench-v1';
+const TYPES = {html:'HTML', htm:'HTML', css:'CSS', js:'JS', mjs:'JS', jsx:'React', tsx:'React'};
+const ext  = n => (n.includes('.') ? n.split('.').pop() : '').toLowerCase();
+const kind = n => TYPES[ext(n)] || 'Other';
+const $ = s => document.querySelector(s);
+const uid = () => Math.random().toString(36).slice(2, 9);
+const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+let db = {weeks: []};
+try { db = JSON.parse(localStorage.getItem(KEY)) || db; } catch (e) {}
+let cur = {task: null, file: null};
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) { alert('Browser storage is full. Export a backup and delete something.'); } };
+const findWeek = id => db.weeks.find(w => w.id === id);
+const findTask = id => { for (const w of db.weeks) for (const t of w.tasks) if (t.id === id) return t; };
+const weekOf = id => db.weeks.find(w => w.tasks.some(t => t.id === id));
+
+const STARTERS = {
+  HTML: '<!doctype html>\n<html>\n<head><meta charset="utf-8"><title>Page</title></head>\n<body>\n  <h1>Hello</h1>\n  <div id="root"></div>\n</body>\n</html>',
+  CSS: 'body { font-family: sans-serif; padding: 24px; }',
+  JS: 'console.log("hello");',
+  React: 'const { useState } = React;\n\nfunction App() {\n  const [n, setN] = useState(0);\n  return <button onClick={() => setN(n + 1)}>Clicked {n} times</button>;\n}'
+};
+
+/* ---------- sidebar ---------- */
+function renderSide() {
+  $('#side').innerHTML = db.weeks.map(w => `
+    <div class="week">
+      <div class="wh"><b>${esc(w.name)}</b><span>
+        <button data-a="addTask" data-w="${w.id}">+ Task</button>
+        <button data-a="renWeek" data-w="${w.id}" title="Rename week">✎</button>
+        <button data-a="delWeek" data-w="${w.id}" title="Delete week">✕</button></span></div>
+      ${w.tasks.map(t => `<div class="task ${t.id === cur.task ? 'on' : ''}" data-a="open" data-t="${t.id}"><span>${esc(t.title)}</span><small>${t.files.length} file${t.files.length === 1 ? '' : 's'}</small></div>`).join('') || '<div class="muted">No tasks in this week yet.</div>'}
+    </div>`).join('') || '<p class="muted">No weeks yet. Click “+ Week” to start.</p>';
+}
+
+/* ---------- workspace ---------- */
+function renderWork() {
+  const t = findTask(cur.task);
+  if (!t) { $('#work').innerHTML = '<div class="empty">Add a week, add a task to it, then open the task here.</div>'; return; }
+  if (!t.files.some(f => f.id === cur.file)) cur.file = t.files[0] && t.files[0].id;
+  const f = t.files.find(x => x.id === cur.file);
+  $('#work').innerHTML = `
+    <div class="bar"><h2>${esc(t.title)}</h2><div>
+      <button data-a="addFile">+ File</button>
+      <button data-a="upload">Upload files</button>
+      <button data-a="renTask">Rename task</button>
+      <button data-a="delTask">Delete task</button>
+      <button class="pri" data-a="run">Run</button></div></div>
+    <div class="tabs">${t.files.map(x => `<div class="tab ${x.id === cur.file ? 'on' : ''}" data-a="file" data-f="${x.id}">${esc(x.name)} <i>${kind(x.name)}</i><button data-a="delFile" data-f="${x.id}" title="Delete file">×</button></div>`).join('') || '<span class="muted">No files yet. Use “+ File” or “Upload files”.</span>'}</div>
+    <div class="split">
+      <textarea id="ed" spellcheck="false" placeholder="${f ? '' : 'Paste your code here. A file is created automatically (double-click a tab to rename it).'}" aria-label="File editor">${f ? esc(f.content) : ''}</textarea>
+      <iframe id="pv" title="Preview" sandbox="allow-scripts allow-modals allow-forms"></iframe>
+    </div>`;
+  preview();
+}
+
+/* ---------- preview builder ---------- */
+function build(t) {
+  const by = k => t.files.filter(f => kind(f.name) === k);
+  const safe = s => s.replace(/<\/script/gi, '<\\/script');
+  const hasReact = by('React').length > 0;
+  const html = by('HTML')[0];
+  let doc = html ? html.content : '<!doctype html><html><head><meta charset="utf-8"></head><body></body></html>';
+  if (hasReact && !/id=["']root["']/.test(doc)) doc = doc.replace(/<\/body>/i, '<div id="root"></div></body>');
+  if (hasReact && !/id=["']root["']/.test(doc)) doc += '<div id="root"></div>';
+
+  const rx = n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const extraHead = [], extraBody = [];
+  const inline = (f, tag) => {
+    const k = kind(f.name);
+    const name = rx(f.name);
+    const re = k === 'CSS'
+      ? new RegExp(`<link[^>]*href=["'](?:\\./)?${name}["'][^>]*>`, 'i')
+      : new RegExp(`<script[^>]*src=["'](?:\\./)?${name}["'][^>]*>\\s*<\\/script>`, 'i');
+    if (re.test(doc)) { doc = doc.replace(re, () => tag); return; }
+    (k === 'CSS' ? extraHead : extraBody).push(tag);
+  };
+  by('CSS').forEach(f => inline(f, `<style>${f.content}</style>`));
+  by('JS').forEach(f => inline(f, `<script>${safe(f.content)}<\/script>`));
+  const jsx = by('React').map(f => `<script type="text/babel" data-presets="react">${safe(f.content)}<\/script>`);
+
+  const libs = hasReact
+    ? '<script src="https://unpkg.com/react@18.3.1/umd/react.development.js"><\/script><script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"><\/script><script src="https://unpkg.com/@babel/standalone@7.25.6/babel.min.js"><\/script>'
+    : '';
+  const mount = hasReact
+    ? '<script type="text/babel" data-presets="react">if (typeof App !== "undefined" && !document.getElementById("root").hasChildNodes()) ReactDOM.createRoot(document.getElementById("root")).render(<App />);<\/script>'
+    : '';
+  const errs = '<script>(function(){var p;function out(c,a){if(!p){p=document.createElement("pre");p.style.cssText="margin:0;padding:8px;border-top:1px solid #ccc;background:#f6f8fa;color:#111;font:12px monospace;white-space:pre-wrap";document.body.appendChild(p)}p.textContent+=c+Array.prototype.map.call(a,function(x){try{return typeof x==="object"?JSON.stringify(x):String(x)}catch(e){return String(x)}}).join(" ")+"\\n"}["log","warn","error"].forEach(function(k){var o=console[k];console[k]=function(){out(k==="log"?"":k+": ",arguments);o.apply(console,arguments)}});addEventListener("error",function(e){out("Error: ",[e.message])})})()<\/script>';
+
+  const head = errs + libs + extraHead.join('');
+  const body = extraBody.join('') + jsx.join('') + mount;
+  doc = /<\/head>/i.test(doc) ? doc.replace(/<\/head>/i, () => head + '</head>') : head + doc;
+  doc = /<\/body>/i.test(doc) ? doc.replace(/<\/body>/i, () => body + '</body>') : doc + body;
+  return doc;
+}
+function preview() {
+  const t = findTask(cur.task), pv = $('#pv');
+  if (t && pv) pv.srcdoc = t.files.length ? build(t) : '';
+}
+
+/* ---------- actions ---------- */
+function addFileTo(t, name, content) {
+  const f = {id: uid(), name, content: content ?? (STARTERS[kind(name)] || '')};
+  t.files.push(f); cur.file = f.id;
+}
+const actions = {
+  addWeek() {
+    const name = prompt('Week name', 'Week ' + (db.weeks.length + 1)); if (!name) return;
+    db.weeks.push({id: uid(), name, tasks: []});
+  },
+  renWeek(d) { const w = findWeek(d.w), n = prompt('Rename week', w.name); if (n) w.name = n; },
+  delWeek(d) { const w = findWeek(d.w); if (confirm(`Delete "${w.name}" and all its tasks?`)) { if (w.tasks.some(t => t.id === cur.task)) cur.task = null; db.weeks = db.weeks.filter(x => x !== w); } },
+  addTask(d) {
+    const title = prompt('Task title'); if (!title) return;
+    const t = {id: uid(), title, files: []}; findWeek(d.w).tasks.push(t); cur.task = t.id; cur.file = null;
+  },
+  open(d) { cur.task = d.t; cur.file = null; },
+  renTask() { const t = findTask(cur.task), n = prompt('Rename task', t.title); if (n) t.title = n; },
+  delTask() { const t = findTask(cur.task); if (confirm(`Delete task "${t.title}"?`)) { const w = weekOf(t.id); w.tasks = w.tasks.filter(x => x !== t); cur.task = null; } },
+  addFile() {
+    const name = prompt('File name with extension (index.html, style.css, app.js, App.jsx)'); if (!name) return;
+    addFileTo(findTask(cur.task), name.trim());
+  },
+  file(d) { cur.file = d.f; },
+  delFile(d) { const t = findTask(cur.task); if (confirm('Delete this file?')) { t.files = t.files.filter(f => f.id !== d.f); cur.file = null; } },
+  upload() { $('#up').click(); return 'none'; },
+  run() { preview(); return 'none'; },
+  export() {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(db, null, 2)], {type: 'application/json'}));
+    a.download = 'week-workbench-backup.json'; a.click(); return 'none';
+  },
+  import() { $('#imp').click(); return 'none'; }
+};
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-a]'); if (!el) return;
+  e.stopPropagation();
+  const r = actions[el.dataset.a](el.dataset);
+  if (r === 'none') return;
+  save(); renderSide(); renderWork();
+});
+
+/* guess a file name from pasted code */
+function guessName(s) {
+  const x = s.trim();
+  if (/^<!doctype|^<html|^<head|^<body/i.test(x)) return 'index.html';
+  if (/\bReactDOM\b|\buseState\b|return\s*\(\s*</.test(x) || (/<[A-Z][\w]*[\s/>]/.test(x) && /function|=>/.test(x))) return 'App.jsx';
+  if (/^[^{}]*\{[^{}]*:[^{}]*\}/.test(x) && !/\b(function|const|let|var)\b|=>/.test(x)) return 'style.css';
+  if (/^</.test(x)) return 'index.html';
+  return 'script.js';
+}
+/* double-click a tab to rename a file (the extension decides its type) */
+document.addEventListener('dblclick', e => {
+  const el = e.target.closest('.tab');
+  if (!el || e.target.closest('button')) return;
+  const t = findTask(cur.task), f = t && t.files.find(x => x.id === el.dataset.f);
+  if (!f) return;
+  const n = prompt('Rename file (the extension sets the type)', f.name);
+  if (n) { f.name = n.trim(); f.auto = false; save(); renderWork(); }
+});
+
+/* editing: save as you type, refresh preview shortly after */
+let timer;
+document.addEventListener('input', e => {
+  if (e.target.id !== 'ed') return;
+  const t = findTask(cur.task);
+  if (!t) return;
+  const f = t.files.find(x => x.id === cur.file);
+  if (!f) {
+    addFileTo(t, guessName(e.target.value), e.target.value);
+    t.files[t.files.length - 1].auto = true;
+    save(); renderSide(); renderWork();
+    const ed = $('#ed'); ed.focus(); ed.setSelectionRange(ed.value.length, ed.value.length);
+    return;
+  }
+  if (f.auto) {
+    const n = guessName(e.target.value);
+    if (n !== f.name) {
+      f.name = n; f.content = e.target.value; save();
+      const pos = e.target.selectionStart;
+      renderSide(); renderWork();
+      const ed = $('#ed'); ed.focus(); ed.setSelectionRange(pos, pos);
+      return;
+    }
+  }
+  f.content = e.target.value; save();
+  clearTimeout(timer); timer = setTimeout(preview, 500);
+});
+document.addEventListener('keydown', e => {
+  if (e.target.id === 'ed' && e.key === 'Tab') {
+    e.preventDefault();
+    const s = e.target.selectionStart;
+    e.target.setRangeText('  ', s, e.target.selectionEnd, 'end');
+    e.target.dispatchEvent(new Event('input', {bubbles: true}));
+  }
+});
+
+/* upload several files into the current task */
+$('#up').addEventListener('change', async e => {
+  const t = findTask(cur.task); if (!t) return;
+  for (const file of e.target.files) addFileTo(t, file.name, await file.text());
+  e.target.value = ''; save(); renderSide(); renderWork();
+});
+/* restore a backup */
+$('#imp').addEventListener('change', async e => {
+  try {
+    const data = JSON.parse(await e.target.files[0].text());
+    if (!Array.isArray(data.weeks)) throw 0;
+    if (confirm('Replace everything on this page with the backup?')) { db = data; cur = {task: null, file: null}; save(); renderSide(); renderWork(); }
+  } catch (err) { alert('That file is not a valid backup.'); }
+  e.target.value = '';
+});
+
+renderSide(); renderWork();
+</script>
+</body>
+</html>
