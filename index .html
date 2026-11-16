@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Programming — HW Viewer | Muhammadmuso Fatkhullaev (202637351)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            canvas: '#0d1117',
+            panel: '#151b23',
+            panelHover: '#1c2430',
+            borderSubtle: '#26303d',
+            accent: '#5eead4',
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      background-color: #0d1117;
+      color: #e6edf3;
+      font-family: 'Inter', system-ui, sans-serif;
+      margin: 0;
+      overflow: hidden;
+    }
+    ::-webkit-scrollbar { width: 7px; height: 7px; }
+    ::-webkit-scrollbar-track { background: #0d1117; }
+    ::-webkit-scrollbar-thumb { background: #26303d; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #364456; }
+
+    .code-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.65;
+    }
+    .code-table td.line-num {
+      width: 52px;
+      min-width: 52px;
+      padding: 0 12px 0 8px;
+      text-align: right;
+      color: #485465;
+      user-select: none;
+      border-right: 1px solid #1f2937;
+      vertical-align: top;
+    }
+    .code-table td.line-code {
+      padding: 0 16px;
+      white-space: pre;
+      color: #dce4ee;
+      vertical-align: top;
+    }
+    .code-table tr:hover td {
+      background-color: rgba(94, 234, 212, 0.04);
+    }
+    .svg-checkerboard {
+      background-color: #111822;
+      background-image:
+        linear-gradient(45deg, #18212e 25%, transparent 25%),
+        linear-gradient(-45deg, #18212e 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #18212e 75%),
+        linear-gradient(-45deg, transparent 75%, #18212e 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+    }
+  </style>
+</head>
+<body class="h-screen flex flex-col bg-[#0d1117] text-[#e6edf3] select-none">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="h-14 shrink-0 bg-[#151b23] border-b border-[#26303d] px-3 sm:px-4 flex items-center justify-between gap-2 z-30">
+    <div class="flex items-center gap-2.5 min-w-0">
+      <button id="toggleSidebarBtn" type="button" title="Toggle Sidebar"
+        class="p-2 rounded-lg text-slate-300 hover:text-[#5eead4] hover:bg-[#1e2733] transition focus:outline-none focus:ring-2 focus:ring-[#5eead4]/40">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      <div class="flex items-center gap-2 min-w-0">
+        <div class="w-8 h-8 rounded-lg bg-[#5eead4]/15 border border-[#5eead4]/40 flex items-center justify-center text-[#5eead4] font-bold text-xs shrink-0">
+          MF
+        </div>
+        <div class="min-w-0">
+          <div class="flex items-center gap-2">
+            <h1 class="text-sm font-semibold tracking-tight text-white truncate">Web Programming — HW Viewer</h1>
+            <span class="hidden md:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#5eead4]/10 text-[#5eead4] border border-[#5eead4]/30">
+              Weeks 1–11 (All Parts)
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-400 truncate">Muhammadmuso Fatkhullaev • ID: 202637351</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Controls -->
+    <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+      <button id="openWeekModalBtn" type="button"
+        class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#1c2430] hover:bg-[#253040] text-slate-200 border border-[#2d3848] transition flex items-center gap-1">
+        <span class="text-[#5eead4] font-bold">+</span> Week
+      </button>
+      <button id="openTaskModalBtn" type="button"
+        class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#1c2430] hover:bg-[#253040] text-slate-200 border border-[#2d3848] transition flex items-center gap-1">
+        <span class="text-[#5eead4] font-bold">+</span> Task
+      </button>
+      <button id="openCodeModalBtn" type="button"
+        class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#1c2430] hover:bg-[#253040] text-slate-200 border border-[#2d3848] transition flex items-center gap-1">
+        <span class="text-[#5eead4] font-bold">+</span> Code
+      </button>
+      <button id="importFilesBtn" type="button" title="Import individual files into the selected week"
+        class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#1c2430] hover:bg-[#253040] text-slate-200 border border-[#2d3848] transition flex items-center gap-1">
+        <span class="text-[#5eead4] font-bold">+</span> File
+      </button>
+      <button id="exportRepoBtn" type="button" title="Download standalone index.html with all your edits for GitHub Pages"
+        class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/35 transition flex items-center gap-1">
+        <span>↓</span>
+        <span class="hidden sm:inline">Save HTML</span>
+      </button>
+      <button id="loadFolderBtn" type="button" title="Load a local homework folder from disk"
+        class="inline-flex px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#5eead4]/15 hover:bg-[#5eead4]/25 text-[#5eead4] border border-[#5eead4]/35 transition items-center gap-1.5">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+        </svg>
+        <span class="font-semibold">+ Import Folder</span>
+      </button>
+      <input id="singleFileInput" type="file" multiple class="hidden" />
+      <input id="folderInput" type="file" webkitdirectory directory multiple class="hidden" />
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <div class="flex-1 flex min-h-0 relative overflow-hidden">
+
+    <!-- MOBILE BACKDROP -->
+    <div id="sidebarBackdrop" class="fixed inset-0 bg-black/60 z-20 hidden lg:hidden"></div>
+
+    <!-- COLLAPSIBLE 290px SIDEBAR -->
+    <aside id="sidebar"
+      class="w-[290px] shrink-0 bg-[#151b23] border-r border-[#26303d] flex flex-col h-full z-20 transition-all duration-200 ease-out fixed lg:static inset-y-0 left-0 top-14 lg:top-0">
+      
+      <!-- Student Card & Search -->
+      <div class="p-3 border-b border-[#26303d] space-y-2.5">
+        <div class="flex items-center justify-between bg-[#0d1117] border border-[#26303d] rounded-xl px-3 py-2">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#5eead4] to-teal-600 text-[#0d1117] font-bold text-xs flex items-center justify-center shrink-0">
+              MF
+            </div>
+            <div class="min-w-0">
+              <div class="text-xs font-semibold text-white truncate">Muhammadmuso Fatkhullaev</div>
+              <div class="text-[11px] font-mono text-[#5eead4]">ID: 202637351</div>
+            </div>
+          </div>
+          <span id="overallProgressBadge" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#5eead4]/15 text-[#5eead4] border border-[#5eead4]/30 shrink-0">
+            0/0
+          </span>
+        </div>
+
+        <!-- Search Filter & Expand/Collapse All -->
+        <div class="flex items-center gap-1.5">
+          <div class="relative flex-1">
+            <svg class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="8" /><path stroke-linecap="round" d="M21 21l-4.35-4.35" />
+            </svg>
+            <input id="searchInput" type="text" placeholder="Filter weeks, files..."
+              class="w-full bg-[#0d1117] border border-[#26303d] focus:border-[#5eead4] rounded-lg pl-8 pr-7 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none transition" />
+            <button id="clearSearchBtn" type="button" class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs px-1">
+              ✕
+            </button>
+          </div>
+          <button id="toggleAllWeeksBtn" type="button" title="Expand or Collapse all weeks"
+            class="px-2 py-1.5 rounded-lg text-[11px] font-medium bg-[#0d1117] hover:bg-[#1c2430] text-slate-300 border border-[#26303d] shrink-0 transition">
+            Collapse
+          </button>
+        </div>
+      </div>
+
+      <!-- Week & File Tree List -->
+      <div id="weekTreeContainer" class="flex-1 overflow-y-auto p-2 space-y-1.5 select-none">
+        <!-- Rendered dynamically by JS -->
+      </div>
+
+      <!-- Sidebar Footer -->
+      <div class="p-2.5 border-t border-[#26303d] flex items-center justify-between text-[11px] text-slate-400 bg-[#11161d]">
+        <span id="fileCountLabel">0 files bundled</span>
+        <button id="resetDemoBtn" type="button" class="text-slate-400 hover:text-[#5eead4] underline underline-offset-2 transition">
+          Reset state
+        </button>
+      </div>
+    </aside>
+
+    <!-- CONTENT VIEWER AREA -->
+    <main class="flex-1 flex flex-col min-w-0 bg-[#0d1117] h-full">
+      
+      <!-- File Sub-Header / Toolbar -->
+      <div class="min-h-[48px] bg-[#151b23]/80 border-b border-[#26303d] px-3 sm:px-4 py-1.5 flex flex-wrap items-center justify-between gap-2">
+        <!-- Current File Path & Meta -->
+        <div class="flex items-center gap-2 min-w-0">
+          <span id="fileTypeBadge" class="px-2 py-0.5 rounded text-[10px] font-mono font-semibold uppercase bg-[#5eead4]/15 text-[#5eead4] border border-[#5eead4]/30">
+            HTML
+          </span>
+          <span id="currentFilePath" class="text-xs sm:text-sm font-mono text-slate-200 truncate">
+            week2_1/index.html
+          </span>
+          <span id="assetMatchPill" class="hidden md:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/10 text-emerald-300 border border-emerald-500/25">
+            ● CSS/SVG Linked
+          </span>
+        </div>
+
+        <!-- Mode Tabs & Actions -->
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          <!-- Responsive Viewport Selector (visible in Preview mode) -->
+          <div id="viewportControls" class="hidden md:flex items-center bg-[#0d1117] border border-[#26303d] rounded-lg p-0.5 text-[11px]">
+            <button type="button" data-vp="100%" class="vp-btn px-2 py-1 rounded-md bg-[#1c2430] text-[#5eead4] font-medium transition">Desktop</button>
+            <button type="button" data-vp="768px" class="vp-btn px-2 py-1 rounded-md text-slate-400 hover:text-slate-200 transition">Tablet</button>
+            <button type="button" data-vp="390px" class="vp-btn px-2 py-1 rounded-md text-slate-400 hover:text-slate-200 transition">Mobile</button>
+          </div>
+
+          <!-- Preview / Code Switcher -->
+          <div class="flex items-center bg-[#0d1117] border border-[#26303d] rounded-lg p-0.5">
+            <button id="tabPreviewBtn" type="button"
+              class="px-3 py-1 rounded-md text-xs font-medium transition bg-[#5eead4] text-[#0d1117]">
+              Preview
+            </button>
+            <button id="tabCodeBtn" type="button"
+              class="px-3 py-1 rounded-md text-xs font-medium transition text-slate-300 hover:text-white">
+              Code
+            </button>
+          </div>
+
+          <!-- Copy Code Button -->
+          <button id="copyCodeBtn" type="button" title="Copy file source code"
+            class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#1c2430] hover:bg-[#253040] text-slate-200 border border-[#2d3848] transition flex items-center gap-1">
+            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <rect x="9" y="9" width="13" height="13" rx="2" />
+              <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+            </svg>
+            <span class="hidden sm:inline">Copy</span>
+          </button>
+
+          <!-- Open Raw in New Tab -->
+          <button id="openRawBtn" type="button" title="Open resolved preview in a new tab"
+            class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#1c2430] hover:bg-[#253040] text-[#5eead4] border border-[#2d3848] transition flex items-center gap-1">
+            <span>Open raw</span>
+            <span>↗</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- VIEWPORT STAGE -->
+      <div class="flex-1 min-h-0 relative overflow-hidden flex flex-col items-center justify-center bg-[#090d12]">
+        
+        <!-- HTML Live Iframe Preview -->
+        <div id="previewStage" class="w-full h-full flex items-center justify-center overflow-auto transition-all duration-200">
+          <iframe id="previewFrame" title="Homework Live Preview"
+            sandbox="allow-scripts allow-forms allow-modals allow-popups allow-same-origin"
+            class="w-full h-full bg-white border-0 transition-all duration-200 shadow-2xl"></iframe>
+        </div>
+
+        <!-- Direct SVG Inspection Stage -->
+        <div id="svgStage" class="hidden w-full h-full flex-col items-center justify-center p-6 overflow-auto svg-checkerboard">
+          <div class="max-w-3xl w-full bg-[#151b23]/95 border border-[#26303d] rounded-2xl p-6 shadow-2xl flex flex-col items-center gap-4">
+            <div class="w-full flex items-center justify-between border-b border-[#26303d] pb-3">
+              <div>
+                <span class="text-xs font-mono text-[#5eead4]" id="svgPathTitle">week9_1/assets/campus.svg</span>
+                <p class="text-[11px] text-slate-400">Vector Diagram Asset • Scalable SVG Preview</p>
+              </div>
+              <span id="svgMetaBadge" class="text-[11px] font-mono px-2.5 py-1 rounded-lg bg-[#0d1117] border border-[#26303d] text-slate-300">
+                SVG
+              </span>
+            </div>
+            <div id="svgRenderContainer" class="w-full flex items-center justify-center p-4 bg-[#0d1117] rounded-xl border border-[#26303d] min-h-[260px]">
+            </div>
+          </div>
+        </div>
+
+        <!-- Line-Numbered Source Code Stage -->
+        <div id="codeStage" class="hidden w-full h-full overflow-auto bg-[#0d1117] select-text">
+          <table class="code-table">
+            <tbody id="codeTableBody"></tbody>
+          </table>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-4 right-4 z-50 pointer-events-none opacity-0 translate-y-2 transition-all duration-200">
+    <div id="toastInner" class="px-4 py-2.5 rounded-xl bg-[#151b23] border border-[#5eead4]/40 text-xs font-medium text-white shadow-2xl flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-[#5eead4]"></span>
+      <span id="toastText">Copied to clipboard</span>
+    </div>
+  </div>
+
+  <!-- MODAL: + WEEK -->
+  <div id="weekModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-4">
+    <div class="bg-[#151b23] border border-[#26303d] rounded-2xl w-full max-w-md p-5 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-semibold text-white">Add Custom Week Module</h2>
+        <button type="button" data-close-modal="weekModal" class="text-slate-400 hover:text-white text-sm">✕</button>
+      </div>
+      <form id="weekForm" class="space-y-3">
+        <div>
+          <label class="block text-xs text-slate-300 mb-1">Folder ID (e.g., <code class="text-[#5eead4]">week12</code>)</label>
+          <input id="newWeekId" type="text" required placeholder="week12"
+            class="w-full bg-[#0d1117] border border-[#26303d] focus:border-[#5eead4] rounded-lg px-3 py-2 text-xs text-white focus:outline-none" />
+        </div>
+        <div>
+          <label class="block text-xs text-slate-300 mb-1">Week Title</label>
+          <input id="newWeekTitle" type="text" required placeholder="Week 12 – React Hooks & State"
+            class="w-full bg-[#0d1117] border border-[#26303d] focus:border-[#5eead4] rounded-lg px-3 py-2 text-xs text-white focus:outline-none" />
+        </div>
+        <div>
+          <label class="block text-xs text-slate-300 mb-1">Initial Task Description</label>
+          <input id="newWeekTask" type="text" placeholder="Complete useState and useEffect exercises"
+            class="w-full bg-[#0d1117] border border-[#26303d] focus:border-[#5eead4] rounded-lg px-3 py-2 text-xs text-white focus:outline-none" />
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" data-close-modal="weekModal" class="px-3 py-1.5 rounded-lg text-xs text-slate-300 hover:bg-[#1c2430]">Cancel</button>
+          <button type="submit" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-[#5eead4] text-[#0d1117] hover:bg-teal-300">Create Week</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: + TASK -->
+  <div id="taskModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-4">
+    <div class="bg-[#151b23] border border-[#26303d] rounded-2xl w-full max-w-md p-5 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-semibold text-white">Add Week Checklist Task</h2>
+        <button type="button" data-close-modal="taskModal" class="text-slate-400 hover:text-white text-sm">✕</button>
+      </div>
+      <form id="taskForm" class="space-y-3">
+        <div>
+          <label class="block text-xs text-slate-300 mb-1">Target Week</label>
+          <select id="taskWeekSelect"
+            class="w-full bg-[#0d1117] border border-[#26303d] focus:border-[#5eead4] rounded-lg px-3 py-2 text-xs text-white focus:outline-none"></select>
+        </div>
+        <div>
+          <label class="block text-xs text-slate-300 mb-1">Task Label</label>
+          <input id="newTaskLabel" type="text" required placeholder="Verify responsive layout on mobile"
+            class="w-full bg-[#0d1117] border border-[#26303d] focus:border-[#5eead4] rounded-lg px-3 py-2 text-xs text-white focus:outline-none" />
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" data-close-modal="taskModal" class="px-3 py-1.5 rounded-lg text-xs text-slate-300 hover:bg-[#1c2430]">Cancel</button>
+          <button type="submit" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-[#5eead4] text-[#0d1117] hover:bg-teal-300">Add Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: + CODE -->
+  <div id="codeModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-4">
+    <div class="bg-[#151b23] border border-[#26303d] rounded-2xl w-full max-w-lg p-5 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-semibold text-white">Add or Update File in Repository</h2>
+        <button type="button" data-close-modal="codeModal" class="text-slate-400 hover:text-white text-sm">✕</button>
+      </div>
+      <form id="codeForm" class="space-y-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-slate-300 mb-1">Target Week</label>
+            <select id="codeWeekSelect"
+              class="w-full bg-[#0d1117] border border-[#26303d] focus:border-[#5eead4] rounded-lg px-3 py-2 text-xs text-white focus:outline-none"></select>
+          </div>
+          <div>
+            <label class="block text-xs text-slate-300 mb-1">Relative File Path</label>
+            <input id="newCodePath" type="text" required placeholder="exercises/exer5.html"
+              class="w-full bg-[#0d1117] border border-[#26303d] focus:border-[#5eead4] rounded-lg px-3 py-2 text-xs font-mono text-white focus:outline-none" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs text-slate-300 mb-1">Source Code</label>
+          <textarea id="newCodeContent" rows="8" required placeholder="<!DOCTYPE html>..."
+            class="w-full bg-[#0d1117] border border-[#26303d] focus:border-[#5eead4] rounded-lg p-3 text-xs font-mono text-slate-200 focus:outline-none"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" data-close-modal="codeModal" class="px-3 py-1.5 rounded-lg text-xs text-slate-300 hover:bg-[#1c2430]">Cancel</button>
+          <button type="submit" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-[#5eead4] text-[#0d1117] hover:bg-teal-300">Save File</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const STUDENT = {
+      name: 'Muhammadmuso Fatkhullaev',
+      id: '202637351',
+      initials: 'MF',
+      shortInitial: 'M',
+      course: 'Web Programming (Spring 2026)',
+      githubUser: 'muhammadmuso-fatkhullaev'
+    };
+
+    const STORAGE_KEY = 'hw_viewer_muhammadmuso_202637351_v4';
+
+    const SVG_CAMPUS = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 280" role="img" aria-labelledby="campusTitle campusDesc">
+  <title id="campusTitle">Accessible University Campus Landmark Map</title>
+  <desc id="campusDesc">Diagram showing Engineering Hall, Central Library, Accessible Ramp Pathways, and Student Hub.</desc>
+  <rect width="640" height="280" rx="16" fill="#0f172a"/>
+  <path d="M60 210 Q 200 130 320 180 T 580 120" fill="none" stroke="#5eead4" stroke-width="6" stroke-dasharray="10 6"/>
+  <rect x="44" y="42" width="165" height="84" rx="12" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+  <text x="126" y="80" fill="#f8fafc" font-family="sans-serif" font-size="14" font-weight="700" text-anchor="middle">Engineering Hall</text>
+  <text x="126" y="102" fill="#94a3b8" font-family="sans-serif" font-size="11" text-anchor="middle">Wheelchair Ramp • Elevator</text>
+  <rect x="242" y="34" width="165" height="84" rx="12" fill="#1e293b" stroke="#5eead4" stroke-width="2"/>
+  <text x="324" y="72" fill="#f8fafc" font-family="sans-serif" font-size="14" font-weight="700" text-anchor="middle">Central Library</text>
+  <text x="324" y="94" fill="#94a3b8" font-family="sans-serif" font-size="11" text-anchor="middle">Braille Signage • Audio Lab</text>
+  <rect x="436" y="54" width="165" height="84" rx="12" fill="#1e293b" stroke="#a78bfa" stroke-width="2"/>
+  <text x="518" y="92" fill="#f8fafc" font-family="sans-serif" font-size="14" font-weight="700" text-anchor="middle">Student Hub</text>
+  <text x="518" y="114" fill="#94a3b8" font-family="sans-serif" font-size="11" text-anchor="middle">Tactile Paving Route</text>
+  <text x="320" y="254" fill="#5eead4" font-family="monospace" font-size="12" text-anchor="middle">WCAG 2.1 Spatial Navigation Diagram • Student ID: 202637351</text>
+</svg>`;
+
+    const SVG_ENROLLMENT = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 260" role="img" aria-labelledby="chartTitle">
+  <title id="chartTitle">WCAG 2.1 AA Compliance Benchmarks</title>
+  <rect width="640" height="260" rx="16" fill="#0f172a"/>
+  <text x="32" y="38" fill="#f8fafc" font-family="sans-serif" font-size="15" font-weight="700">WCAG 2.1 AA Audit Scores — Muhammadmuso Fatkhullaev</text>
+  <text x="32" y="84" fill="#cbd5e1" font-family="sans-serif" font-size="12">Perceivable (100%)</text>
+  <rect x="190" y="68" width="400" height="22" rx="6" fill="#14b8a6"/>
+  <text x="32" y="128" fill="#cbd5e1" font-family="sans-serif" font-size="12">Operable (98%)</text>
+  <rect x="190" y="112" width="392" height="22" rx="6" fill="#38bdf8"/>
+  <text x="32" y="172" fill="#cbd5e1" font-family="sans-serif" font-size="12">Understandable (100%)</text>
+  <rect x="190" y="156" width="400" height="22" rx="6" fill="#818cf8"/>
+  <text x="32" y="216" fill="#cbd5e1" font-family="sans-serif" font-size="12">Robust (100%)</text>
+  <rect x="190" y="200" width="400" height="22" rx="6" fill="#34d399"/>
+</svg>`;
+
+    const SVG_LOGO = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 56" role="img" aria-label="A11y Web Lab Logo">
+  <rect width="220" height="56" rx="12" fill="#0f172a" stroke="#5eead4" stroke-width="2"/>
+  <circle cx="30" cy="28" r="14" fill="#5eead4"/>
+  <text x="30" y="33" fill="#0f172a" font-family="sans-serif" font-size="13" font-weight="800" text-anchor="middle">MF</text>
+  <text x="56" y="26" fill="#f8fafc" font-family="sans-serif" font-size="14" font-weight="700">A11y Web Lab</text>
+  <text x="56" y="42" fill="#5eead4" font-family="monospace" font-size="10">WCAG 2.1 AA • 202637351</text>
+</svg>`;
+
+    const SVG_WAVE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,40 C300,110 900,-20 1200,50 L1200,120 L0,120 Z" fill="#f8fafc"/>
+</svg>`;
+
+    const BASE_SHARED_CSS = `
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: #f8fafc;
+  color: #0f172a;
+  line-height: 1.6;
+}
+.container { max-width: 960px; margin: 0 auto; padding: 20px; }
+.site-header {
+  background: linear-gradient(135deg, #0f172a 0%, #134e4a 100%);
+  color: #f8fafc;
+  padding: 26px 0;
+  margin-bottom: 18px;
+}
+.site-header h1 { font-size: 1.55rem; font-weight: 700; margin-top: 8px; }
+.subtitle { color: #cbd5e1; font-size: 0.92rem; margin-top: 4px; }
+.badge {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: rgba(94, 234, 212, 0.16);
+  color: #5eead4;
+  border: 1px solid rgba(94, 234, 212, 0.4);
+}
+.card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+}
+.card h2 { font-size: 1.12rem; color: #0f172a; margin-bottom: 10px; }
+.card h3 { font-size: 0.98rem; color: #0f766e; margin-bottom: 6px; }
+.card p { color: #334155; font-size: 0.92rem; margin-bottom: 8px; }
+.nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.nav-links a {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #0f766e;
+  text-decoration: none;
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid #cbd5e1;
+  transition: all 0.15s ease;
+}
+.nav-links a:hover {
+  background: #0f766e;
+  color: #ffffff;
+  border-color: #0f766e;
+}
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 14px; }
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 15px;
+  border-radius: 9px;
+  border: 1px solid #0f766e;
+  background: #0f766e;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.btn:hover { background: #115e59; }
+.btn-secondary {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: #cbd5e1;
+}
+.btn-secondary:hover { background: #e2e8f0; }
+input, select, textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 9px;
+  border: 1px solid #cbd5e1;
+  font-size: 13.5px;
+  margin: 6px 0 12px;
+  background: #ffffff;
+  color: #0f172a;
+}
+label { display: block; font-size: 13px; font-weight: 600; color: #1e293b; }
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 5px;
+  color: #0f766e;
+}
+.data-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
+.data-table th, .data-table td { padding: 9px 12px; border: 1px solid #e2e8f0; text-align: left; }
+.data-table th { background: #f1f5f9; font-weight: 700; color: #0f172a; }
+`;
+
+    function makeStyledDoc(title, subtitle, cssHref, bodyHtml, inlineScript = '') {
+      const linkTag = cssHref ? `\n  <link rel="stylesheet" href="${cssHref}" />` : '';
+      const scriptTag = inlineScript ? `\n  <script>\n${inlineScript}\n  <\/script>` : '';
+      return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${title} | Muhammadmuso Fatkhullaev (202637351)</title>${linkTag}
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <span class="badge">Muhammadmuso Fatkhullaev • ID: 202637351</span>
+      <h1>${title}</h1>
+      <p class="subtitle">${subtitle}</p>
+    </div>
+  </header>
+  <main class="container">
+    ${bodyHtml}
+  </main>${scriptTag}
+</body>
+</html>`;
+    }
+
+    const week3_2_exercises = {};
+    const w3ExTopics = [
+      ['Flexbox Navigation & Hero', 'Responsive horizontal navbar collapsing cleanly on mobile viewports'],
+      ['CSS Grid Magazine Layout', 'Asymmetric 12-column editorial layout with spanning feature cards'],
+      ['Interactive Button States', 'Hover elevation, active press scale, and focus-visible rings'],
+      ['Responsive Pricing Table', 'Three-tier comparison grid with highlighted recommended tier'],
+      ['Styled Form Controls', 'Custom focus shadows, floating labels, and valid/invalid states'],
+      ['CSS Keyframe Animations', 'Smooth pulse badges and staggered card entrance transitions'],
+      ['Student Portfolio Showcase', 'Complete responsive profile layout for Muhammadmuso Fatkhullaev (202637351)']
+    ];
+    w3ExTopics.forEach(([t, desc], idx) => {
+      const num = idx + 1;
+      week3_2_exercises[`week3_2/exercises/exer${num}.html`] = makeStyledDoc(
+        `Exercise ${num}: ${t}`,
+        desc,
+        '',
+        `<style>${BASE_SHARED_CSS}</style>
+        <div class="card">
+          <h2>${t}</h2>
+          <p>${desc}.</p>
+          <div class="grid-3">
+            <div class="card" style="margin:0;border-top:3px solid #0f766e"><strong>Component A</strong><p>Fluid width &amp; spacing</p></div>
+            <div class="card" style="margin:0;border-top:3px solid #2563eb"><strong>Component B</strong><p>Balanced contrast &amp; type</p></div>
+            <div class="card" style="margin:0;border-top:3px solid #059669"><strong>Component C</strong><p>Verified ID: 202637351</p></div>
+          </div>
+          <div class="nav-links"><a href="../index.html">← Back to Week 3 Part 2</a></div>
+        </div>`
+      );
+    });
+
+    const week3_2_samples = {};
+    for (let i = 1; i <= 15; i++) {
+      const n = String(i).padStart(2, '0');
+      week3_2_samples[`week3_2/samples/sample${n}.html`] = makeStyledDoc(
+        `Sample ${n}: CSS Layout & Visual Technique #${i}`,
+        `Demonstration #${i} of modern CSS properties, alignment, and responsive units`,
+        '',
+        `<style>${BASE_SHARED_CSS}</style>
+        <div class="card">
+          <h2>CSS Technique Sample #${n}</h2>
+          <p>Authored by <strong>Muhammadmuso Fatkhullaev</strong> (ID: <strong>202637351</strong>). Demonstrates clean spacing, border-radius tokens, and adaptive grid tracks.</p>
+          <div class="nav-links"><a href="../index.html">← Back to Week 3 Part 2</a></div>
+        </div>`
+      );
+    }
+
+    const week4_2_samples = {};
+    for (let i = 1; i <= 12; i++) {
+      const n = String(i).padStart(2, '0');
+      week4_2_samples[`week4_2/samples/sample${n}.html`] = makeStyledDoc(
+        `Sample ${n}: DOM API & Event Pattern #${i}`,
+        `Interactive DOM manipulation demonstration #${i}`,
+        '../style.css',
+        `<div class="card">
+          <h2>DOM &amp; Event Sample #${n}</h2>
+          <p id="s4Msg${n}">Click the button below to test DOM node mutation #${i}.</p>
+          <button class="btn" onclick="document.getElementById('s4Msg${n}').textContent='✓ DOM Updated by Muhammadmuso Fatkhullaev (202637351) — Sample #${n}'">Trigger DOM Update</button>
+          <div class="nav-links"><a href="../index.html">← Back to Week 4 Part 2</a></div>
+        </div>`
+      );
+    }
+
+    const INITIAL_WEEKS = [
+      {
+        id: 'week1_1',
+        title: 'Week 1 – Web Architecture & HTTP',
+        tasks: [
+          { id: 'w1_t1', text: 'Set up VS Code, Browser DevTools & local folder structure', done: true },
+          { id: 'w1_t2', text: 'Complete Week 1 HTTP, DNS & HTML5 starter exercises (exer1–exer4)', done: true }
+        ],
+        files: {
+          'week1_1/index.html': makeStyledDoc(
+            'Week 1 – Web Architecture, HTTP & First Webpage',
+            'Client-server request cycle, URL anatomy, HTTP status codes, and semantic starter markup',
+            '',
+            `<style>${BASE_SHARED_CSS}</style>
+            <div class="card">
+              <h2>Course Kickoff — Muhammadmuso Fatkhullaev (ID: 202637351)</h2>
+              <p>Welcome to Web Programming! Explore the foundational exercises and HTTP reference samples below.</p>
+              <div class="nav-links">
+                <a href="exercises/exer1.html">exer1: First Semantic Webpage</a>
+                <a href="exercises/exer2.html">exer2: URL &amp; HTTP Anatomy</a>
+                <a href="exercises/exer3.html">exer3: HTTP Status Explorer</a>
+                <a href="exercises/exer4.html">exer4: DevTools DOM Inspector</a>
+                <a href="samples/sample01.html">sample01: Client-Server Cycle</a>
+                <a href="samples/sample02.html">sample02: HTML Boilerplate</a>
+              </div>
+            </div>`
+          ),
+          'week1_1/exercises/exer1.html': makeStyledDoc('Exercise 1: First Semantic Webpage', 'Document head, meta charset, viewport, and main landmarks', '', `<style>${BASE_SHARED_CSS}</style><div class="card"><h2>Hello, Web Programming!</h2><p>Authored by <strong>Muhammadmuso Fatkhullaev</strong> (Student ID: <strong>202637351</strong>).</p><div class="nav-links"><a href="../index.html">← Back to Week 1</a></div></div>`),
+          'week1_1/exercises/exer2.html': makeStyledDoc('Exercise 2: URL & Query String Parser', 'Breaking down protocol, host, path, and query parameters', '', `<style>${BASE_SHARED_CSS}</style><div class="card"><input id="urlIn" value="https://muhammadmuso.edu/courses/web?week=1&student=202637351" /><pre id="urlOut" style="background:#0f172a;color:#5eead4;padding:12px;border-radius:10px"></pre><div class="nav-links"><a href="../index.html">← Back to Week 1</a></div></div>`, `function parseU(){try{const u=new URL(document.getElementById('urlIn').value);document.getElementById('urlOut').textContent=JSON.stringify({protocol:u.protocol,host:u.hostname,pathname:u.pathname,search:u.search},null,2);}catch(e){document.getElementById('urlOut').textContent='Invalid URL';}}document.getElementById('urlIn').oninput=parseU;parseU();`),
+          'week1_1/exercises/exer3.html': makeStyledDoc('Exercise 3: HTTP Status Code Reference', 'Interactive lookup for 200, 201, 301, 404, and 500 status codes', '', `<style>${BASE_SHARED_CSS}</style><div class="card"><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><button class="btn" onclick="st(200)">200 OK</button><button class="btn" onclick="st(201)">201 Created</button><button class="btn btn-secondary" onclick="st(404)">404 Not Found</button><button class="btn btn-secondary" onclick="st(500)">500 Server Error</button></div><p id="httpRes" style="font-weight:700;color:#0f766e">200 OK — Standard response for successful HTTP requests.</p><div class="nav-links"><a href="../index.html">← Back to Week 1</a></div></div>`, `const M={200:'200 OK — Standard response for successful HTTP requests.',201:'201 Created — Resource successfully created via POST.',404:'404 Not Found — Requested resource does not exist on server.',500:'500 Internal Server Error — Unexpected server condition.'};window.st=c=>{document.getElementById('httpRes').textContent=M[c];};`),
+          'week1_1/exercises/exer4.html': makeStyledDoc('Exercise 4: Browser DevTools Checklist', 'Inspecting Elements, Console, Network, and Application storage', '', `<style>${BASE_SHARED_CSS}</style><div class="card"><ul style="padding-left:20px"><li><strong>Elements:</strong> Live CSS box-model inspection</li><li><strong>Console:</strong> Evaluating JS expressions and debugging</li><li><strong>Network:</strong> Monitoring HTML, CSS, SVG, and JSON payloads</li></ul><div class="nav-links"><a href="../index.html">← Back to Week 1</a></div></div>`),
+          'week1_1/samples/sample01.html': makeStyledDoc('Sample 01: HTTP Request & Response Headers', 'Anatomy of GET /index.html HTTP/1.1', '', `<style>${BASE_SHARED_CSS}</style><div class="card"><pre style="background:#0f172a;color:#5eead4;padding:12px;border-radius:10px">GET /week1_1/index.html HTTP/1.1\nHost: localhost:5173\nAccept: text/html\nX-Student-ID: 202637351</pre><div class="nav-links"><a href="../index.html">← Back to Week 1</a></div></div>`),
+          'week1_1/samples/sample02.html': makeStyledDoc('Sample 02: HTML5 Document Skeleton', 'Minimal valid HTML5 template with UTF-8 encoding', '', `<style>${BASE_SHARED_CSS}</style><div class="card"><p>Every HTML5 document begins with <code>&lt;!DOCTYPE html&gt;</code> to ensure Standards Mode rendering.</p><div class="nav-links"><a href="../index.html">← Back to Week 1</a></div></div>`)
+        }
+      },
+      {
+        id: 'week2_1',
+        title: 'Week 2 – Part 1: HTML Fundamentals',
+        tasks: [
+          { id: 'w2_1_t1', text: 'Build semantic index page for Muhammadmuso Fatkhullaev (202637351)', done: true },
+          { id: 'w2_1_t2', text: 'Complete all 5 HTML5 exercises (exer1–exer5) and 5 samples', done: true }
+        ],
+        files: {
+          'week2_1/index.html': makeStyledDoc(
+            'Week 2 – Part 1: HTML5 Semantic Structure',
+            'Foundational markup, semantic elements, tables, multimedia, and accessible forms',
+            '',
+            `<style>${BASE_SHARED_CSS}</style>
+            <div class="card">
+              <h2>Student Profile Summary</h2>
+              <p><strong>Name:</strong> Muhammadmuso Fatkhullaev &nbsp;|&nbsp; <strong>Student ID:</strong> 202637351 &nbsp;|&nbsp; <strong>Initials:</strong> MF</p>
+              <div class="nav-links">
+                <a href="exercises/exer1.html">Exercise 1: Academic Bio</a>
+                <a href="exercises/exer2.html">Exercise 2: Weekly Schedule</a>
+                <a href="exercises/exer3.html">Exercise 3: Course Form</a>
+                <a href="exercises/exer4.html">Exercise 4: Definition &amp; Media</a>
+                <a href="exercises/exer5.html">Exercise 5: Semantic Article</a>
+                <a href="samples/sample01.html">Sample 01: Headings</a>
+                <a href="samples/sample02.html">Sample 02: Lists</a>
+                <a href="samples/sample03.html">Sample 03: Landmarks</a>
+                <a href="samples/sample04.html">Sample 04: Links &amp; Anchors</a>
+                <a href="samples/sample05.html">Sample 05: Details &amp; Summary</a>
+              </div>
+            </div>`
+          ),
+          'week2_1/exercises/exer1.html': makeStyledDoc('Exercise 1: Academic Biography', 'Semantic headings, paragraphs, blockquotes, and emphasis tags', '', `<style>${BASE_SHARED_CSS}</style><article class="card"><h2>About Muhammadmuso Fatkhullaev (ID: 202637351)</h2><p>Computer Science undergraduate focusing on full-stack web engineering, accessible interfaces, and modern JavaScript frameworks.</p><div class="nav-links"><a href="../index.html">← Week 2 Part 1 Hub</a></div></article>`),
+          'week2_1/exercises/exer2.html': makeStyledDoc('Exercise 2: Course Schedule Table', 'Structured data table using thead, tbody, th scope, and caption', '', `<style>${BASE_SHARED_CSS}</style><div class="card"><h2>Spring 2026 Timetable</h2><table class="data-table"><thead><tr><th>Day</th><th>Course</th><th>Topic</th></tr></thead><tbody><tr><td>Monday</td><td>Web Programming</td><td>HTML5 &amp; Semantic Markup</td></tr></tbody></table><div class="nav-links"><a href="../index.html">← Week 2 Part 1 Hub</a></div></div>`),
+          'week2_1/exercises/exer3.html': makeStyledDoc('Exercise 3: HTML5 Registration Form', 'Accessible form controls with explicit labels', '', `<style>${BASE_SHARED_CSS}</style><div class="card"><form onsubmit="event.preventDefault();document.getElementById('out').textContent='Enrolled!'"><label>Full Name</label><input value="Muhammadmuso Fatkhullaev" required /><button class="btn" type="submit">Submit</button></form><p id="out" style="color:#0f766e;font-weight:600;margin-top:8px"></p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week2_1/exercises/exer4.html': makeStyledDoc('Exercise 4: Glossary Definition List', 'Using dl, dt, dd semantics', '', `<style>${BASE_SHARED_CSS}</style><div class="card"><dl><dt>DOM</dt><dd>Document Object Model</dd></dl><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week2_1/exercises/exer5.html': makeStyledDoc('Exercise 5: Semantic Article & Time', 'Article structure with time element', '', `<style>${BASE_SHARED_CSS}</style><article class="card"><h2>Web Standards</h2><time datetime="2026-03-04">March 4, 2026</time><div class="nav-links"><a href="../index.html">← Back</a></div></article>`),
+          'week2_1/samples/sample01.html': makeStyledDoc('Sample 01: Headings', 'Outline hierarchy', '', `<style>${BASE_SHARED_CSS}</style><div class="card"><h1>H1</h1><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week2_1/samples/sample02.html': makeStyledDoc('Sample 02: Lists', 'Lists sample', '', `<style>${BASE_SHARED_CSS}</style><div class="card"><ul><li>Item</li></ul><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week2_1/samples/sample03.html': makeStyledDoc('Sample 03: Landmarks', 'Landmarks sample', '', `<style>${BASE_SHARED_CSS}</style><div class="card"><p>Semantic tags</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week2_1/samples/sample04.html': makeStyledDoc('Sample 04: Links', 'Links sample', '', `<style>${BASE_SHARED_CSS}</style><div class="card"><p>Anchors</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week2_1/samples/sample05.html': makeStyledDoc('Sample 05: Details', 'Disclosure widget', '', `<style>${BASE_SHARED_CSS}</style><div class="card"><details><summary>Toggle</summary><p>Content</p></details><div class="nav-links"><a href="../index.html">← Back</a></div></div>`)
+        }
+      },
+      {
+        id: 'week2_2',
+        title: 'Week 2 – Part 2: CSS Box Model & Flexbox',
+        tasks: [
+          { id: 'w2_2_t1', text: 'Create external stylesheet week2_2/style.css', done: true },
+          { id: 'w2_2_t2', text: 'Complete all 5 CSS Box Model & Flexbox exercises (exer1–exer5)', done: true }
+        ],
+        files: {
+          'week2_2/index.html': makeStyledDoc(
+            'Week 2 – Part 2: CSS Styling & Flexbox',
+            'External stylesheets, box model sizing, selectors, gradients, and Flexbox layouts',
+            'style.css',
+            `<div class="card">
+              <h2>External Stylesheet Integration</h2>
+              <div class="nav-links">
+                <a href="exercises/exer1.html">Exercise 1: Box Model Cards</a>
+                <a href="exercises/exer2.html">Exercise 2: Flexbox Pricing</a>
+                <a href="exercises/exer3.html">Exercise 3: Selectors &amp; States</a>
+                <a href="exercises/exer4.html">Exercise 4: Typography Scale</a>
+                <a href="exercises/exer5.html">Exercise 5: Flex Profile Banner</a>
+              </div>
+            </div>`
+          ),
+          'week2_2/style.css': BASE_SHARED_CSS + `\n.flex-row { display: flex; flex-wrap: wrap; gap: 14px; }\n.flex-card { flex: 1 1 220px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; }`,
+          'week2_2/exercises/exer1.html': makeStyledDoc('Exercise 1: Box Model Cards', 'Padding, borders, and margin spacing', '../style.css', `<div class="card"><div class="flex-row"><div class="flex-card"><h3>Content Box</h3></div></div><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week2_2/exercises/exer2.html': makeStyledDoc('Exercise 2: Flexbox Pricing', 'Pricing grid', '../style.css', `<div class="card"><div class="flex-row"><div class="flex-card">Pro Lab</div></div><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week2_2/exercises/exer3.html': makeStyledDoc('Exercise 3: Selectors', 'Pseudo-classes', '../style.css', `<div class="card"><p>Hover states</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week2_2/exercises/exer4.html': makeStyledDoc('Exercise 4: Typography', 'Font scale', '../style.css', `<div class="card"><h2>Type scale</h2><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week2_2/exercises/exer5.html': makeStyledDoc('Exercise 5: Profile Banner', 'Flex profile', '../style.css', `<div class="card"><strong>Muhammadmuso (202637351)</strong><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week2_2/samples/sample01.html': makeStyledDoc('Sample 01: Specificity', 'Cascade', '../style.css', `<div class="card"><p>Specificity rules</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week2_2/samples/sample02.html': makeStyledDoc('Sample 02: Flex Wrap', 'Wrapping', '../style.css', `<div class="card"><p>Flex wrap</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week2_2/samples/sample03.html': makeStyledDoc('Sample 03: Gradients', 'Gradients', '../style.css', `<div class="card"><p>Gradients</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`)
+        }
+      },
+      {
+        id: 'week3_1',
+        title: 'Week 3 – Part 1: CSS Grid & Responsive Design',
+        tasks: [
+          { id: 'w3_1_t1', text: 'Implement two-dimensional CSS Grid dashboard & Holy Grail layouts', done: true },
+          { id: 'w3_1_t2', text: 'Complete all 5 CSS Grid & Responsive exercises (exer1–exer5)', done: true }
+        ],
+        files: {
+          'week3_1/index.html': makeStyledDoc(
+            'Week 3 – Part 1: CSS Grid & Responsive Layouts',
+            'Two-dimensional grid tracks, sticky headers, and fluid media queries',
+            'style.css',
+            `<div class="card">
+              <h2>Grid &amp; Responsive Architecture</h2>
+              <div class="nav-links">
+                <a href="exercises/exer1.html">Exercise 1: Grid Dashboard</a>
+                <a href="exercises/exer2.html">Exercise 2: Sticky &amp; Z-Index</a>
+                <a href="exercises/exer3.html">Exercise 3: Responsive Fluidity</a>
+                <a href="exercises/exer4.html">Exercise 4: Holy Grail Areas</a>
+                <a href="exercises/exer5.html">Exercise 5: Asymmetric Masonry</a>
+              </div>
+            </div>`
+          ),
+          'week3_1/style.css': BASE_SHARED_CSS,
+          'week3_1/exercises/exer1.html': makeStyledDoc('Exercise 1: Dashboard', 'Grid metrics', '../style.css', `<div class="card"><h2>Dashboard</h2><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week3_1/exercises/exer2.html': makeStyledDoc('Exercise 2: Sticky', 'Sticky header', '../style.css', `<div class="card"><p>Sticky header</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week3_1/exercises/exer3.html': makeStyledDoc('Exercise 3: Fluidity', 'Breakpoints', '../style.css', `<div class="card"><p>Fluid layout</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week3_1/exercises/exer4.html': makeStyledDoc('Exercise 4: Holy Grail', 'Grid areas', '../style.css', `<div class="card"><p>Holy grail</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week3_1/exercises/exer5.html': makeStyledDoc('Exercise 5: Spanning', 'Grid span', '../style.css', `<div class="card"><p>Spanning cards</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week3_1/samples/sample01.html': makeStyledDoc('Sample 01: Auto-Fit', 'Auto-fit grid', '../style.css', `<div class="card"><p>Auto fit</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week3_1/samples/sample02.html': makeStyledDoc('Sample 02: Variables', 'Custom props', '../style.css', `<div class="card"><p>CSS Variables</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`)
+        }
+      },
+      {
+        id: 'week3_2',
+        title: 'Week 3 – Part 2: Advanced CSS & Layout Lab',
+        tasks: [
+          { id: 'w3_2_t1', text: 'Complete Exercises 1 through 7 (Flexbox, Grid, Forms, Portfolio)', done: true },
+          { id: 'w3_2_t2', text: 'Verify all 15 CSS layout & animation samples (sample01–sample15)', done: true }
+        ],
+        files: {
+          'week3_2/index.html': `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Week 3 – Part 2: Advanced CSS & Layout Lab</title>
+  <style>${BASE_SHARED_CSS}</style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <span class="badge">Muhammadmuso Fatkhullaev • ID: 202637351</span>
+      <h1>Week 3 – Part 2: Advanced CSS Layouts &amp; Transitions</h1>
+      <p class="subtitle">7 Complete Exercises &amp; 15 Interactive CSS Samples</p>
+    </div>
+  </header>
+  <main class="container">
+    <div class="card">
+      <h2>Exercises (exer1 – exer7)</h2>
+      <div class="nav-links">
+        <a href="exercises/exer1.html">exer1.html</a>
+        <a href="exercises/exer2.html">exer2.html</a>
+        <a href="exercises/exer3.html">exer3.html</a>
+        <a href="exercises/exer4.html">exer4.html</a>
+        <a href="exercises/exer5.html">exer5.html</a>
+        <a href="exercises/exer6.html">exer6.html</a>
+        <a href="exercises/exer7.html">exer7.html</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>`,
+          ...week3_2_exercises,
+          ...week3_2_samples
+        }
+      },
+      {
+        id: 'week4_1',
+        title: 'Week 4 – Part 1: JS Syntax, Scope & Logic',
+        tasks: [
+          { id: 'w4_1_t1', text: 'Complete JS variables, conditionals, loops & functions exercises (exer1–exer5)', done: true }
+        ],
+        files: {
+          'week4_1/index.html': makeStyledDoc(
+            'Week 4 – Part 1: JavaScript Syntax, Scope & Control Flow',
+            'let/const declarations, operators, conditionals, loops, and function expressions',
+            'style.css',
+            `<div class="card">
+              <h2>Exercises (exer1 – exer5)</h2>
+              <div class="nav-links">
+                <a href="exercises/exer1.html">exer1: Variable Types</a>
+                <a href="exercises/exer2.html">exer2: Grade Evaluator</a>
+                <a href="exercises/exer3.html">exer3: Multiplication Loop</a>
+                <a href="exercises/exer4.html">exer4: Arrow Functions</a>
+                <a href="exercises/exer5.html">exer5: Palindrome Analyzer</a>
+              </div>
+            </div>`
+          ),
+          'week4_1/style.css': BASE_SHARED_CSS,
+          'week4_1/exercises/exer1.html': makeStyledDoc('Exercise 1: Primitives', 'typeof', '../style.css', `<div class="card"><p>Primitives</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week4_1/exercises/exer2.html': makeStyledDoc('Exercise 2: Scholarship', 'Logic', '../style.css', `<div class="card"><p>GPA logic</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week4_1/exercises/exer3.html': makeStyledDoc('Exercise 3: Loop Matrix', 'Nested loop', '../style.css', `<div class="card"><p>Matrix</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week4_1/exercises/exer4.html': makeStyledDoc('Exercise 4: Closures', 'Counters', '../style.css', `<div class="card"><p>Closure</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week4_1/exercises/exer5.html': makeStyledDoc('Exercise 5: Words', 'String analysis', '../style.css', `<div class="card"><p>Words</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week4_1/samples/sample01.html': makeStyledDoc('Sample 01: Scope', 'let & const', '../style.css', `<div class="card"><p>Scope</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week4_1/samples/sample02.html': makeStyledDoc('Sample 02: Ternary', 'Ternary fallback', '../style.css', `<div class="card"><p>Ternary</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`)
+        }
+      },
+      {
+        id: 'week4_2',
+        title: 'Week 4 – Part 2: JavaScript DOM & Events',
+        tasks: [
+          { id: 'w4_t1', text: 'Complete all 6 DOM manipulation & event exercises (exer1–exer6)', done: true },
+          { id: 'w4_t2', text: 'Test all 12 DOM & Event samples (sample01–sample12)', done: true }
+        ],
+        files: {
+          'week4_2/index.html': makeStyledDoc(
+            'Week 4 – JavaScript DOM & Events',
+            'Interactive DOM selection, event listeners, delegation, tabs, and client state',
+            'style.css',
+            `<div class="card">
+              <h2>Exercises (exer1 – exer6)</h2>
+              <div class="nav-links">
+                <a href="exercises/exer1.html">exer1: Counter</a>
+                <a href="exercises/exer2.html">exer2: Todo List</a>
+                <a href="exercises/exer3.html">exer3: Password Strength</a>
+                <a href="exercises/exer4.html">exer4: Theme Customizer</a>
+                <a href="exercises/exer5.html">exer5: Tab Switcher</a>
+                <a href="exercises/exer6.html">exer6: Accordion FAQ</a>
+              </div>
+            </div>`
+          ),
+          'week4_2/style.css': BASE_SHARED_CSS,
+          'week4_2/exercises/exer1.html': makeStyledDoc('Exercise 1: Counter', 'Counter state', '../style.css', `<div class="card"><p>Counter</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week4_2/exercises/exer2.html': makeStyledDoc('Exercise 2: Todo', 'Todo app', '../style.css', `<div class="card"><p>Todo</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week4_2/exercises/exer3.html': makeStyledDoc('Exercise 3: Password', 'Strength meter', '../style.css', `<div class="card"><p>Password</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week4_2/exercises/exer4.html': makeStyledDoc('Exercise 4: Theme', 'Accent picker', '../style.css', `<div class="card"><p>Theme</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week4_2/exercises/exer5.html': makeStyledDoc('Exercise 5: Tabs', 'Tab panels', '../style.css', `<div class="card"><p>Tabs</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week4_2/exercises/exer6.html': makeStyledDoc('Exercise 6: Accordion', 'FAQ accordion', '../style.css', `<div class="card"><p>Accordion</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          ...week4_2_samples
+        }
+      },
+      {
+        id: 'week5_1',
+        title: 'Week 5 – JavaScript Basics',
+        tasks: [
+          { id: 'w5_t1', text: 'Complete all 5 JavaScript logic, functions & array exercises (exer1–exer5)', done: true },
+          { id: 'w5_t2', text: 'Verify samples 01–04 (Functions, Arrays, Objects, String Methods)', done: true }
+        ],
+        files: {
+          'week5_1/index.html': makeStyledDoc(
+            'Week 5 – JavaScript Fundamentals',
+            'Variables, functions, control flow, objects, and higher-order array methods',
+            'style.css',
+            `<div class="card">
+              <h2>Exercises (exer1 – exer5)</h2>
+              <div class="nav-links">
+                <a href="exercises/exer1.html">exer1: GPA Calculator</a>
+                <a href="exercises/exer2.html">exer2: Array Filter/Sort</a>
+                <a href="exercises/exer3.html">exer3: Unit Converter</a>
+                <a href="exercises/exer4.html">exer4: Fibonacci Generator</a>
+                <a href="exercises/exer5.html">exer5: Shopping Cart Discount</a>
+              </div>
+            </div>`
+          ),
+          'week5_1/style.css': BASE_SHARED_CSS,
+          'week5_1/exercises/exer1.html': makeStyledDoc('Exercise 1: GPA', 'GPA Calc', '../style.css', `<div class="card"><p>GPA</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week5_1/exercises/exer2.html': makeStyledDoc('Exercise 2: Filter', 'Leaderboard', '../style.css', `<div class="card"><p>Leaderboard</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week5_1/exercises/exer3.html': makeStyledDoc('Exercise 3: Converter', 'Temp converter', '../style.css', `<div class="card"><p>Converter</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week5_1/exercises/exer4.html': makeStyledDoc('Exercise 4: Fibonacci', 'Fib seq', '../style.css', `<div class="card"><p>Fibonacci</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week5_1/exercises/exer5.html': makeStyledDoc('Exercise 5: Cart', 'Discount engine', '../style.css', `<div class="card"><p>Cart</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week5_1/samples/sample01.html': makeStyledDoc('Sample 01: Grades', 'Grades', '../style.css', `<div class="card"><p>Grades</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week5_1/samples/sample02.html': makeStyledDoc('Sample 02: Array methods', 'Map filter reduce', '../style.css', `<div class="card"><p>Pipeline</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week5_1/samples/sample03.html': makeStyledDoc('Sample 03: Destructuring', 'Spread', '../style.css', `<div class="card"><p>Spread</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week5_1/samples/sample04.html': makeStyledDoc('Sample 04: Strings', 'Slugs', '../style.css', `<div class="card"><p>Slugs</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`)
+        }
+      },
+      {
+        id: 'week5_2',
+        title: 'Week 5 – Part 2: ES6+ Data Pipelines & Storage',
+        tasks: [
+          { id: 'w5_2_t1', text: 'Complete ES6+ Set/Map, JSON storage & data grouping exercises (exer1–exer4)', done: true }
+        ],
+        files: {
+          'week5_2/index.html': makeStyledDoc(
+            'Week 5 – Part 2: ES6+ Data Structures & Client Persistence',
+            'Set, Map, Array grouping, Date formatting, and structured JSON storage',
+            'style.css',
+            `<div class="card">
+              <h2>Exercises (exer1 – exer4)</h2>
+              <div class="nav-links">
+                <a href="exercises/exer1.html">exer1: Unique Tags (Set)</a>
+                <a href="exercises/exer2.html">exer2: Lookup Map</a>
+                <a href="exercises/exer3.html">exer3: Grouping Data</a>
+                <a href="exercises/exer4.html">exer4: Intl Date Clock</a>
+              </div>
+            </div>`
+          ),
+          'week5_2/style.css': BASE_SHARED_CSS,
+          'week5_2/exercises/exer1.html': makeStyledDoc('Exercise 1: Set', 'Set', '../style.css', `<div class="card"><p>Set</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week5_2/exercises/exer2.html': makeStyledDoc('Exercise 2: Map', 'Map', '../style.css', `<div class="card"><p>Map</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week5_2/exercises/exer3.html': makeStyledDoc('Exercise 3: Grouping', 'Reduce group', '../style.css', `<div class="card"><p>Grouping</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week5_2/exercises/exer4.html': makeStyledDoc('Exercise 4: Date', 'Intl clock', '../style.css', `<div class="card"><p>Date</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`)
+        }
+      },
+      {
+        id: 'week6_1',
+        title: 'Week 6 – Part 1: Async JS, Timers & Promises',
+        tasks: [
+          { id: 'w6_1_t1', text: 'Complete Promises, Promise.all, Timers & Event Loop exercises (exer1–exer4)', done: true }
+        ],
+        files: {
+          'week6_1/index.html': makeStyledDoc(
+            'Week 6 – Part 1: Asynchronous JavaScript & Promises',
+            'Call stack, microtask queue, setTimeout/setInterval, Promises, and Promise.all',
+            'style.css',
+            `<div class="card">
+              <h2>Exercises (exer1 – exer4)</h2>
+              <div class="nav-links">
+                <a href="exercises/exer1.html">exer1: Stopwatch Timer</a>
+                <a href="exercises/exer2.html">exer2: Promise Chain</a>
+                <a href="exercises/exer3.html">exer3: Promise.all Loader</a>
+                <a href="exercises/exer4.html">exer4: Retry Backoff</a>
+              </div>
+            </div>`
+          ),
+          'week6_1/style.css': BASE_SHARED_CSS,
+          'week6_1/exercises/exer1.html': makeStyledDoc('Exercise 1: Stopwatch', 'Timer', '../style.css', `<div class="card"><p>Stopwatch</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week6_1/exercises/exer2.html': makeStyledDoc('Exercise 2: Promises', 'Chaining', '../style.css', `<div class="card"><p>Promises</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week6_1/exercises/exer3.html': makeStyledDoc('Exercise 3: Promise.all', 'Concurrent', '../style.css', `<div class="card"><p>Promise.all</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week6_1/exercises/exer4.html': makeStyledDoc('Exercise 4: Retry', 'Backoff', '../style.css', `<div class="card"><p>Retry</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`)
+        }
+      },
+      {
+        id: 'week6_2',
+        title: 'Week 6 – Part 2: Working with REST APIs',
+        tasks: [
+          { id: 'w6_t1', text: 'Complete all 5 REST API & async/await exercises (exer1–exer5)', done: true },
+          { id: 'w6_t2', text: 'Implement REST API fetch with error handling (sample01–sample06)', done: true }
+        ],
+        files: {
+          'week6_2/index.html': makeStyledDoc(
+            'Week 6 – Working with REST APIs & Async JS',
+            'JSON, Promises, async/await, Fetch API, query filtering, and HTTP error handling',
+            'style.css',
+            `<div class="card">
+              <h2>Exercises (exer1 – exer5)</h2>
+              <div class="nav-links">
+                <a href="exercises/exer1.html">exer1: Weather Dashboard</a>
+                <a href="exercises/exer2.html">exer2: GitHub Explorer</a>
+                <a href="exercises/exer3.html">exer3: Paginated Directory</a>
+                <a href="exercises/exer4.html">exer4: Currency Converter</a>
+                <a href="exercises/exer5.html">exer5: REST CRUD Board</a>
+              </div>
+            </div>`
+          ),
+          'week6_2/style.css': BASE_SHARED_CSS,
+          'week6_2/exercises/exer1.html': makeStyledDoc('Exercise 1: Weather', 'Weather API', '../style.css', `<div class="card"><p>Weather</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week6_2/exercises/exer2.html': makeStyledDoc('Exercise 2: GitHub', 'Repos', '../style.css', `<div class="card"><p>GitHub</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week6_2/exercises/exer3.html': makeStyledDoc('Exercise 3: Pagination', 'Directory', '../style.css', `<div class="card"><p>Pagination</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week6_2/exercises/exer4.html': makeStyledDoc('Exercise 4: FX', 'Currency', '../style.css', `<div class="card"><p>FX</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week6_2/exercises/exer5.html': makeStyledDoc('Exercise 5: CRUD', 'Task board', '../style.css', `<div class="card"><p>CRUD</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week6_2/samples/sample01.html': makeStyledDoc('Sample 01: JSON', 'JSON', '../style.css', `<div class="card"><p>JSON</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week6_2/samples/sample02.html': makeStyledDoc('Sample 02: Async', 'Async', '../style.css', `<div class="card"><p>Async</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week6_2/samples/sample03.html': makeStyledDoc('Sample 03: Directory', 'Users', '../style.css', `<div class="card"><p>Directory</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week6_2/samples/sample04.html': makeStyledDoc('Sample 04: Errors', 'Errors', '../style.css', `<div class="card"><p>Errors</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week6_2/samples/sample05.html': makeStyledDoc('Sample 05: Search', 'Query', '../style.css', `<div class="card"><p>Search</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week6_2/samples/sample06.html': makeStyledDoc('Sample 06: POST', 'POST', '../style.css', `<div class="card"><p>POST</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`)
+        }
+      },
+      {
+        id: 'week7_1',
+        title: 'Week 7 – Book Finder App',
+        tasks: [
+          { id: 'w7_t1', text: 'Build interactive Book Finder with live search, category filter & bookmarks', done: true },
+          { id: 'w7_t2', text: 'Complete all 4 Book Finder sub-exercises (exer1–exer4)', done: true }
+        ],
+        files: {
+          'week7_1/index.html': makeStyledDoc(
+            'Book Finder — Web Engineering Library',
+            'Search curated computer science & web programming titles with instant bookmarking',
+            'style.css',
+            `<div class="card">
+              <h2>Book Finder App</h2>
+              <div class="nav-links">
+                <a href="exercises/exer1.html">exer1: Debounced Search</a>
+                <a href="exercises/exer2.html">exer2: Reading List Storage</a>
+                <a href="exercises/exer3.html">exer3: Star Rating</a>
+                <a href="exercises/exer4.html">exer4: Reading Goal Tracker</a>
+              </div>
+            </div>`
+          ),
+          'week7_1/style.css': BASE_SHARED_CSS,
+          'week7_1/exercises/exer1.html': makeStyledDoc('Exercise 1: Debounce', 'Search debounce', '../style.css', `<div class="card"><p>Debounce</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week7_1/exercises/exer2.html': makeStyledDoc('Exercise 2: Storage', 'Bookmarks', '../style.css', `<div class="card"><p>Storage</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week7_1/exercises/exer3.html': makeStyledDoc('Exercise 3: Rating', 'Star rater', '../style.css', `<div class="card"><p>Rating</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week7_1/exercises/exer4.html': makeStyledDoc('Exercise 4: Goals', 'Goal progress', '../style.css', `<div class="card"><p>Goals</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week7_1/samples/sample01.html': makeStyledDoc('Sample 01: Prototype', 'Card prototype', '../style.css', `<div class="card"><p>Prototype</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`)
+        }
+      },
+      {
+        id: 'week7_2',
+        title: 'Week 7 – Part 2: Interactive Data Dashboard',
+        tasks: [
+          { id: 'w7_2_t1', text: 'Build interactive analytics & study tracker dashboard (exer1–exer4)', done: true }
+        ],
+        files: {
+          'week7_2/index.html': makeStyledDoc(
+            'Week 7 – Part 2: Interactive Study & Analytics Dashboard',
+            'Combining state filtering, dynamic charts, and local persistence for Muhammadmuso Fatkhullaev',
+            'style.css',
+            `<div class="card">
+              <h2>Exercises (exer1 – exer4)</h2>
+              <div class="nav-links">
+                <a href="exercises/exer1.html">exer1: Hours Logger</a>
+                <a href="exercises/exer2.html">exer2: Bar Chart</a>
+                <a href="exercises/exer3.html">exer3: CSV Export</a>
+                <a href="exercises/exer4.html">exer4: Theme Toggle</a>
+              </div>
+            </div>`
+          ),
+          'week7_2/style.css': BASE_SHARED_CSS,
+          'week7_2/exercises/exer1.html': makeStyledDoc('Exercise 1: Logger', 'Hours', '../style.css', `<div class="card"><p>Logger</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week7_2/exercises/exer2.html': makeStyledDoc('Exercise 2: Chart', 'Bar chart', '../style.css', `<div class="card"><p>Chart</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week7_2/exercises/exer3.html': makeStyledDoc('Exercise 3: CSV', 'CSV export', '../style.css', `<div class="card"><p>CSV</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week7_2/exercises/exer4.html': makeStyledDoc('Exercise 4: Theme', 'Theme', '../style.css', `<div class="card"><p>Theme</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`)
+        }
+      },
+      {
+        id: 'week8_1',
+        title: 'Week 8 – Part 1: Form Studio',
+        tasks: [
+          { id: 'w8_t1', text: 'Build real-time validated Form Studio with live JSON payload preview', done: true },
+          { id: 'w8_t2', text: 'Complete all 4 Form Studio exercises (exer1–exer4) & samples', done: true }
+        ],
+        files: {
+          'week8_1/index.html': makeStyledDoc(
+            'Form Studio — Interactive Validation & Payload Builder',
+            'Real-time constraint validation and structured JSON preview for Muhammadmuso Fatkhullaev',
+            'style.css',
+            `<div class="card">
+              <h2>Form Studio</h2>
+              <div class="nav-links">
+                <a href="exercises/exer1.html">exer1: Multi-Step Wizard</a>
+                <a href="exercises/exer2.html">exer2: Regex Validator</a>
+                <a href="exercises/exer3.html">exer3: Dynamic Builder</a>
+                <a href="exercises/exer4.html">exer4: ARIA Errors</a>
+              </div>
+            </div>`
+          ),
+          'week8_1/style.css': BASE_SHARED_CSS,
+          'week8_1/exercises/exer1.html': makeStyledDoc('Exercise 1: Wizard', 'Wizard', '../style.css', `<div class="card"><p>Wizard</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week8_1/exercises/exer2.html': makeStyledDoc('Exercise 2: Regex', 'Validator', '../style.css', `<div class="card"><p>Regex</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week8_1/exercises/exer3.html': makeStyledDoc('Exercise 3: Dynamic', 'Builder', '../style.css', `<div class="card"><p>Dynamic</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week8_1/exercises/exer4.html': makeStyledDoc('Exercise 4: ARIA', 'Errors', '../style.css', `<div class="card"><p>ARIA</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week8_1/samples/sample01.html': makeStyledDoc('Sample 01: Constraint', 'API', '../style.css', `<div class="card"><p>Constraint</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week8_1/samples/sample02.html': makeStyledDoc('Sample 02: Mask', 'Mask', '../style.css', `<div class="card"><p>Mask</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week8_1/samples/sample03.html': makeStyledDoc('Sample 03: Fields', 'Fields', '../style.css', `<div class="card"><p>Fields</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`)
+        }
+      },
+      {
+        id: 'week8_2',
+        title: 'Week 8 – Part 2: Multi-Step Wizard & State',
+        tasks: [
+          { id: 'w8_2_t1', text: 'Implement multi-step checkout/enrollment flow with draft auto-save (exer1–exer4)', done: true }
+        ],
+        files: {
+          'week8_2/index.html': makeStyledDoc(
+            'Week 8 – Part 2: Multi-Step Form Flows & State Machines',
+            'Guard clauses, step validation, and FormData serialization',
+            'style.css',
+            `<div class="card">
+              <h2>Exercises (exer1 – exer4)</h2>
+              <div class="nav-links">
+                <a href="exercises/exer1.html">exer1: Progress Bar</a>
+                <a href="exercises/exer2.html">exer2: FormData API</a>
+                <a href="exercises/exer3.html">exer3: Dependencies</a>
+                <a href="exercises/exer4.html">exer4: Dirty State</a>
+              </div>
+            </div>`
+          ),
+          'week8_2/style.css': BASE_SHARED_CSS,
+          'week8_2/exercises/exer1.html': makeStyledDoc('Exercise 1: Progress', 'Progress', '../style.css', `<div class="card"><p>Progress</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week8_2/exercises/exer2.html': makeStyledDoc('Exercise 2: FormData', 'FormData', '../style.css', `<div class="card"><p>FormData</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week8_2/exercises/exer3.html': makeStyledDoc('Exercise 3: Toggle', 'Dependencies', '../style.css', `<div class="card"><p>Toggle</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week8_2/exercises/exer4.html': makeStyledDoc('Exercise 4: Dirty', 'Tracker', '../style.css', `<div class="card"><p>Dirty</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`)
+        }
+      },
+      {
+        id: 'week9_1',
+        title: 'Week 9 – Part 1: Accessibility Labs',
+        tasks: [
+          { id: 'w9_1_t1', text: 'Bundle educational SVG diagrams in week9_1/assets/ (campus, enrollment, logo, wave)', done: true },
+          { id: 'w9_1_t2', text: 'Complete all 4 Accessibility Lab exercises (exer1–exer4) & samples', done: true }
+        ],
+        files: {
+          'week9_1/index.html': makeStyledDoc('Week 9 – Part 1: Accessibility Labs', 'WCAG 2.1 AA Labs', 'style.css', `<div class="card"><h2>A11y Labs</h2><div class="nav-links"><a href="exercises/exer1.html">exer1</a><a href="exercises/exer2.html">exer2</a><a href="exercises/exer3.html">exer3</a><a href="exercises/exer4.html">exer4</a></div></div>`),
+          'week9_1/style.css': BASE_SHARED_CSS,
+          'week9_1/assets/campus.svg': SVG_CAMPUS,
+          'week9_1/assets/enrollment.svg': SVG_ENROLLMENT,
+          'week9_1/assets/logo.svg': SVG_LOGO,
+          'week9_1/assets/wave.svg': SVG_WAVE,
+          'week9_1/exercises/exer1.html': makeStyledDoc('Exercise 1: Skip Link', 'Skip link', '../style.css', `<div class="card"><p>Skip</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week9_1/exercises/exer2.html': makeStyledDoc('Exercise 2: SVGs', 'SVGs', '../style.css', `<div class="card"><p>SVGs</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week9_1/exercises/exer3.html': makeStyledDoc('Exercise 3: ARIA Tabs', 'Tabs', '../style.css', `<div class="card"><p>Tabs</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week9_1/exercises/exer4.html': makeStyledDoc('Exercise 4: Contrast', 'Contrast', '../style.css', `<div class="card"><p>Contrast</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week9_1/samples/sample01.html': makeStyledDoc('Sample 01: Landmarks', 'Landmarks', '../style.css', `<div class="card"><p>Landmarks</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week9_1/samples/sample02.html': makeStyledDoc('Sample 02: Diagrams', 'Diagrams', '../style.css', `<div class="card"><p>Diagrams</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week9_1/samples/sample03.html': makeStyledDoc('Sample 03: Live', 'Live', '../style.css', `<div class="card"><p>Live</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week9_1/samples/sample04.html': makeStyledDoc('Sample 04: Labels', 'Labels', '../style.css', `<div class="card"><p>Labels</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`)
+        }
+      },
+      {
+        id: 'week9_2',
+        title: 'Week 9 – Part 2: Accessibility Audit',
+        tasks: [
+          { id: 'w9_2_t1', text: 'Complete WCAG 2.1 AA audit checklist & all 3 remediation exercises (exer1–exer3)', done: true }
+        ],
+        files: {
+          'week9_2/index.html': makeStyledDoc('Week 9 – Part 2: Accessibility Audit', 'Audit findings', 'style.css', `<div class="card"><h2>Audit Report</h2><div class="nav-links"><a href="exercises/exer1.html">exer1</a><a href="exercises/exer2.html">exer2</a><a href="exercises/exer3.html">exer3</a></div></div>`),
+          'week9_2/style.css': BASE_SHARED_CSS,
+          'week9_2/exercises/exer1.html': makeStyledDoc('Exercise 1: Checklist', 'Checklist', '../style.css', `<div class="card"><p>Checklist</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week9_2/exercises/exer2.html': makeStyledDoc('Exercise 2: Remediation', 'Remediation', '../style.css', `<div class="card"><p>Remediation</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week9_2/exercises/exer3.html': makeStyledDoc('Exercise 3: Headings', 'Outline', '../style.css', `<div class="card"><p>Headings</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`)
+        }
+      },
+      {
+        id: 'week10_1',
+        title: 'Week 10 – Git, GitHub & Pages',
+        tasks: [
+          { id: 'w10_t1', text: 'Configure Git branching workflow, GitHub Pages & all 4 exercises (exer1–exer4)', done: true }
+        ],
+        files: {
+          'week10_1/index.html': makeStyledDoc('Week 10 – Git & GitHub', 'Version control', 'style.css', `<div class="card"><h2>Git Hub</h2><div class="nav-links"><a href="exercises/exer1.html">exer1</a><a href="exercises/exer2.html">exer2</a><a href="exercises/exer3.html">exer3</a><a href="exercises/exer4.html">exer4</a></div></div>`),
+          'week10_1/style.css': BASE_SHARED_CSS,
+          'week10_1/exercises/exer1.html': makeStyledDoc('Exercise 1: Branching', 'Branching', '../style.css', `<div class="card"><p>Branching</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week10_1/exercises/exer2.html': makeStyledDoc('Exercise 2: Commits', 'Commits', '../style.css', `<div class="card"><p>Commits</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week10_1/exercises/exer3.html': makeStyledDoc('Exercise 3: PR Checklist', 'PR', '../style.css', `<div class="card"><p>PR</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week10_1/exercises/exer4.html': makeStyledDoc('Exercise 4: Pages', 'Pages', '../style.css', `<div class="card"><p>Pages</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`)
+        }
+      },
+      {
+        id: 'week10_2',
+        title: 'Week 10 – Part 2: Vite Bundling & CI/CD',
+        tasks: [
+          { id: 'w10_2_t1', text: 'Configure Vite production build, environment variables & GitHub Actions (exer1–exer4)', done: true }
+        ],
+        files: {
+          'week10_2/index.html': makeStyledDoc('Week 10 – Part 2: Vite & CI/CD', 'Bundling', 'style.css', `<div class="card"><h2>Vite CI/CD</h2><div class="nav-links"><a href="exercises/exer1.html">exer1</a><a href="exercises/exer2.html">exer2</a><a href="exercises/exer3.html">exer3</a><a href="exercises/exer4.html">exer4</a></div></div>`),
+          'week10_2/style.css': BASE_SHARED_CSS,
+          'week10_2/exercises/exer1.html': makeStyledDoc('Exercise 1: Vite Base', 'Base', '../style.css', `<div class="card"><p>Vite base</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week10_2/exercises/exer2.html': makeStyledDoc('Exercise 2: Actions', 'Actions', '../style.css', `<div class="card"><p>Actions</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week10_2/exercises/exer3.html': makeStyledDoc('Exercise 3: Env', 'Env', '../style.css', `<div class="card"><p>Env</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`),
+          'week10_2/exercises/exer4.html': makeStyledDoc('Exercise 4: Dist', 'Dist', '../style.css', `<div class="card"><p>Dist</p><div class="nav-links"><a href="../index.html">← Back</a></div></div>`)
+        }
+      },
+      {
+        id: 'week11',
+        title: 'Week 11 – React Components & Props',
+        tasks: [
+          { id: 'w11_t1', text: 'Implement all 8 React component & props exercises (E1–E8)', done: true },
+          { id: 'w11_t2', text: 'Verify interactive Sign In / Sign Out toggle & MF ProfileCard', done: true }
+        ],
+        files: {
+          'week11/index.html': `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Week 11 — React Components & Props | Muhammadmuso Fatkhullaev (202637351)</title>
+  <link rel="stylesheet" href="src/style.css" />
+</head>
+<body>
+  <header class="w11-hero">
+    <div class="w11-container">
+      <span class="w11-pill">MF • Muhammadmuso Fatkhullaev • ID: 202637351</span>
+      <h1>Week 11 — React Components &amp; Props</h1>
+      <p>Interactive Live Preview of Exercises E1–E8</p>
+    </div>
+  </header>
+  <main class="w11-container w11-grid">
+    <section class="ex-card">
+      <div class="ex-header"><span class="ex-badge">E1</span><h2 class="ex-title">Greeting Component</h2></div>
+      <div class="comp-box">
+        <p style="font-size:12px;color:#5eead4;font-weight:600">Welcome Back • ID: 202637351</p>
+        <h3 style="font-size:1.1rem;margin:4px 0">Hello, Muhammadmuso Fatkhullaev!</h3>
+      </div>
+    </section>
+  </main>
+</body>
+</html>`,
+          'week11/src/style.css': `:root { --bg: #0f172a; --surface: #1e293b; --accent: #5eead4; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: #f8fafc; margin: 0; padding: 20px; }
+.w11-container { max-width: 960px; margin: 0 auto; }
+.w11-hero { background: #134e4a; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+.ex-card { background: var(--surface); border-radius: 12px; padding: 18px; margin-bottom: 14px; }
+.ex-badge { background: rgba(94,234,212,0.2); color: var(--accent); padding: 2px 8px; border-radius: 6px; font-weight: 700; font-size: 11px; }
+.comp-box { background: #0b1120; padding: 12px; border-radius: 8px; margin-top: 10px; }`,
+          'week11/exercises/exer1.html': makeStyledDoc('Exercise 1: Greeting', 'Greeting', '../src/style.css', `<div class="card"><h2>Greeting</h2><div class="nav-links"><a href="../index.html">← Back</a></div></div>`)
+        }
+      }
+    ];
+
+    let state = {
+      weeks: [],
+      expandedWeeks: {},
+      selectedPath: 'week1_1/index.html',
+      activeTab: 'preview',
+      searchQuery: '',
+      viewportWidth: '100%'
+    };
+
+    function getDefaultExpandedWeeks(weeksList) {
+      const map = {};
+      (weeksList || []).forEach(w => { map[w.id] = true; });
+      return map;
+    }
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed.weeks) && parsed.weeks.length > 0) {
+            state.weeks = parsed.weeks;
+            state.expandedWeeks = parsed.expandedWeeks || getDefaultExpandedWeeks(parsed.weeks);
+            state.selectedPath = parsed.selectedPath || parsed.weeks[0].id + '/index.html';
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('Load state error:', err);
+      }
+      state.weeks = JSON.parse(JSON.stringify(INITIAL_WEEKS));
+      state.expandedWeeks = getDefaultExpandedWeeks(state.weeks);
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          weeks: state.weeks,
+          expandedWeeks: state.expandedWeeks,
+          selectedPath: state.selectedPath
+        }));
+      } catch (err) {
+        console.warn('Save state error:', err);
+      }
+    }
+
+    function getAllFilesMap() {
+      const map = {};
+      for (const week of state.weeks) {
+        Object.assign(map, week.files || {});
+      }
+      return map;
+    }
+
+    function getFileExtension(path) {
+      const base = path.split('/').pop() || '';
+      if (base.startsWith('.') && !base.slice(1).includes('.')) return base.slice(1).toLowerCase();
+      const idx = base.lastIndexOf('.');
+      return idx !== -1 ? base.slice(idx + 1).toLowerCase() : 'txt';
+    }
+
+    function resolveRelativePath(baseFilePath, relHref) {
+      if (!relHref) return '';
+      const clean = relHref.split('#')[0].split('?')[0].trim();
+      if (!clean || /^(https?:|data:|blob:|mailto:|tel:|javascript:)/i.test(clean)) return clean;
+      const stack = baseFilePath.split('/').slice(0, -1);
+      for (const part of clean.split('/')) {
+        if (!part || part === '.') continue;
+        if (part === '..') { if (stack.length > 0) stack.pop(); }
+        else { stack.push(part); }
+      }
+      return stack.join('/');
+    }
+
+    function buildResolvedHtml(filePath) {
+      const allFiles = getAllFilesMap();
+      let matchedAssets = false;
+      let rawHtml = allFiles[filePath] || '<!DOCTYPE html><html><body><p>File not found.</p></body></html>';
+
+      rawHtml = rawHtml.replace(/<link\b[^>]*>/gi, (tag) => {
+        if (!/rel\s*=\s*["']stylesheet["']/i.test(tag)) return tag;
+        const hrefMatch = tag.match(/href\s*=\s*["']([^"']+)["']/i);
+        if (!hrefMatch) return tag;
+        const resolvedCss = resolveRelativePath(filePath, hrefMatch[1]);
+        const weekFolder = filePath.split('/')[0];
+        const cssCode = allFiles[resolvedCss] || allFiles[`${weekFolder}/style.css`];
+        if (cssCode) {
+          matchedAssets = true;
+          return `<style data-resolved-css="${resolvedCss}">\n${cssCode}\n</style>`;
+        }
+        return tag;
+      });
+
+      rawHtml = rawHtml.replace(/(src\s*=\s*["'])([^"']+\.svg(?:\?[^"']*)?)(["'])/gi, (full, prefix, rawSrc, suffix) => {
+        const resolvedSvg = resolveRelativePath(filePath, rawSrc);
+        const svgContent = allFiles[resolvedSvg];
+        if (svgContent) {
+          matchedAssets = true;
+          return `${prefix}data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgContent)}${suffix}`;
+        }
+        return full;
+      });
+
+      rawHtml = rawHtml.replace(/<script\b([^>]*?)\bsrc\s*=\s*["']([^"']+)["']([^>]*)><\/script>/gi, (full, beforeSrc, rawSrc, afterSrc) => {
+        if (/^(https?:|data:|blob:)/i.test(rawSrc.trim())) return full;
+        const resolvedJs = resolveRelativePath(filePath, rawSrc.replace(/^\/+/, ''));
+        if (allFiles[resolvedJs]) {
+          matchedAssets = true;
+          return `<script${beforeSrc}${afterSrc}>\n${allFiles[resolvedJs].replace(/<\/script>/gi, '<\\/script>')}\n<\/script>`;
+        }
+        return `<!-- Unresolved script skipped: ${rawSrc} -->`;
+      });
+
+      const navBridgeScript = `<script>
+        window.__HW_CURRENT_PATH__ = ${JSON.stringify(filePath)};
+        document.addEventListener('click', function(e) {
+          const anchor = e.target.closest('a[href]');
+          if (!anchor) return;
+          const href = anchor.getAttribute('href');
+          if (!href || href.startsWith('#') || /^(https?:|data:|blob:|mailto:|tel:|javascript:)/i.test(href)) return;
+          e.preventDefault();
+          window.parent.postMessage({ type: 'hw-viewer-navigate', fromPath: window.__HW_CURRENT_PATH__, href: href }, '*');
+        });
+      <\/script>`;
+
+      if (/<\/body>/i.test(rawHtml)) {
+        rawHtml = rawHtml.replace(/<\/body>/i, `${navBridgeScript}\n</body>`);
+      } else {
+        rawHtml += `\n${navBridgeScript}`;
+      }
+
+      return { html: rawHtml, matchedAssets };
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastText').textContent = message;
+      toast.classList.remove('opacity-0', 'translate-y-2');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+      }, 2400);
+    }
+
+    function renderSidebar() {
+      const container = document.getElementById('weekTreeContainer');
+      const query = state.searchQuery.trim().toLowerCase();
+      const allFiles = getAllFilesMap();
+      document.getElementById('fileCountLabel').textContent = `${Object.keys(allFiles).length} files bundled`;
+
+      let totalTasks = 0, doneTasks = 0;
+      state.weeks.forEach(w => {
+        (w.tasks || []).forEach(t => { totalTasks++; if (t.done) doneTasks++; });
+      });
+      document.getElementById('overallProgressBadge').textContent = `${doneTasks}/${totalTasks}`;
+
+      container.innerHTML = '';
+
+      state.weeks.forEach((week) => {
+        const filePaths = Object.keys(week.files || {});
+        const matchingFiles = query ? filePaths.filter(p => p.toLowerCase().includes(query) || week.title.toLowerCase().includes(query)) : filePaths;
+        const matchingTasks = query ? (week.tasks || []).filter(t => t.text.toLowerCase().includes(query)) : (week.tasks || []);
+
+        if (query && matchingFiles.length === 0 && matchingTasks.length === 0) return;
+
+        const isExpanded = query ? true : !!state.expandedWeeks[week.id];
+        const weekDone = (week.tasks || []).filter(t => t.done).length;
+
+        const section = document.createElement('div');
+        section.className = 'rounded-xl border border-[#26303d]/80 bg-[#0d1117]/60 overflow-hidden';
+
+        const headerBtn = document.createElement('button');
+        headerBtn.type = 'button';
+        headerBtn.className = 'w-full px-3 py-2.5 flex items-center justify-between gap-2 text-left hover:bg-[#1c2430] transition';
+        headerBtn.innerHTML = `
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="text-[10px] text-[#5eead4] transition-transform ${isExpanded ? 'rotate-90' : ''}">▶</span>
+            <span class="text-xs font-semibold text-slate-100 truncate">${week.title}</span>
+          </div>
+          <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#151b23] text-slate-400 shrink-0">${matchingFiles.length}f</span>
+        `;
+        headerBtn.onclick = () => {
+          state.expandedWeeks[week.id] = !isExpanded;
+          saveState();
+          renderSidebar();
+        };
+        section.appendChild(headerBtn);
+
+        if (isExpanded) {
+          const body = document.createElement('div');
+          body.className = 'px-2.5 pb-2.5 pt-1 border-t border-[#1e2733] space-y-2';
+
+          if (matchingTasks.length > 0) {
+            const taskList = document.createElement('div');
+            taskList.className = 'space-y-1 bg-[#151b23]/80 rounded-lg p-2 border border-[#222c3a]';
+            taskList.innerHTML = `<div class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1 flex justify-between"><span>Checklist</span><span>${weekDone}/${week.tasks.length}</span></div>`;
+            matchingTasks.forEach(task => {
+              const row = document.createElement('label');
+              row.className = 'flex items-start gap-2 text-[11px] cursor-pointer text-slate-300 hover:text-white leading-snug py-0.5';
+              row.innerHTML = `<input type="checkbox" ${task.done ? 'checked' : ''} class="mt-0.5 accent-[#5eead4] rounded cursor-pointer" /><span class="${task.done ? 'line-through text-slate-500' : ''}">${task.text}</span>`;
+              row.querySelector('input').onchange = (e) => {
+                task.done = e.target.checked;
+                saveState();
+                renderSidebar();
+              };
+              taskList.appendChild(row);
+            });
+            body.appendChild(taskList);
+          }
+
+          const filesList = document.createElement('div');
+          filesList.className = 'space-y-0.5';
+          matchingFiles.forEach(fullPath => {
+            const relLabel = fullPath.startsWith(week.id + '/') ? fullPath.slice(week.id.length + 1) : fullPath;
+            const ext = getFileExtension(fullPath);
+            const isSelected = state.selectedPath === fullPath;
+
+            const fileBtn = document.createElement('button');
+            fileBtn.type = 'button';
+            fileBtn.className = `w-full px-2 py-1.5 rounded-lg flex items-center justify-between gap-2 text-left text-xs transition ${
+              isSelected ? 'bg-[#5eead4]/15 text-[#5eead4] border border-[#5eead4]/35 font-medium' : 'text-slate-300 hover:bg-[#1c2430] hover:text-white border border-transparent'
+            }`;
+            fileBtn.innerHTML = `<span class="truncate font-mono text-[11.5px]">${relLabel}</span><span class="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded shrink-0 bg-slate-500/15 text-slate-300">${ext}</span>`;
+            fileBtn.onclick = () => {
+              selectFile(fullPath);
+              if (window.innerWidth < 1024) setMobileSidebarOpen(false);
+            };
+            filesList.appendChild(fileBtn);
+          });
+          body.appendChild(filesList);
+          section.appendChild(body);
+        }
+
+        container.appendChild(section);
+      });
+    }
+
+    function selectFile(filePath) {
+      const allFiles = getAllFilesMap();
+      if (!allFiles[filePath]) return;
+      state.selectedPath = filePath;
+      const weekId = filePath.split('/')[0];
+      state.expandedWeeks[weekId] = true;
+      const ext = getFileExtension(filePath);
+      state.activeTab = (ext === 'html' || ext === 'svg') ? 'preview' : 'code';
+      saveState();
+      renderSidebar();
+      renderViewer();
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function renderViewer() {
+      const allFiles = getAllFilesMap();
+      const filePath = state.selectedPath;
+      const content = allFiles[filePath] || '';
+      const ext = getFileExtension(filePath);
+
+      document.getElementById('currentFilePath').textContent = filePath;
+      document.getElementById('fileTypeBadge').textContent = ext.toUpperCase();
+
+      const previewStage = document.getElementById('previewStage');
+      const svgStage = document.getElementById('svgStage');
+      const codeStage = document.getElementById('codeStage');
+      const viewportControls = document.getElementById('viewportControls');
+      const assetMatchPill = document.getElementById('assetMatchPill');
+
+      const tabPreviewBtn = document.getElementById('tabPreviewBtn');
+      const tabCodeBtn = document.getElementById('tabCodeBtn');
+
+      if (state.activeTab === 'preview') {
+        tabPreviewBtn.className = 'px-3 py-1 rounded-md text-xs font-medium transition bg-[#5eead4] text-[#0d1117]';
+        tabCodeBtn.className = 'px-3 py-1 rounded-md text-xs font-medium transition text-slate-300 hover:text-white';
+      } else {
+        tabCodeBtn.className = 'px-3 py-1 rounded-md text-xs font-medium transition bg-[#5eead4] text-[#0d1117]';
+        tabPreviewBtn.className = 'px-3 py-1 rounded-md text-xs font-medium transition text-slate-300 hover:text-white';
+      }
+
+      const lines = content.split('\n');
+      document.getElementById('codeTableBody').innerHTML = lines.map((l, i) => `<tr><td class="line-num">${i + 1}</td><td class="line-code">${escapeHtml(l) || ' '}</td></tr>`).join('');
+
+      if (state.activeTab === 'code') {
+        previewStage.classList.add('hidden');
+        svgStage.classList.add('hidden');
+        svgStage.classList.remove('flex');
+        codeStage.classList.remove('hidden');
+        viewportControls.classList.add('hidden');
+        assetMatchPill.classList.add('hidden');
+        return;
+      }
+
+      codeStage.classList.add('hidden');
+      if (ext === 'svg') {
+        previewStage.classList.add('hidden');
+        viewportControls.classList.add('hidden');
+        assetMatchPill.classList.add('hidden');
+        svgStage.classList.remove('hidden');
+        svgStage.classList.add('flex');
+        document.getElementById('svgPathTitle').textContent = filePath;
+        document.getElementById('svgRenderContainer').innerHTML = content;
+        return;
+      }
+
+      svgStage.classList.add('hidden');
+      svgStage.classList.remove('flex');
+      previewStage.classList.remove('hidden');
+      viewportControls.classList.remove('hidden');
+
+      const { html, matchedAssets } = buildResolvedHtml(filePath);
+      if (matchedAssets) assetMatchPill.classList.remove('hidden');
+      else assetMatchPill.classList.add('hidden');
+
+      const frame = document.getElementById('previewFrame');
+      frame.style.width = state.viewportWidth;
+      frame.srcdoc = html;
+    }
+
+    window.addEventListener('message', (event) => {
+      if (!event.data || event.data.type !== 'hw-viewer-navigate') return;
+      const resolved = resolveRelativePath(event.data.fromPath, event.data.href);
+      const allFiles = getAllFilesMap();
+      if (allFiles[resolved]) selectFile(resolved);
+      else if (allFiles[`${resolved}/index.html`]) selectFile(`${resolved}/index.html`);
+    });
+
+    document.getElementById('tabPreviewBtn').onclick = () => {
+      state.activeTab = 'preview';
+      renderViewer();
+    };
+    document.getElementById('tabCodeBtn').onclick = () => {
+      state.activeTab = 'code';
+      renderViewer();
+    };
+
+    document.querySelectorAll('.vp-btn').forEach(btn => {
+      btn.onclick = () => {
+        state.viewportWidth = btn.dataset.vp;
+        document.querySelectorAll('.vp-btn').forEach(b => {
+          b.className = b === btn ? 'vp-btn px-2 py-1 rounded-md bg-[#1c2430] text-[#5eead4] font-medium transition' : 'vp-btn px-2 py-1 rounded-md text-slate-400 hover:text-slate-200 transition';
+        });
+        document.getElementById('previewFrame').style.width = state.viewportWidth;
+      };
+    });
+
+    document.getElementById('copyCodeBtn').onclick = () => {
+      const text = getAllFilesMap()[state.selectedPath] || '';
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); showToast('Copied to clipboard'); } catch(e){}
+      document.body.removeChild(ta);
+    };
+
+    document.getElementById('openRawBtn').onclick = () => {
+      const allFiles = getAllFilesMap();
+      const ext = getFileExtension(state.selectedPath);
+      const blob = new Blob([ext === 'html' ? buildResolvedHtml(state.selectedPath).html : (allFiles[state.selectedPath] || '')], { type: ext === 'html' ? 'text/html;charset=utf-8' : 'text/plain;charset=utf-8' });
+      window.open(URL.createObjectURL(blob), '_blank', 'noopener,noreferrer');
+    };
+
+    const searchInput = document.getElementById('searchInput');
+    const clearSearchBtn = document.getElementById('clearSearchBtn');
+    searchInput.addEventListener('input', () => {
+      state.searchQuery = searchInput.value;
+      clearSearchBtn.classList.toggle('hidden', !state.searchQuery);
+      renderSidebar();
+    });
+    clearSearchBtn.onclick = () => {
+      state.searchQuery = '';
+      searchInput.value = '';
+      clearSearchBtn.classList.add('hidden');
+      renderSidebar();
+    };
+
+    document.getElementById('toggleAllWeeksBtn').onclick = () => {
+      const anyExpanded = state.weeks.some(w => !!state.expandedWeeks[w.id]);
+      const nextState = !anyExpanded;
+      state.weeks.forEach(w => { state.expandedWeeks[w.id] = nextState; });
+      document.getElementById('toggleAllWeeksBtn').textContent = nextState ? 'Collapse' : 'Expand All';
+      saveState();
+      renderSidebar();
+    };
+
+    function setMobileSidebarOpen(open) {
+      const sidebar = document.getElementById('sidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      if (window.innerWidth < 1024) {
+        sidebar.classList.toggle('-translate-x-full', !open);
+        backdrop.classList.toggle('hidden', !open);
+      } else {
+        sidebar.classList.toggle('hidden', !open);
+      }
+    }
+    document.getElementById('toggleSidebarBtn').onclick = () => {
+      const sidebar = document.getElementById('sidebar');
+      if (window.innerWidth < 1024) setMobileSidebarOpen(sidebar.classList.contains('-translate-x-full'));
+      else sidebar.classList.toggle('hidden');
+    };
+    document.getElementById('sidebarBackdrop').onclick = () => setMobileSidebarOpen(false);
+
+    function populateWeekSelects() {
+      const opts = state.weeks.map(w => `<option value="${w.id}">${w.title}</option>`).join('');
+      document.getElementById('taskWeekSelect').innerHTML = opts;
+      document.getElementById('codeWeekSelect').innerHTML = opts;
+    }
+
+    function openModal(id) {
+      populateWeekSelects();
+      const m = document.getElementById(id);
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+    }
+    function closeModal(id) {
+      const m = document.getElementById(id);
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    }
+
+    document.getElementById('openWeekModalBtn').onclick = () => openModal('weekModal');
+    document.getElementById('openTaskModalBtn').onclick = () => openModal('taskModal');
+    document.getElementById('openCodeModalBtn').onclick = () => openModal('codeModal');
+    document.querySelectorAll('[data-close-modal]').forEach(b => {
+      b.onclick = () => closeModal(b.dataset.closeModal);
+    });
+
+    document.getElementById('weekForm').onsubmit = (e) => {
+      e.preventDefault();
+      const rawId = document.getElementById('newWeekId').value.trim().replace(/[^a-zA-Z0-9_-]/g, '');
+      const title = document.getElementById('newWeekTitle').value.trim();
+      const taskText = document.getElementById('newWeekTask').value.trim();
+      if (!rawId || !title) return;
+
+      let week = state.weeks.find(w => w.id === rawId);
+      if (!week) {
+        week = { id: rawId, title, tasks: taskText ? [{ id: `${rawId}_t1`, text: taskText, done: false }] : [], files: {} };
+        state.weeks.push(week);
+      }
+      week.files[`${rawId}/index.html`] = makeStyledDoc(title, `Created by ${STUDENT.name}`, '', `<style>${BASE_SHARED_CSS}</style><div class="card"><h2>${title}</h2></div>`);
+      state.expandedWeeks[rawId] = true;
+      saveState();
+      closeModal('weekModal');
+      e.target.reset();
+      selectFile(`${rawId}/index.html`);
+      showToast(`Created week: ${title}`);
+    };
+
+    document.getElementById('taskForm').onsubmit = (e) => {
+      e.preventDefault();
+      const weekId = document.getElementById('taskWeekSelect').value;
+      const text = document.getElementById('newTaskLabel').value.trim();
+      const week = state.weeks.find(w => w.id === weekId);
+      if (week && text) {
+        week.tasks.push({ id: `${weekId}_t_${Date.now()}`, text, done: false });
+        state.expandedWeeks[weekId] = true;
+        saveState();
+        renderSidebar();
+        showToast('Task added');
+      }
+      closeModal('taskModal');
+      e.target.reset();
+    };
+
+    document.getElementById('codeForm').onsubmit = (e) => {
+      e.preventDefault();
+      const weekId = document.getElementById('codeWeekSelect').value;
+      const relPath = document.getElementById('newCodePath').value.trim().replace(/^\/+/, '');
+      const content = document.getElementById('newCodeContent').value;
+      const week = state.weeks.find(w => w.id === weekId);
+      if (week && relPath) {
+        const fullPath = relPath.startsWith(`${weekId}/`) ? relPath : `${weekId}/${relPath}`;
+        week.files[fullPath] = content;
+        state.expandedWeeks[weekId] = true;
+        saveState();
+        closeModal('codeModal');
+        e.target.reset();
+        selectFile(fullPath);
+        showToast(`Saved ${fullPath}`);
+      }
+    };
+
+    document.getElementById('importFilesBtn').onclick = () => document.getElementById('singleFileInput').click();
+    document.getElementById('singleFileInput').addEventListener('change', async (e) => {
+      const files = Array.from(e.target.files || []);
+      if (!files.length) return;
+      const weekId = state.selectedPath.split('/')[0] || state.weeks[0].id;
+      const week = state.weeks.find(w => w.id === weekId) || state.weeks[0];
+      let lastPath = '';
+      for (const f of files) {
+        const text = await f.text();
+        const fullPath = f.name.startsWith(`${week.id}/`) ? f.name : `${week.id}/${f.name}`;
+        week.files[fullPath] = text;
+        lastPath = fullPath;
+      }
+      saveState();
+      renderSidebar();
+      if (lastPath) selectFile(lastPath);
+      showToast(`Imported ${files.length} file(s)`);
+      e.target.value = '';
+    });
+
+    document.getElementById('loadFolderBtn').onclick = () => document.getElementById('folderInput').click();
+    document.getElementById('folderInput').addEventListener('change', async (e) => {
+      const files = Array.from(e.target.files || []);
+      if (!files.length) return;
+      let count = 0;
+      for (const f of files) {
+        const rel = (f.webkitRelativePath || f.name).replace(/^[^/]+\//, '');
+        if (rel.includes('node_modules/')) continue;
+        const text = await f.text();
+        const weekId = rel.includes('/') ? rel.split('/')[0] : 'imported_tasks';
+        let week = state.weeks.find(w => w.id === weekId);
+        if (!week) {
+          week = { id: weekId, title: `Imported: ${weekId}`, tasks: [{ id: `${weekId}_t1`, text: 'Review imported folder tasks', done: false }], files: {} };
+          state.weeks.push(week);
+        }
+        const fullPath = rel.includes('/') ? rel : `${weekId}/${rel}`;
+        week.files[fullPath] = text;
+        count++;
+      }
+      saveState();
+      renderSidebar();
+      showToast(`Successfully imported ${count} files!`);
+      e.target.value = '';
+    });
+
+    document.getElementById('exportRepoBtn').onclick = () => {
+      const serialized = JSON.stringify(state.weeks, null, 2).replace(/<\/script>/gi, '<\\/script>');
+      const updated = '<!DOCTYPE html>\n' + document.documentElement.outerHTML.replace(
+        /const INITIAL_WEEKS = \[[\s\S]*?\n    \];/,
+        `const INITIAL_WEEKS = ${serialized};`
+      );
+      const blob = new Blob([updated], { type: 'text/html;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'index.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast('Downloaded index.html ready for GitHub push!');
+    };
+
+    document.getElementById('resetDemoBtn').onclick = () => {
+      localStorage.removeItem(STORAGE_KEY);
+      state.weeks = JSON.parse(JSON.stringify(INITIAL_WEEKS));
+      state.expandedWeeks = getDefaultExpandedWeeks(state.weeks);
+      selectFile('week1_1/index.html');
+      showToast('Reset viewer state');
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.innerWidth < 1024) document.getElementById('sidebar').classList.add('-translate-x-full');
+      loadState();
+      renderSidebar();
+      renderViewer();
+    });
+  </script>
+</body>
+</html>
