@@ -1,1 +1,0 @@
-Updated week 11 tracker entry with the provided React/HTML/CSS coursework files.
