@@ -8,7 +8,7 @@
   <style>
     :root{color-scheme:dark;--page:#101827;--panel:#172337;--ink:#f3f6fb;--muted:#a9b5c7;--line:#34445c;--accent:#ffbd59;--cyan:#7cdece;--danger:#ff8b87}
     *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 10% 0%,#253656 0,transparent 36rem),var(--page);color:var(--ink);font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+    body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 10% 0%,#253656 0,transparent 36rem),var(--page);color:var(--ink);font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
     main{width:min(1120px,100% - 32px);margin:0 auto;padding:40px 0 64px}
     .masthead{padding:clamp(24px,5vw,46px);border:1px solid var(--line);border-radius:26px;background:linear-gradient(125deg,#1d2b41,#142033)}
     .eyebrow{margin:0 0 12px;color:var(--cyan);font-size:.75rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase}
@@ -37,14 +37,6 @@
     .viewer-label{margin-left:auto;color:var(--muted);font-size:.72rem}
     .source{max-height:520px;overflow:auto;margin:0;padding:16px;color:#dce7f5;font:12px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
     .preview{display:block;width:100%;height:min(70vh,620px);min-height:300px;border:0;background:#fff}
-    .markdown-preview{max-height:620px;overflow:auto;padding:20px;background:#fff;color:#20242b;font:16px/1.65 system-ui,sans-serif;overflow-wrap:anywhere}
-    .markdown-preview h1,.markdown-preview h2,.markdown-preview h3{margin:1em 0 .45em;line-height:1.2;letter-spacing:normal}
-    .markdown-preview h1{font-size:2em}.markdown-preview h2{font-size:1.55em}.markdown-preview h3{font-size:1.2em}
-    .markdown-preview pre{overflow:auto;padding:14px;border-radius:8px;background:#111827;color:#e5e7eb;font:13px/1.55 ui-monospace,monospace}
-    .markdown-preview code{padding:2px 4px;border-radius:4px;background:#e9edf2;font: .9em ui-monospace,monospace}
-    .markdown-preview pre code{padding:0;background:transparent}
-    .markdown-preview blockquote{margin:1em 0;padding-left:14px;border-left:3px solid #94a3b8;color:#475569}
-    .markdown-preview img{max-width:100%}.markdown-preview table{border-collapse:collapse}.markdown-preview td,.markdown-preview th{padding:6px 9px;border:1px solid #cbd5e1}
     .no-preview{padding:18px;color:var(--muted);font-size:.88rem}
     .empty{grid-column:1/-1;padding:32px;text-align:center;color:var(--muted)}
     footer{margin-top:28px;color:var(--muted);font-size:.85rem;text-align:center}
@@ -56,7 +48,7 @@
     <header class="masthead">
       <p class="eyebrow">Web programming · coursework archive</p>
       <h1>Every week.<br>Every task.</h1>
-      <p class="intro">Browse your coursework weeks and preview saved files here. HTML and SVG files render in an isolated preview, Markdown is formatted, and every file keeps a source view.</p>
+      <p class="intro">Browse your coursework weeks and preview saved files here. HTML and SVG files render in an isolated preview, and every file keeps a source view.</p>
     </header>
     <div class="toolbar">
       <input id="filter" type="search" placeholder="Filter by week, task, or file…" aria-label="Filter coursework">
@@ -72,189 +64,151 @@
     let groups = [];
 
     function extension(file) {
-      const path = file.path || file.name || "";
-      return path.split("?")[0].split("#")[0].split(".").pop().toLowerCase();
+      return (file.name || "").split("?")[0].split("#")[0].split(".").pop().toLowerCase();
     }
 
-    function supportsPreview(file) {
-      return ["html", "htm", "svg", "md", "markdown", "json"].includes(extension(file));
-    }
-
-    function escapeHtml(text) {
-      return text.replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[char]));
-    }
-
-    function markdownToHtml(markdown) {
-      const lines = markdown.replace(/\r\n?/g, "\n").split("\n");
-      const out = [];
-      let inCode = false, code = [], list = "";
-      const closeList = () => { if (list) { out.push(`</${list}>`); list = ""; } };
-      const inline = value => escapeHtml(value)
-        .replace(/`([^`]+)`/g, "<code>$1</code>")
-        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-        .replace(/__(.+?)__/g, "<strong>$1</strong>")
-        .replace(/\*(.+?)\*/g, "<em>$1</em>")
-        .replace(/_(.+?)_/g, "<em>$1</em>")
-        .replace(/\[(.+?)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
-      for (const line of lines) {
-        if (/^\s*```/.test(line)) {
-          closeList();
-          if (inCode) { out.push(`<pre><code>${escapeHtml(code.join("\n"))}</code></pre>`); code = []; inCode = false; }
-          else inCode = true;
-          continue;
-        }
-        if (inCode) { code.push(line); continue; }
-        if (!line.trim()) { closeList(); continue; }
-        const heading = line.match(/^(#{1,6})\s+(.+)$/);
-        if (heading) { closeList(); const level = heading[1].length; out.push(`<h${level}>${inline(heading[2])}</h${level}>`); continue; }
-        if (/^\s*([-*_])\1\1+\s*$/.test(line)) { closeList(); out.push("<hr>"); continue; }
-        const item = line.match(/^\s*([-*+] |\d+\. )(.*)$/);
-        if (item) { const kind = /^\s*\d/.test(line) ? "ol" : "ul"; if (list && list !== kind) closeList(); if (!list) { list = kind; out.push(`<${list}>`); } out.push(`<li>${inline(item[2])}</li>`); continue; }
-        if (/^>\s?/.test(line)) { closeList(); out.push(`<blockquote>${inline(line.replace(/^>\s?/, ""))}</blockquote>`); continue; }
-        closeList(); out.push(`<p>${inline(line)}</p>`);
-      }
-      if (inCode) out.push(`<pre><code>${escapeHtml(code.join("\n"))}</code></pre>`);
-      closeList();
-      return out.join("\n");
-    }
-
-    function makePreview(file) {
-      const kind = extension(file), text = typeof file.code === "string" ? file.code : "";
-      if (["html", "htm", "svg"].includes(kind)) {
-        const frame = document.createElement("iframe");
-        frame.className = "preview";
-        frame.title = `Rendered preview of ${file.name}`;
-        frame.setAttribute("sandbox", "allow-scripts");
-        frame.srcdoc = text;
-        return frame;
-      }
-      if (["md", "markdown"].includes(kind)) {
-        const article = document.createElement("article");
-        article.className = "markdown-preview";
-        article.innerHTML = markdownToHtml(text);
-        return article;
-      }
-      if (kind === "json") {
-        const pre = document.createElement("pre");
-        pre.className = "source";
-        try { pre.textContent = JSON.stringify(JSON.parse(text), null, 2); }
-        catch { pre.textContent = text; }
-        return pre;
-      }
-      const note = document.createElement("div");
-      note.className = "no-preview";
-      note.textContent = `No visual preview is available for .${kind || "unknown"} files. Open Source to inspect the complete file content.`;
-      return note;
+    function canPreview(file) {
+      return ["html", "htm", "svg"].includes(extension(file));
     }
 
     function render() {
       const query = filter.value.trim().toLowerCase();
       weeksRoot.replaceChildren();
-      let visibleFiles = 0, visibleWeeks = 0;
+      let visibleFiles = 0;
+      let visibleWeeks = 0;
+
       for (const group of groups) {
-        const files = group.tasks.flatMap(task => task.files.map(file => ({...file, taskText: task.text, searchText: `${group.title} ${task.text} ${file.name}`.toLowerCase()}))).filter(file => file.searchText.includes(query));
-        if (!files.length) continue;
+        const tasks = (group.tasks || []).map(task => ({
+          ...task,
+          files: (task.files || []).filter(file => `${group.title} ${task.text || ""} ${file.name || ""}`.toLowerCase().includes(query))
+        })).filter(task => task.files.length);
+        if (!tasks.length) continue;
+
         visibleWeeks++;
-        visibleFiles += files.length;
         const section = document.createElement("section");
         section.className = "week";
         const head = document.createElement("div");
         head.className = "week-head";
         const title = document.createElement("h2");
-        title.textContent = group.title.replaceAll("_", " · ");
+        title.textContent = group.title || "Coursework";
         const badge = document.createElement("span");
         badge.className = "badge";
-        badge.textContent = `${files.length} files`;
+        const fileCount = tasks.reduce((total, task) => total + task.files.length, 0);
+        visibleFiles += fileCount;
+        badge.textContent = `${fileCount} files`;
         head.append(title, badge);
+
         const list = document.createElement("div");
         list.className = "tasks";
-        files.forEach((file, index) => {
-          const row = document.createElement("article");
-          row.className = "task";
-          const number = document.createElement("span");
-          number.className = "number";
-          number.textContent = String(index + 1).padStart(2, "0");
-          const details = document.createElement("span");
-          const label = document.createElement("span");
-          label.className = "task-title";
-          label.textContent = file.name;
-          const path = document.createElement("span");
-          path.className = "task-path";
-          path.textContent = file.taskText;
-          details.append(label, path);
-          const button = document.createElement("button");
-          button.type = "button";
-          button.textContent = "View file";
-          button.setAttribute("aria-expanded", "false");
-          button.addEventListener("click", () => {
-            const existing = row.querySelector(".viewer");
-            if (existing) { existing.remove(); button.textContent = "View file"; button.setAttribute("aria-expanded", "false"); return; }
-            const viewer = document.createElement("div");
-            viewer.className = "viewer";
-            const toolbar = document.createElement("div");
-            toolbar.className = "viewer-toolbar";
-            const content = document.createElement("div");
-            const canPreview = supportsPreview(file);
-            let active = canPreview ? "preview" : "source";
-            const showMode = mode => {
-              active = mode;
-              content.replaceChildren();
-              if (mode === "preview") content.append(makePreview(file));
-              else {
-                const pre = document.createElement("pre");
-                pre.className = "source";
-                pre.textContent = file.code || "No saved file content.";
-                content.append(pre);
+        let index = 0;
+        for (const task of tasks) {
+          for (const file of task.files) {
+            index++;
+            const row = document.createElement("article");
+            row.className = "task";
+            const number = document.createElement("span");
+            number.className = "number";
+            number.textContent = String(index).padStart(2, "0");
+            const details = document.createElement("span");
+            const label = document.createElement("span");
+            label.className = "task-title";
+            label.textContent = file.name || "Unnamed file";
+            const path = document.createElement("span");
+            path.className = "task-path";
+            path.textContent = task.text || "";
+            details.append(label, path);
+
+            const button = document.createElement("button");
+            button.type = "button";
+            button.textContent = "View file";
+            button.setAttribute("aria-expanded", "false");
+            button.addEventListener("click", () => {
+              const existing = row.querySelector(".viewer");
+              if (existing) {
+                existing.remove();
+                button.textContent = "View file";
+                button.setAttribute("aria-expanded", "false");
+                return;
               }
-              toolbar.querySelectorAll("button").forEach(control => control.setAttribute("aria-pressed", String(control.dataset.mode === mode)));
-            };
-            if (canPreview) {
-              for (const [mode, text] of [["preview", "Preview"], ["source", "Source"]]) {
+
+              const viewer = document.createElement("div");
+              viewer.className = "viewer";
+              const toolbar = document.createElement("div");
+              toolbar.className = "viewer-toolbar";
+              const content = document.createElement("div");
+              const modes = canPreview(file) ? ["preview", "source"] : ["source"];
+
+              const showMode = mode => {
+                content.replaceChildren();
+                if (mode === "preview") {
+                  const frame = document.createElement("iframe");
+                  frame.className = "preview";
+                  frame.title = `Rendered preview of ${file.name}`;
+                  frame.setAttribute("sandbox", "allow-scripts");
+                  frame.srcdoc = file.code || "";
+                  content.append(frame);
+                } else {
+                  const pre = document.createElement("pre");
+                  pre.className = "source";
+                  pre.textContent = file.code || "No saved file content.";
+                  content.append(pre);
+                }
+                toolbar.querySelectorAll("button[data-mode]").forEach(control => {
+                  control.setAttribute("aria-pressed", String(control.dataset.mode === mode));
+                });
+              };
+
+              for (const mode of modes) {
                 const control = document.createElement("button");
-                control.type = "button"; control.dataset.mode = mode; control.textContent = text;
+                control.type = "button";
+                control.dataset.mode = mode;
+                control.textContent = mode === "preview" ? "Preview" : "Source";
                 control.setAttribute("aria-pressed", "false");
                 control.addEventListener("click", () => showMode(mode));
                 toolbar.append(control);
               }
-            } else {
-              const sourceLabel = document.createElement("span");
-              sourceLabel.className = "viewer-label"; sourceLabel.textContent = "Source · text file";
-              toolbar.append(sourceLabel);
-            }
-            const close = document.createElement("button");
-            close.type = "button"; close.textContent = "Close";
-            close.addEventListener("click", () => { viewer.remove(); button.textContent = "View file"; button.setAttribute("aria-expanded", "false"); button.focus(); });
-            toolbar.append(close);
-            viewer.append(toolbar, content);
-            row.append(viewer);
-            showMode(active);
-            button.textContent = "Close file";
-            button.setAttribute("aria-expanded", "true");
-          });
-          row.append(number, details, button);
-          list.appendChild(row);
-        });
+              const close = document.createElement("button");
+              close.type = "button";
+              close.textContent = "Close";
+              close.addEventListener("click", () => {
+                viewer.remove();
+                button.textContent = "View file";
+                button.setAttribute("aria-expanded", "false");
+                button.focus();
+              });
+              toolbar.append(close);
+              viewer.append(toolbar, content);
+              row.append(viewer);
+              showMode(modes[0]);
+              button.textContent = "Close file";
+              button.setAttribute("aria-expanded", "true");
+            });
+            row.append(number, details, button);
+            list.append(row);
+          }
+        }
         section.append(head, list);
-        weeksRoot.appendChild(section);
+        weeksRoot.append(section);
       }
+
       summary.textContent = `${visibleFiles} coursework files · ${visibleWeeks} weeks`;
       if (!visibleFiles) {
         const empty = document.createElement("p");
         empty.className = "empty";
         empty.textContent = query ? "No matching tasks. Try another search." : "No coursework files found.";
-        weeksRoot.appendChild(empty);
+        weeksRoot.append(empty);
       }
     }
 
     filter.addEventListener("input", render);
-    fetch("./data.json", { cache: "no-store" })
+    fetch("./data%20(3).json", { cache: "no-store" })
       .then(response => {
-        if (!response.ok) throw new Error(`Could not load tracker data (HTTP ${response.status})`);
+        if (!response.ok) throw new Error(`Could not load coursework data (HTTP ${response.status})`);
         return response.json();
       })
       .then(data => {
         groups = Array.isArray(data.weeks) ? data.weeks : [];
-        if (!groups.length) throw new Error("No coursework weeks were found in data.json.");
+        if (!groups.length) throw new Error("No coursework weeks were found in the data file.");
         render();
       })
       .catch(error => {
