@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10131c">
+  <title>Taskbench — Code & Preview</title>
+  <style>
+    :root{color-scheme:dark;--bg:#10131c;--panel:#171b26;--panel2:#1d2330;--line:#2a3140;--muted:#9aa5b5;--text:#eef2f8;--accent:#8b9cff;--green:#76e0bd;--red:#ff8585;font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);height:100vh;overflow:hidden}button,input,textarea{font:inherit}button{color:inherit;cursor:pointer}.app{height:100%;display:flex;flex-direction:column}.topbar{height:58px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid var(--line);background:#141822}.brand{display:flex;align-items:center;gap:11px;font-weight:700;letter-spacing:.01em}.logo{height:31px;width:31px;border-radius:10px;background:linear-gradient(135deg,#a4b0ff,#77dfc0);display:grid;place-items:center;color:#151924;font-weight:900}.brand small{display:block;color:var(--muted);font-size:11px;font-weight:400}.top-actions,.toolbar,.tabs{display:flex;align-items:center;gap:8px}.btn{border:1px solid var(--line);background:var(--panel2);padding:8px 11px;border-radius:8px;font-size:12px}.btn:hover{border-color:#59647c;background:#252c3b}.btn.primary{background:var(--accent);border-color:var(--accent);color:#111522;font-weight:700}.btn.run{background:var(--green);border-color:var(--green);color:#10221d;font-weight:700}.layout{flex:1;min-height:0;display:grid;grid-template-columns:270px minmax(320px,1fr) minmax(330px,44%)}.sidebar{min-height:0;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column}.side-head{padding:14px;border-bottom:1px solid var(--line)}.side-head-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.label{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:700}.side-list{overflow:auto;padding:10px;flex:1}.week{margin-bottom:10px}.week-title{width:100%;display:flex;align-items:center;gap:7px;text-align:left;background:transparent;border:0;padding:7px 5px;color:#cbd2de;font-size:12px;font-weight:700}.week-title .chev{color:var(--muted)}.week-title .spacer{flex:1}.task-row{display:flex;align-items:center;gap:5px;margin:2px 0 2px 11px}.task-select{flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:transparent;border:0;border-radius:7px;padding:8px;color:#c2cad7;font-size:12px}.task-select:hover{background:#202633}.task-select.active{color:var(--text);background:#292f42;box-shadow:inset 2px 0 var(--accent)}.task-check{accent-color:var(--green)}.tiny{border:0;background:transparent;color:#8994a5;padding:5px;border-radius:5px}.tiny:hover{color:white;background:#2a3140}.main{min-width:0;min-height:0;display:flex;flex-direction:column}.task-head{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center}.task-title{background:transparent;border:0;color:white;font-size:17px;font-weight:700;outline:none;min-width:0;flex:1}.task-meta{padding:10px 18px;border-bottom:1px solid var(--line);display:flex;gap:9px;align-items:center}.task-desc{background:transparent;border:0;color:var(--muted);font-size:12px;outline:none;flex:1;min-width:0}.file-tabs{height:40px;display:flex;align-items:stretch;overflow:auto;background:#141822;border-bottom:1px solid var(--line)}.file-tab{border:0;border-right:1px solid var(--line);background:transparent;color:var(--muted);padding:0 13px;font-size:11px;white-space:nowrap}.file-tab.active{background:var(--bg);color:var(--text);border-top:2px solid var(--accent)}.file-tab .x{margin-left:9px;color:#778196}.editor-wrap{flex:1;min-height:0;display:flex;flex-direction:column}.editor-tools{display:flex;justify-content:space-between;align-items:center;padding:8px 13px;color:var(--muted);font-size:11px;border-bottom:1px solid #222836}.editor{resize:none;flex:1;width:100%;border:0;outline:0;background:#10131c;color:#dbe4f3;padding:16px;font:12px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2;white-space:pre;overflow:auto}.preview{min-width:0;min-height:0;border-left:1px solid var(--line);background:#161a24;display:flex;flex-direction:column}.preview-head{height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;border-bottom:1px solid var(--line)}.preview-title{font-size:12px;font-weight:700}.preview-status{font-size:10px;color:var(--muted)}.frame-wrap{flex:1;min-height:0;background:#fff}.frame-wrap iframe{display:block;width:100%;height:100%;border:0;background:white}.console{height:130px;flex:none;background:#11141c;border-top:1px solid var(--line);display:flex;flex-direction:column}.console-head{padding:7px 10px;display:flex;justify-content:space-between;color:var(--muted);font-size:10px;border-bottom:1px solid #242a37}.console-output{overflow:auto;padding:6px 10px;font:11px/1.5 ui-monospace,monospace;color:#c7d0de}.log-error{color:var(--red)}.log-warn{color:#ffd27c}.empty{padding:14px;color:var(--muted);font-size:12px;text-align:center}.hint{padding:9px 13px;border-top:1px solid var(--line);font-size:10px;color:#8994a5}.modal-backdrop{position:fixed;inset:0;background:#05070bbd;display:none;align-items:center;justify-content:center;z-index:5;padding:18px}.modal-backdrop.open{display:flex}.modal{width:min(420px,100%);background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:18px;box-shadow:0 20px 70px #0009}.modal h2{margin:0 0 15px;font-size:16px}.field{display:block;margin:11px 0}.field span{display:block;color:var(--muted);font-size:11px;margin-bottom:5px}.field input,.field textarea,.field select{width:100%;border:1px solid var(--line);background:#10131c;color:var(--text);border-radius:7px;padding:9px;outline:none}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.toast{position:fixed;bottom:15px;left:50%;transform:translate(-50%,20px);opacity:0;background:#283044;padding:9px 14px;border-radius:8px;font-size:12px;transition:.2s;pointer-events:none;z-index:10}.toast.show{opacity:1;transform:translate(-50%,0)}@media(max-width:900px){.layout{grid-template-columns:220px minmax(300px,1fr)}.preview{display:none}.layout.show-preview{grid-template-columns:220px minmax(280px,1fr)}.layout.show-preview .main{display:none}.layout.show-preview .preview{display:flex}}@media(max-width:620px){.topbar{padding:0 10px}.brand small{display:none}.top-actions .optional{display:none}.layout{grid-template-columns:145px minmax(0,1fr)}.side-head{padding:9px}.side-list{padding:6px}.task-row{margin-left:0}.task-title{font-size:14px}.task-head{padding:12px}.task-meta{padding:8px 12px}.editor{padding:11px;font-size:11px}.btn{padding:7px 8px}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><div class="logo">T</div><div>Taskbench<small>Keep tasks, code, and previews together</small></div></div>
+    <div class="top-actions">
+      <button class="btn optional" id="exportBtn" title="Download your workspace as JSON">Export</button>
+      <button class="btn optional" id="importBtn" title="Load a previously exported workspace">Import</button>
+      <input id="importFile" type="file" accept="application/json,.json" hidden>
+      <button class="btn" id="addWeekBtn">＋ Week</button>
+      <button class="btn" id="addTaskBtn">＋ Task</button>
+      <button class="btn" id="addFileBtn">＋ File</button>
+      <button class="btn run" id="runBtn">▶ Run preview</button>
+      <button class="btn" id="mobileViewBtn" title="Switch preview/editor on small screens">Preview</button>
+    </div>
+  </header>
+  <div class="layout" id="layout">
+    <aside class="sidebar">
+      <div class="side-head"><div class="side-head-row"><span class="label">Workspace</span><button class="tiny" id="renameWorkspace" title="Rename workspace">✎</button></div><div id="workspaceName" style="font-size:13px;font-weight:700"></div></div>
+      <div class="side-list" id="taskTree"></div>
+      <div class="hint">Your changes save automatically in this browser.</div>
+    </aside>
+    <main class="main">
+      <div class="task-head"><input id="taskTitle" class="task-title" aria-label="Task title"><button class="tiny" id="deleteTaskBtn" title="Delete task">⌫</button></div>
+      <div class="task-meta"><span class="label">Description</span><input id="taskDescription" class="task-desc" placeholder="Add a short task description…"><label style="font-size:11px;color:var(--muted);white-space:nowrap"><input id="doneCheckbox" class="task-check" type="checkbox"> Done</label></div>
+      <div class="file-tabs" id="fileTabs"></div>
+      <div class="editor-wrap"><div class="editor-tools"><span id="currentFileName">No file selected</span><span id="saveState">Saved</span></div><textarea class="editor" id="codeEditor" spellcheck="false" aria-label="Code editor" placeholder="Select or create a file to start writing code…"></textarea></div>
+      <div class="hint">HTML, CSS, JavaScript, and JSX files are supported. Add an <code>index.html</code> as the preview entry point.</div>
+    </main>
+    <section class="preview" id="previewPanel">
+      <div class="preview-head"><div><div class="preview-title">Live preview</div><div class="preview-status" id="previewStatus">Press Run preview to execute the selected task</div></div><button class="tiny" id="refreshBtn" title="Run again">↻</button></div>
+      <div class="frame-wrap"><iframe id="previewFrame" title="Task preview" sandbox="allow-scripts allow-forms allow-modals allow-popups"></iframe></div>
+      <div class="console"><div class="console-head"><span>Preview console</span><button class="tiny" id="clearConsoleBtn">Clear</button></div><div class="console-output" id="consoleOutput"><span style="color:#7e899a">Console output and runtime errors will appear here.</span></div></div>
+    </section>
+  </div>
+</div>
+<div class="modal-backdrop" id="modalBackdrop"><form class="modal" id="modalForm"><h2 id="modalTitle"></h2><div id="modalFields"></div><div class="modal-actions"><button type="button" class="btn" id="cancelModal">Cancel</button><button type="submit" class="btn primary" id="submitModal">Create</button></div></form></div>
+<div class="toast" id="toast"></div>
+<script>
+(() => {
+  'use strict';
+  const STORAGE_KEY = 'taskbench.workspace.v1';
+  const starter = {name:'My workspace',weeks:[{id:uid(),title:'Week 1',tasks:[{id:uid(),title:'First task',description:'Paste your HTML, CSS, JavaScript, or React code into files and run the preview.',done:false,files:[{id:uid(),path:'index.html',content:'<!doctype html>\n<html lang="en">\n<head>\n  <meta charset="utf-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1">\n  <title>My first preview</title>\n  <link rel="stylesheet" href="style.css">\n</head>\n<body>\n  <main class="card">\n    <span class="tag">LIVE PREVIEW</span>\n    <h1>Hello, Taskbench 👋</h1>\n    <p>Change this code, add files, then press <b>Run preview</b>.</p>\n    <button id="hello">Click me</button>\n    <p id="message"></p>\n  </main>\n  <script src="app.js"><\\/script>\n</body>\n</html>'},{id:uid(),path:'style.css',content:'* { box-sizing: border-box; }\nbody { margin: 0; min-height: 100vh; display: grid; place-items: center; font: 16px system-ui; background: linear-gradient(135deg, #e0e7ff, #d1fae5); color: #172033; }\n.card { background: white; padding: 38px; border-radius: 20px; box-shadow: 0 20px 60px #25365a22; max-width: 520px; }\nh1 { margin: 10px 0; }\n.tag { color: #6558d3; font-size: 11px; font-weight: 800; letter-spacing: .12em; }\nbutton { padding: 10px 15px; border: 0; border-radius: 8px; background: #6558d3; color: white; cursor: pointer; }'},{id:uid(),path:'app.js',content:"document.getElementById('hello').addEventListener('click', () => {\n  document.getElementById('message').textContent = 'Your JavaScript is running!';\n});"}]}]}]};
+  function uid(){return 'id-'+Math.random().toString(36).slice(2,10)}
+  const $ = id => document.getElementById(id);
+  let data;
+  try { data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || starter; } catch { data = starter; }
+  if (!data.weeks || !Array.isArray(data.weeks)) data = starter;
+  let selectedWeek = data.weeks[0]?.id || null;
+  let selectedTask = data.weeks[0]?.tasks?.[0]?.id || null;
+  let selectedFile = null;
+  let collapsed = new Set();
+  const currentWeek = () => data.weeks.find(w=>w.id===selectedWeek);
+  const currentTask = () => currentWeek()?.tasks.find(t=>t.id===selectedTask);
+  const currentFile = () => currentTask()?.files.find(f=>f.id===selectedFile);
+  function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(data));$('saveState').textContent='Saved';}
+  function toast(message){const el=$('toast');el.textContent=message;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1900)}
+  function render(){
+    $('workspaceName').textContent=data.name||'My workspace';
+    const tree=$('taskTree');tree.innerHTML='';
+    data.weeks.forEach(week=>{
+      const section=document.createElement('div');section.className='week';
+      const head=document.createElement('button');head.className='week-title';head.innerHTML=`<span class="chev">${collapsed.has(week.id)?'▸':'▾'}</span><span class="week-label"></span><span class="spacer"></span><span class="tiny" title="Add task">＋</span>`;head.querySelector('.week-label').textContent=week.title;
+      head.onclick=e=>{if(e.target.textContent==='＋'){selectedWeek=week.id;openModal('task');return}collapsed.has(week.id)?collapsed.delete(week.id):collapsed.add(week.id);render()};section.appendChild(head);
+      if(!collapsed.has(week.id)){
+        week.tasks.forEach(task=>{const row=document.createElement('div');row.className='task-row';const check=document.createElement('input');check.type='checkbox';check.className='task-check';check.checked=task.done;check.title='Mark complete';check.onclick=e=>{e.stopPropagation();task.done=check.checked;save();render()};const btn=document.createElement('button');btn.className='task-select'+(task.id===selectedTask?' active':'');btn.textContent=task.title;btn.title=task.title;btn.onclick=()=>{selectedWeek=week.id;selectedTask=task.id;selectedFile=task.files[0]?.id||null;render()};row.append(check,btn);section.appendChild(row)});
+      }tree.appendChild(section);
+    });
+    if(!data.weeks.length){tree.innerHTML='<div class="empty">No weeks yet. Add a week to get started.</div>'}
+    const task=currentTask();
+    $('taskTitle').value=task?.title||'';$('taskDescription').value=task?.description||'';$('doneCheckbox').checked=!!task?.done;
+    if(task&&!task.files.some(f=>f.id===selectedFile))selectedFile=task.files[0]?.id||null;
+    const tabs=$('fileTabs');tabs.innerHTML='';
+    (task?.files||[]).forEach(file=>{const b=document.createElement('button');b.className='file-tab'+(file.id===selectedFile?' active':'');b.textContent=file.path;b.onclick=()=>{selectedFile=file.id;render()};const x=document.createElement('span');x.className='x';x.textContent='×';x.title='Remove file';x.onclick=e=>{e.stopPropagation();if(confirm(`Remove ${file.path}?`)){task.files=task.files.filter(f=>f.id!==file.id);selectedFile=task.files[0]?.id||null;save();render()}};b.appendChild(x);tabs.appendChild(b)});
+    const file=currentFile();$('currentFileName').textContent=file?.path||'No file selected';$('codeEditor').value=file?.content||'';$('codeEditor').disabled=!file;$('deleteTaskBtn').disabled=!task;
+  }
+  $('taskTitle').addEventListener('input',e=>{const t=currentTask();if(t){t.title=e.target.value;save();renderTreeOnly()}});
+  $('taskDescription').addEventListener('input',e=>{const t=currentTask();if(t){t.description=e.target.value;save()}});
+  $('doneCheckbox').addEventListener('change',e=>{const t=currentTask();if(t){t.done=e.target.checked;save();render()}});
+  function renderTreeOnly(){const t=currentTask();const button=[...document.querySelectorAll('.task-select.active')][0];if(button&&t)button.textContent=t.title}
+  $('codeEditor').addEventListener('input',e=>{const f=currentFile();if(f){f.content=e.target.value;$('saveState').textContent='Saving…';save()}});
+  $('addWeekBtn').onclick=()=>openModal('week');$('addTaskBtn').onclick=()=>openModal('task');$('addFileBtn').onclick=()=>openModal('file');
+  $('deleteTaskBtn').onclick=()=>{const w=currentWeek(),t=currentTask();if(!w||!t)return;if(confirm(`Delete task “${t.title}” and its files?`)){w.tasks=w.tasks.filter(x=>x.id!==t.id);selectedTask=w.tasks[0]?.id||null;selectedFile=w.tasks[0]?.files[0]?.id||null;save();render()}};
+  $('renameWorkspace').onclick=()=>{const name=prompt('Workspace name',data.name||'My workspace');if(name?.trim()){data.name=name.trim();save();render()}};
+  $('runBtn').onclick=runPreview;$('refreshBtn').onclick=runPreview;$('clearConsoleBtn').onclick=()=>{$('consoleOutput').innerHTML=''};
+  $('mobileViewBtn').onclick=()=>{$('layout').classList.toggle('show-preview');$('mobileViewBtn').textContent=$('layout').classList.contains('show-preview')?'Editor':'Preview'};
+  $('exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});download(blob,'taskbench-workspace.json')};
+  $('importBtn').onclick=()=>$('importFile').click();
+  $('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const next=JSON.parse(await f.text());if(!Array.isArray(next.weeks))throw Error('Invalid workspace');data=next;selectedWeek=data.weeks[0]?.id||null;selectedTask=data.weeks[0]?.tasks[0]?.id||null;selectedFile=data.weeks[0]?.tasks[0]?.files[0]?.id||null;save();render();toast('Workspace imported')}catch(err){alert('Could not import that workspace: '+err.message)}e.target.value=''};
+  function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+  const modalFields={week:[['title','Week name','text','Week 2']],task:[['title','Task name','text','New task'],['description','Description (optional)','text','What needs to be done?']],file:[['path','File path','text','index.html'],['content','Code (optional)','textarea','']]};
+  function openModal(type){const form=$('modalForm');form.dataset.type=type;$('modalTitle').textContent=type==='week'?'Create a week':type==='task'?'Create a task':'Create a file';$('submitModal').textContent=type==='file'?'Add file':'Create';const fields=$('modalFields');fields.innerHTML='';modalFields[type].forEach(([name,label,inputType,placeholder])=>{const wrap=document.createElement('label');wrap.className='field';const span=document.createElement('span');span.textContent=label;const input=document.createElement(inputType==='textarea'?'textarea':'input');if(inputType!=='textarea')input.type=inputType;else input.rows=8;input.name=name;input.required=name==='title'||name==='path';input.placeholder=placeholder;wrap.append(span,input);fields.appendChild(wrap)});$('modalBackdrop').classList.add('open');fields.querySelector('input,textarea')?.focus()}
+  $('cancelModal').onclick=()=> $('modalBackdrop').classList.remove('open');$('modalBackdrop').onclick=e=>{if(e.target===$('modalBackdrop'))$('modalBackdrop').classList.remove('open')};
+  $('modalForm').onsubmit=e=>{e.preventDefault();const type=e.currentTarget.dataset.type;const fd=new FormData(e.currentTarget);if(type==='week'){const w={id:uid(),title:String(fd.get('title')).trim(),tasks:[]};data.weeks.push(w);selectedWeek=w.id;selectedTask=null;selectedFile=null}else if(type==='task'){let w=currentWeek();if(!w){w={id:uid(),title:'Week 1',tasks:[]};data.weeks.push(w)}const t={id:uid(),title:String(fd.get('title')).trim(),description:String(fd.get('description')||''),done:false,files:[]};w.tasks.push(t);selectedWeek=w.id;selectedTask=t.id;selectedFile=null}else{const t=currentTask();if(!t){alert('Create or select a task first.');return}let path=String(fd.get('path')).trim().replace(/\\/g,'/').replace(/^\/+/, '');if(!path||path.split('/').includes('..')){alert('Enter a relative path without ..');return}if(t.files.some(f=>f.path===path)){alert('That file already exists in this task.');return}const f={id:uid(),path,content:String(fd.get('content')||'')};t.files.push(f);selectedFile=f.id}save();$('modalBackdrop').classList.remove('open');render()};
+  function addConsole(text,kind='log'){const out=$('consoleOutput');if(out.querySelector('span[style]'))out.innerHTML='';const row=document.createElement('div');row.className=kind==='error'?'log-error':kind==='warn'?'log-warn':'';row.textContent=text;out.appendChild(row);out.scrollTop=out.scrollHeight}
+  window.addEventListener('message',e=>{if(e.source!==$('previewFrame').contentWindow||!e.data||e.data.source!=='taskbench')return;addConsole(e.data.message,e.data.kind)});
+  function runPreview(){const task=currentTask();if(!task){$('previewStatus').textContent='Select or create a task first';return}const files=task.files||[];let entry=files.find(f=>f.path.split('/').pop().toLowerCase()==='index.html')||files.find(f=>/\.html?$/i.test(f.path));if(!entry){$('previewStatus').textContent='Add an HTML file (for example index.html) to preview';$('previewFrame').srcdoc='<body style="font:16px system-ui;padding:30px;color:#333"><h2>No HTML entry file</h2><p>Add an <code>index.html</code> file to this task, then run again.</p></body>';return}
+    $('consoleOutput').innerHTML='';$('previewStatus').textContent='Running '+entry.path+'…';
+    const byPath=new Map(files.map(f=>[normalize(f.path),f]));const base=normalize(entry.path).split('/').slice(0,-1).join('/');
+    function resolve(ref){try{if(/^(https?:|data:|blob:|#|\/\/)/i.test(ref))return null;const full=normalize((base?base+'/':'')+ref);return byPath.get(full)||byPath.get(normalize(ref))||null}catch{return null}}
+    let html=entry.content||'';const styles=[];const scripts=[];
+    html=html.replace(/<link\b([^>]*?)href\s*=\s*(["'])(.*?)\2([^>]*)>/gi,(whole,before,q,ref,after)=>{if(!/stylesheet/i.test(before+after))return whole;const f=resolve(ref);if(!f)return whole;styles.push(f.content);return ''});
+    html=html.replace(/<script\b([^>]*?)src\s*=\s*(["'])(.*?)\2([^>]*)>\s*<\/script\s*>/gi,(whole,before,q,ref,after)=>{const f=resolve(ref);if(!f)return whole;const isJsx=/\.jsx?$/i.test(f.path)||/\bReactDOM|createRoot|React\.createElement|<\w+[^>]*\/>/.test(f.content);scripts.push({content:f.content,jsx:isJsx});return ''});
+    for(const f of files.filter(x=>/\.css$/i.test(x.path)&&!styles.includes(x.content)))styles.push(f.content);
+    const isReact=scripts.some(s=>s.jsx)||files.some(f=>/\.jsx$/i.test(f.path));
+    const styleTag=styles.length?'<style>\n'+styles.join('\n')+'\n</style>':'';
+    if(styleTag){if(/<\/head>/i.test(html))html=html.replace(/<\/head>/i,styleTag+'\n</head>');else html=styleTag+html}
+    let generated='';
+    if(isReact){generated+='<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"><\\/script><script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"><\\/script><script src="https://unpkg.com/@babel/standalone/babel.min.js"><\\/script>\n'}
+    scripts.forEach(s=>{generated+='<script'+(s.jsx?' type="text/babel" data-presets="env,react"':'')+'>'+s.content.replace(/<\\/script/gi,'<\\\\/script')+'<\\/script>\n'});
+    const bridge='<script>(function(){function send(kind,args){try{parent.postMessage({source:"taskbench",kind:kind,message:Array.from(args).map(function(x){try{return typeof x==="string"?x:JSON.stringify(x)}catch(e){return String(x)}}).join(" ")},"*")}catch(e){}};["log","info","warn","error"].forEach(function(k){var old=console[k];console[k]=function(){send(k,arguments);old.apply(console,arguments)}});window.addEventListener("error",function(e){send("error",[e.message+" (line "+e.lineno+")"])});window.addEventListener("unhandledrejection",function(e){send("error",[e.reason&&e.reason.message||e.reason])})})();<\\/script>';
+    if(/<\/head>/i.test(html))html=html.replace(/<\/head>/i,bridge+'\n</head>');else html=bridge+html;
+    if(generated){if(/<\/body>/i.test(html))html=html.replace(/<\/body>/i,generated+'\n</body>');else html+=generated}
+    $('previewFrame').srcdoc=html;$('previewStatus').textContent='Preview running · '+entry.path;
+  }
+  function normalize(p){return p.replace(/\\/g,'/').replace(/^\.\//,'').split('/').reduce((a,s)=>{if(!s||s==='.')return a;if(s==='..')a.pop();else a.push(s);return a},[]).join('/')}
+  render();
+})();
+</script>
+</body>
+</html>
