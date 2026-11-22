@@ -48,7 +48,7 @@ iframe{width:100%;height:100%;border:1px solid var(--line);border-radius:8px;bac
   <h1>Week Workbench</h1>
   <div>
     <button class="pri" data-a="addWeek">+ Week</button>
-    <button data-a="export">Export backup</button>
+    <button data-a="export">Export for website</button>
     <button data-a="import">Import backup</button>
   </div>
 </header>
@@ -69,7 +69,10 @@ const uid = () => Math.random().toString(36).slice(2, 9);
 const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 let db = {weeks: []};
-try { db = JSON.parse(localStorage.getItem(KEY)) || db; } catch (e) {}
+/* Your own edits live in this browser. A visitor with nothing saved here sees the
+   published copy, data.json, from the repository (see "Export for website"). */
+let hasLocal = false;
+try { const saved = JSON.parse(localStorage.getItem(KEY)); if (saved && Array.isArray(saved.weeks)) { db = saved; hasLocal = true; } } catch (e) {}
 let cur = {task: null, file: null};
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) { alert('Browser storage is full. Export a backup and delete something.'); } };
 const findWeek = id => db.weeks.find(w => w.id === id);
@@ -190,7 +193,9 @@ const actions = {
   export() {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([JSON.stringify(db, null, 2)], {type: 'application/json'}));
-    a.download = 'week-workbench-backup.json'; a.click(); return 'none';
+    a.download = 'data.json'; a.click();
+    setTimeout(() => alert('Saved data.json.\n\nTo show your weeks on every device: on GitHub open your task-tracker repository, choose Add file > Upload files, drop this data.json in, and press Commit changes. Do this again whenever you add new tasks.'), 300);
+    return 'none';
   },
   import() { $('#imp').click(); return 'none'; }
 };
@@ -274,6 +279,13 @@ $('#imp').addEventListener('change', async e => {
 });
 
 renderSide(); renderWork();
+if (!hasLocal) {
+  fetch('data.json', {cache: 'no-cache'})
+    .then(r => (r.ok ? r.json() : null))
+    .then(data => { if (data && Array.isArray(data.weeks) && !hasLocalNow()) { db = data; renderSide(); renderWork(); } })
+    .catch(() => {});
+}
+function hasLocalNow() { try { return localStorage.getItem(KEY) !== null; } catch (e) { return false; } }
 </script>
 </body>
 </html>
