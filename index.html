@@ -91,8 +91,10 @@ const EDITOR = Boolean(token());
 const sync = (() => { try { return JSON.parse(store.get(SYNC_KEY)) || {}; } catch (e) { return {}; } })();
 const keepSync = () => store.set(SYNC_KEY, JSON.stringify(sync));
 let hasLocal = false;
-if (EDITOR) { try { const saved = JSON.parse(store.get(KEY)); if (saved && Array.isArray(saved.weeks)) { db = saved; hasLocal = true; } } catch (e) {} }
-document.body.classList.toggle('viewer', !EDITOR);
+/* weeks made in this browser always show here and stay editable, logged in or not */
+try { const saved = JSON.parse(store.get(KEY)); if (saved && Array.isArray(saved.weeks) && saved.weeks.length) { db = saved; hasLocal = true; } } catch (e) {}
+const CAN_EDIT = EDITOR || hasLocal;
+document.body.classList.toggle('viewer', !CAN_EDIT);
 function status(text, state) { const el = $('#sync'); el.textContent = text; el.dataset.s = state || ''; }
 const b64 = str => btoa(unescape(encodeURIComponent(str)));
 const unb64 = str => decodeURIComponent(escape(atob(str.replace(/\s/g, ''))));
@@ -144,9 +146,9 @@ function publish(retry) {
 }
 let cur = {task: null, file: null};
 const save = () => {
-  if (!EDITOR) return;
+  if (!CAN_EDIT) return;
   if (!store.set(KEY, JSON.stringify(db))) alert('Browser storage is full. Export a backup and delete something.');
-  queuePublish();
+  if (EDITOR) queuePublish();
 };
 const findWeek = id => db.weeks.find(w => w.id === id);
 const findTask = id => { for (const w of db.weeks) for (const t of w.tasks) if (t.id === id) return t; };
@@ -288,7 +290,7 @@ const actions = {
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-a]'); if (!el) return;
   e.stopPropagation();
-  if (!EDITOR && /^(addWeek|renWeek|delWeek|addTask|renTask|delTask|addFile|delFile|upload|import)$/.test(el.dataset.a)) return;
+  if (!CAN_EDIT && /^(addWeek|renWeek|delWeek|addTask|renTask|delTask|addFile|delFile|upload|import)$/.test(el.dataset.a)) return;
   const r = actions[el.dataset.a](el.dataset);
   if (r === 'none') return;
   save(); renderSide(); renderWork();
@@ -305,7 +307,7 @@ function guessName(s) {
 }
 /* double-click a tab to rename a file (the extension decides its type) */
 document.addEventListener('dblclick', e => {
-  if (!EDITOR) return;
+  if (!CAN_EDIT) return;
   const el = e.target.closest('.tab');
   if (!el || e.target.closest('button')) return;
   const t = findTask(cur.task), f = t && t.files.find(x => x.id === el.dataset.f);
@@ -367,9 +369,11 @@ $('#imp').addEventListener('change', async e => {
 });
 
 const renderWorkBase = renderWork;
-renderWork = function () { renderWorkBase(); const ed = $('#ed'); if (ed && !EDITOR) { ed.readOnly = true; ed.placeholder = ''; } };
+renderWork = function () { renderWorkBase(); const ed = $('#ed'); if (ed && !CAN_EDIT) { ed.readOnly = true; ed.placeholder = ''; } };
 renderSide(); renderWork();
-if (!EDITOR) {
+if (!EDITOR && hasLocal) {
+  status('Only on this device. Owner login shares it with everyone.', '');
+} else if (!EDITOR) {
   status('Loading…');
   loadPublished().then(data => { if (data) { db = data; renderSide(); renderWork(); } status('View only', ''); });
 } else {
