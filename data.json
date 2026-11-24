@@ -1,6 +1,288 @@
 {
   "weeks": [
     {
+      "id": "gpp6yti",
+      "name": "Week 2_1",
+      "tasks": [
+        {
+          "id": "p62nzvi",
+          "title": "ex 1",
+          "files": [
+            {
+              "id": "3bxr06w",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Hello Gachon</title>\n</head>\n<body>\n  <h1>Hello, Gachon!</h1>\n  <p>This is my first web page.</p>\n</body>\n</html>\n"
+            }
+          ]
+        },
+        {
+          "id": "kyvuvl5",
+          "title": "ex 2",
+          "files": [
+            {
+              "id": "d13y2lb",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>My Hobby</title>\n</head>\n<body>\n  <h1>Football</h1>\n\n  <h2>Why I Like It</h2>\n  <p>Football is a <strong>team sport</strong>, so every match teaches me how to work with other people.\n     It is also the best way to <em>clear my head</em> after a long day of coding.</p>\n\n  <h2>How to Get Started</h2>\n  <p>All you need is a ball and a few friends. Start with short passes, then practise\n     dribbling and shooting. Join a weekend game on campus to keep improving.</p>\n</body>\n</html>\n"
+            }
+          ]
+        },
+        {
+          "id": "syzekrg",
+          "title": "ex 3",
+          "files": [
+            {
+              "id": "g92ap0d",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Navigation Menu</title>\n</head>\n<body>\n  <nav>\n    <ul>\n      <li><a href=\"#home\">Home</a></li>\n      <li><a href=\"#about\">About Me</a></li>\n      <li><a href=\"#projects\">Projects</a></li>\n      <li><a href=\"#skills\">Skills</a></li>\n      <li><a href=\"#contact\">Contact</a></li>\n    </ul>\n  </nav>\n</body>\n</html>\n"
+            }
+          ]
+        },
+        {
+          "id": "4qhc35y",
+          "title": "ex 4",
+          "files": [
+            {
+              "id": "raohvgi",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Image with Alt Text</title>\n</head>\n<body>\n  <h1>My Study Space</h1>\n  <img src=\"https://picsum.photos/id/0/480/320\"\n       alt=\"A laptop on a wooden desk, ready for a programming session\"\n       width=\"480\" height=\"320\">\n</body>\n</html>\n"
+            }
+          ]
+        },
+        {
+          "id": "2ilk4q6",
+          "title": "ex 5",
+          "files": [
+            {
+              "id": "n1yd2er",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Student Profile - Muhammadmuso</title>\n</head>\n<body>\n  <h1>Muhammadmuso</h1>\n  <img src=\"https://picsum.photos/id/1005/200/200\" alt=\"Profile photo placeholder\" width=\"200\" height=\"200\">\n\n  <p>I am a <strong>Gachon University student</strong> learning web programming.\n     I like <em>building things from scratch</em> and seeing them work in the browser.</p>\n\n  <h2>Skills</h2>\n  <ul>\n    <li>HTML</li>\n    <li>CSS</li>\n    <li>JavaScript</li>\n    <li>React</li>\n  </ul>\n\n  <p><a href=\"https://www.gachon.ac.kr\" target=\"_blank\" rel=\"noopener noreferrer\">Gachon University website</a></p>\n\n  <footer>\n    <p>&copy; 2026 Muhammadmuso</p>\n  </footer>\n</body>\n</html>\n"
+            }
+          ]
+        },
+        {
+          "id": "vv6ot1s",
+          "title": "ex 6",
+          "files": [
+            {
+              "id": "l746rq6",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<!-- Fix-the-bugs exercise: added doctype, lang, charset, viewport,\n     closed every tag, added alt text and safe target=\"_blank\". -->\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>My Blog (Fixed)</title>\n</head>\n<body>\n  <h1>My Blog</h1>\n  <p>Welcome! Here I write about <strong>web development</strong>.</p>\n  <p>Check out my <a href=\"https://github.com/muso081\" target=\"_blank\" rel=\"noopener noreferrer\">GitHub</a>.</p>\n  <img src=\"https://picsum.photos/id/180/300/200\" alt=\"Laptop and notebook on a desk\" width=\"300\" height=\"200\">\n  <ul>\n    <li>HTML</li>\n    <li>CSS</li>\n    <li>JavaScript</li>\n  </ul>\n</body>\n</html>\n"
+            }
+          ]
+        },
+        {
+          "id": "bb3hj11",
+          "title": "ex 7",
+          "files": [
+            {
+              "id": "a2h25zs",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>How to Make Plov</title>\n</head>\n<body>\n  <h1>How to Make Plov</h1>\n\n  <h2>Ingredients</h2>\n  <ul>\n    <li>500 g rice</li>\n    <li>500 g beef or lamb</li>\n    <li>3 carrots, cut into strips</li>\n    <li>2 onions</li>\n    <li>Cumin, salt and oil</li>\n  </ul>\n\n  <h2>Steps</h2>\n  <ol>\n    <li>Heat the oil in a heavy pot and brown the meat.</li>\n    <li>Add the onions, then the carrots, and fry until soft.</li>\n    <li>Add water, cumin and salt and simmer for <strong>30 minutes</strong>.</li>\n    <li>Spread the washed rice on top <em>without stirring</em> and add water to cover.</li>\n    <li>Cover and cook on low heat until the rice is done, then mix and serve.</li>\n  </ol>\n</body>\n</html>\n"
+            }
+          ]
+        },
+        {
+          "id": "d3hs5bb",
+          "title": "ex 8",
+          "files": [
+            {
+              "id": "jsopd93",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>My Favourites</title>\n</head>\n<body>\n  <h1>My Favourites</h1>\n\n  <section>\n    <div class=\"card\">\n      <h2>Favourite Book: Clean Code</h2>\n      <img src=\"https://picsum.photos/id/24/300/200\" alt=\"An open book on a table\" width=\"300\" height=\"200\">\n      <p>A book about writing code that is <strong>easy to read</strong>. It changed how I <em>name my variables</em>.</p>\n      <a href=\"https://en.wikipedia.org/wiki/Robert_C._Martin\" target=\"_blank\" rel=\"noopener noreferrer\">Learn more</a>\n    </div>\n  </section>\n\n  <section>\n    <div class=\"card\">\n      <h2>Favourite Film: Interstellar</h2>\n      <img src=\"https://picsum.photos/id/1002/300/200\" alt=\"A view of Earth from space\" width=\"300\" height=\"200\">\n      <p>A film about <strong>space and time</strong> with an <em>unforgettable soundtrack</em>.</p>\n      <a href=\"https://en.wikipedia.org/wiki/Interstellar_(film)\" target=\"_blank\" rel=\"noopener noreferrer\">Learn more</a>\n    </div>\n  </section>\n\n  <section>\n    <div class=\"card\">\n      <h2>Favourite Website: MDN Web Docs</h2>\n      <img src=\"https://picsum.photos/id/0/300/200\" alt=\"A laptop showing code\" width=\"300\" height=\"200\">\n      <p>The <strong>best reference</strong> for HTML, CSS and JavaScript, with <em>clear examples</em>.</p>\n      <a href=\"https://developer.mozilla.org\" target=\"_blank\" rel=\"noopener noreferrer\">Learn more</a>\n    </div>\n  </section>\n</body>\n</html>\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nt2o8ap",
+      "name": "Week 2_2",
+      "tasks": [
+        {
+          "id": "ct6tev8",
+          "title": "ex 1",
+          "files": [
+            {
+              "id": "vfua67h",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Semantic Blog Layout</title>\n</head>\n<body>\n  <header>\n    <h1>Muso's Dev Blog</h1>\n    <nav>\n      <a href=\"#\">Home</a>\n      <a href=\"#\">Posts</a>\n      <a href=\"#\">About</a>\n    </nav>\n  </header>\n\n  <main>\n    <article>\n      <h2>Why Semantic HTML Matters</h2>\n      <p>Using header, main, article and footer tells the browser and screen readers what each part of the page is.</p>\n    </article>\n\n    <aside>\n      <h2>Recent Posts</h2>\n      <ul>\n        <li>My first web page</li>\n        <li>Learning CSS selectors</li>\n      </ul>\n    </aside>\n  </main>\n\n  <footer>\n    <p>&copy; 2026 Muhammadmuso</p>\n  </footer>\n</body>\n</html>\n"
+            }
+          ]
+        },
+        {
+          "id": "vd514yw",
+          "title": "ex 2",
+          "files": [
+            {
+              "id": "3g1jhmc",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Article Structure</title>\n</head>\n<body>\n  <article>\n    <header>\n      <h2>Learning to Code at University</h2>\n      <p>By Muhammadmuso &middot; <time datetime=\"2026-09-15\">15 September 2026</time></p>\n    </header>\n\n    <p>Writing code every week has taught me that <strong>small steps add up</strong>.</p>\n    <p>Each exercise is short, but together they turn into <em>real projects</em>.</p>\n\n    <footer>\n      <p>Tags: Coding, Study, HTML</p>\n    </footer>\n  </article>\n</body>\n</html>\n"
+            }
+          ]
+        },
+        {
+          "id": "zi38b5j",
+          "title": "ex 3",
+          "files": [
+            {
+              "id": "k9eq9eg",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Figure and Time</title>\n</head>\n<body>\n  <h1>Figures and Dates</h1>\n\n  <figure>\n    <img src=\"https://picsum.photos/id/1018/400/250\" alt=\"Mountains under a cloudy sky\" width=\"400\" height=\"250\">\n    <figcaption>Figure 1: A mountain landscape.</figcaption>\n  </figure>\n\n  <p>Page written on <time datetime=\"2026-09-08\">8 September 2026</time>.</p>\n\n  <figure>\n    <pre><code>&lt;!DOCTYPE html&gt;\n&lt;html lang=\"en\"&gt;\n  &lt;head&gt;\n    &lt;title&gt;Page&lt;/title&gt;\n  &lt;/head&gt;\n  &lt;body&gt;\n    &lt;p&gt;Hi!&lt;/p&gt;\n  &lt;/body&gt;\n&lt;/html&gt;</code></pre>\n    <figcaption>Figure 2: The smallest valid HTML page.</figcaption>\n  </figure>\n</body>\n</html>\n"
+            }
+          ]
+        },
+        {
+          "id": "10mnpu1",
+          "title": "ex 4",
+          "files": [
+            {
+              "id": "cveesp7",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>FAQ with details</title>\n</head>\n<body>\n  <section>\n    <h1>Frequently Asked Questions</h1>\n\n    <details open>\n      <summary>What is semantic HTML?</summary>\n      <p>Using tags that describe the meaning of the content, not only how it looks.</p>\n    </details>\n\n    <details>\n      <summary>When should I use &lt;main&gt;?</summary>\n      <p>For the main content of the page. Use it only once per page.</p>\n    </details>\n\n    <details>\n      <summary>What is the difference between &lt;section&gt; and &lt;article&gt;?</summary>\n      <p>An article makes sense on its own; a section is a themed part of something bigger.</p>\n    </details>\n\n    <details>\n      <summary>Why use &lt;nav&gt;?</summary>\n      <p>It marks the main navigation links so assistive technology can find them.</p>\n    </details>\n  </section>\n</body>\n</html>\n"
+            }
+          ]
+        },
+        {
+          "id": "pkegccs",
+          "title": "ex 5",
+          "files": [
+            {
+              "id": "k1qz64b",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Muhammadmuso - Portfolio</title>\n</head>\n<body>\n  <header>\n    <h1>Muhammadmuso</h1>\n    <nav aria-label=\"Main navigation\">\n      <a href=\"#about\">About</a>\n      <a href=\"#projects\">Projects</a>\n      <a href=\"#skills\">Skills</a>\n      <a href=\"#contact\">Contact</a>\n    </nav>\n  </header>\n\n  <main>\n    <section id=\"about\">\n      <h2>About</h2>\n      <figure>\n        <img src=\"https://picsum.photos/id/1005/200/200\" alt=\"Profile photo placeholder\" width=\"200\" height=\"200\">\n        <figcaption>Gachon University student</figcaption>\n      </figure>\n      <p>I study web programming and enjoy <mark>building websites</mark> with\n         <abbr title=\"HyperText Markup Language\">HTML</abbr>, CSS and JavaScript.</p>\n    </section>\n\n    <section id=\"projects\">\n      <h2>Projects</h2>\n      <article>\n        <header>\n          <h3>Task Tracker</h3>\n          <p>Started <time datetime=\"2026-11\">November 2026</time></p>\n        </header>\n        <p>A site that keeps my weekly exercises, built with <code>HTML</code>, CSS and JavaScript.</p>\n      </article>\n    </section>\n\n    <aside id=\"skills\">\n      <h2>Skills</h2>\n      <ul>\n        <li>HTML</li>\n        <li>CSS</li>\n        <li>JavaScript</li>\n      </ul>\n    </aside>\n\n    <section id=\"contact\">\n      <h2>Contact</h2>\n      <address>\n        GitHub: <a href=\"https://github.com/muso081\">github.com/muso081</a>\n      </address>\n    </section>\n  </main>\n\n  <footer>\n    <p>&copy; 2026 Muhammadmuso</p>\n  </footer>\n</body>\n</html>\n"
+            }
+          ]
+        },
+        {
+          "id": "mehedfc",
+          "title": "ex 6",
+          "files": [
+            {
+              "id": "wrl23w6",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<!-- Fix-the-structure exercise: one <main>, <h1> in the header,\n     alt text on the image, figure with figcaption, aside inside the article. -->\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>My Blog (Fixed)</title>\n</head>\n<body>\n  <header>\n    <h1>My Blog</h1>\n    <nav><a href=\"#\">Home</a></nav>\n  </header>\n\n  <main>\n    <article>\n      <h2>Semantic HTML</h2>\n      <figure>\n        <img src=\"https://picsum.photos/id/2/400/220\" alt=\"Laptop on a desk showing a web page\" width=\"400\" height=\"220\">\n        <figcaption>Writing semantic HTML.</figcaption>\n      </figure>\n      <aside>\n        <h3>Related Topics</h3>\n        <p>Accessibility, SEO</p>\n      </aside>\n      <footer>\n        <p>Read next: <a href=\"#\">HTML Guide</a></p>\n      </footer>\n    </article>\n  </main>\n\n  <footer>\n    <p>&copy; 2026 Muhammadmuso</p>\n  </footer>\n</body>\n</html>\n"
+            }
+          ]
+        },
+        {
+          "id": "3kdocpk",
+          "title": "ex 7",
+          "files": [
+            {
+              "id": "wlwq7yy",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Quotes</title>\n</head>\n<body>\n  <h1>Quotes I Like</h1>\n\n  <p>Steve Jobs once said, <q>Stay hungry, stay foolish.</q></p>\n\n  <blockquote cite=\"https://en.wikiquote.org/wiki/Linus_Torvalds\">\n    <p>Talk is cheap. Show me the code.</p>\n    <footer>&mdash; <cite>Linus Torvalds</cite></footer>\n  </blockquote>\n\n  <blockquote cite=\"https://en.wikiquote.org/wiki/Grace_Hopper\">\n    <p>The most dangerous phrase in the language is, \"We've always done it this way.\"</p>\n    <footer>&mdash; <cite>Grace Hopper</cite></footer>\n  </blockquote>\n\n  <details>\n    <summary>About this page</summary>\n    <p>Short quotes use <code>&lt;q&gt;</code>, long ones use <code>&lt;blockquote&gt;</code>,\n       and <abbr title=\"Wikiquote\">the source</abbr> goes in <code>&lt;cite&gt;</code>.</p>\n  </details>\n</body>\n</html>\n"
+            }
+          ]
+        },
+        {
+          "id": "aj9asgq",
+          "title": "ex 8",
+          "files": [
+            {
+              "id": "fkssxjc",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Campus News: Students Build Their Own Websites</title>\n</head>\n<body>\n  <header>\n    <p><strong>Gachon Campus News</strong></p>\n    <nav aria-label=\"Main navigation\">\n      <a href=\"#story\">Story</a>\n      <a href=\"#analysis\">Analysis</a>\n      <a href=\"#facts\">Key Facts</a>\n    </nav>\n  </header>\n\n  <main>\n    <article>\n      <header>\n        <h1>Students Build Their Own Websites in Web Programming Class</h1>\n        <address>By Muhammadmuso</address>\n        <p>Published <time datetime=\"2026-09-15\">15 September 2026</time></p>\n      </header>\n\n      <figure>\n        <img src=\"https://picsum.photos/id/180/800/400\" alt=\"Laptop and notebook on a classroom desk\" width=\"800\" height=\"400\">\n        <figcaption>Students write their first pages in week two.</figcaption>\n      </figure>\n\n      <section id=\"story\">\n        <h2>The Story</h2>\n        <p>This semester, students start by writing plain\n           <abbr title=\"HyperText Markup Language\">HTML</abbr> and finish with\n           <mark>live sites on GitHub Pages</mark>.</p>\n      </section>\n\n      <section id=\"analysis\">\n        <h2>Analysis</h2>\n        <p>Learning tags like <code>&lt;article&gt;</code> and <code>&lt;nav&gt;</code> early makes later CSS and JavaScript work easier.</p>\n        <blockquote cite=\"https://developer.mozilla.org\">\n          <p>Semantic markup gives meaning to content, not just appearance.</p>\n          <footer>&mdash; <cite>MDN Web Docs</cite></footer>\n        </blockquote>\n      </section>\n\n      <aside id=\"facts\">\n        <h2>Key Facts</h2>\n        <ul>\n          <li>Semantic HTML helps screen readers.</li>\n          <li>Search engines understand structured pages better.</li>\n          <li>Weekly practice builds real skills.</li>\n        </ul>\n      </aside>\n\n      <footer>\n        <p>Tags: Education, HTML, Web</p>\n      </footer>\n    </article>\n  </main>\n\n  <footer>\n    <p>&copy; 2026 Gachon Campus News</p>\n  </footer>\n</body>\n</html>\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m68trzn",
+      "name": "Week 3_1",
+      "tasks": [
+        {
+          "id": "r9rong6",
+          "title": "ex 1",
+          "files": [
+            {
+              "id": "qv5atrs",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>CSS Basics</title>\n  <style>\n    h1 {\n      color: #1d4ed8;\n      text-align: center;\n      font-size: 2.5rem;\n    }\n    p {\n      color: #6b7280;\n      font-size: 1.1rem;\n      text-align: center;\n    }\n  </style>\n</head>\n<body>\n  <h1>My First Styled Heading</h1>\n  <p>This paragraph is grey and a little bigger than normal.</p>\n</body>\n</html>\n"
+            }
+          ]
+        },
+        {
+          "id": "u3som5l",
+          "title": "ex 2",
+          "files": [
+            {
+              "id": "4iw5rj0",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Inline vs Internal CSS</title>\n  <style>\n    /* Internal styles */\n    body { font-family: Arial, sans-serif; padding: 20px; }\n    h2 { color: #0f766e; }\n    p { font-size: 16px; color: #374151; }\n  </style>\n</head>\n<body>\n  <!-- Inline style wins over the internal p rule -->\n  <p style=\"color: #dc2626; font-size: 22px;\">This paragraph uses an inline style.</p>\n\n  <h2>This heading uses internal CSS</h2>\n  <p>This paragraph also uses internal CSS.</p>\n</body>\n</html>\n"
+            }
+          ]
+        },
+        {
+          "id": "dpdo3sd",
+          "title": "ex 3",
+          "files": [
+            {
+              "id": "7eaj5jw",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Colour Palette</title>\n  <style>\n    body { font-family: Arial, sans-serif; padding: 24px; }\n    .palette {\n      display: flex;\n      flex-wrap: wrap;\n      gap: 14px;\n    }\n    .swatch {\n      width: 130px;\n      height: 110px;\n      border-radius: 10px;\n      display: flex;\n      align-items: flex-end;\n      justify-content: center;\n      padding-bottom: 10px;\n      color: #fff;\n      font-weight: bold;\n      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);\n    }\n    .c1 { background: #0b3d91; }\n    .c2 { background: #1e88e5; }\n    .c3 { background: #26a69a; }\n    .c4 { background: #f9a825; }\n    .c5 { background: #e53935; }\n  </style>\n</head>\n<body>\n  <h1>My Colour Palette</h1>\n  <div class=\"palette\">\n    <div class=\"swatch c1\">#0B3D91</div>\n    <div class=\"swatch c2\">#1E88E5</div>\n    <div class=\"swatch c3\">#26A69A</div>\n    <div class=\"swatch c4\">#F9A825</div>\n    <div class=\"swatch c5\">#E53935</div>\n  </div>\n</body>\n</html>\n"
+            }
+          ]
+        },
+        {
+          "id": "xb49ga6",
+          "title": "ex 4",
+          "files": [
+            {
+              "id": "jllwli3",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Box Model</title>\n  <style>\n    body {\n      margin: 0;\n      min-height: 100vh;\n      display: grid;\n      place-items: center;\n      font-family: Arial, sans-serif;\n      background: #f3f4f6;\n    }\n    /* Each box shows margin (outer), border, padding (inner) */\n    .margin-box {\n      background: #fde68a;\n      padding: 30px;          /* represents the margin area */\n      border: 2px dashed #d97706;\n    }\n    .border-box {\n      border: 12px solid #374151;\n    }\n    .padding-box {\n      background: #bfdbfe;\n      padding: 30px;\n    }\n    .content-box {\n      background: #c4b5fd;\n      padding: 24px 40px;\n      font-weight: bold;\n      text-align: center;\n    }\n    .label { font-size: 12px; margin: 0 0 6px; }\n  </style>\n</head>\n<body>\n  <div class=\"margin-box\">\n    <p class=\"label\">Margin</p>\n    <div class=\"border-box\">\n      <div class=\"padding-box\">\n        <p class=\"label\">Padding</p>\n        <div class=\"content-box\">Content</div>\n      </div>\n    </div>\n  </div>\n</body>\n</html>\n"
+            }
+          ]
+        },
+        {
+          "id": "6m1j6u5",
+          "title": "ex 5",
+          "files": [
+            {
+              "id": "j7gnahl",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Fix the CSS</title>\n  <!-- Fix-the-CSS exercise: every rule has a valid selector,\n       correct property names, semicolons and closing braces. -->\n  <style>\n    body {\n      font-family: Arial, sans-serif;\n      background: #f9fafb;\n      padding: 20px;\n    }\n    h1 {\n      color: #1d4ed8;\n      font-size: 2rem;\n    }\n    p {\n      color: #4b5563;\n      font-size: 1rem;\n    }\n    .card {\n      background: #eff6ff;\n      border: 1px solid #93c5fd;\n      border-radius: 12px;\n      padding: 20px;\n      max-width: 400px;\n    }\n  </style>\n</head>\n<body>\n  <div class=\"card\">\n    <h1>CSS Fixed</h1>\n    <p>Every rule in this card now works.</p>\n  </div>\n</body>\n</html>\n"
+            }
+          ]
+        },
+        {
+          "id": "r2cvylj",
+          "title": "ex 6",
+          "files": [
+            {
+              "id": "vatay0c",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Navigation Bar</title>\n  <style>\n    body { margin: 0; font-family: Arial, sans-serif; }\n    .navbar {\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      padding: 16px 24px;\n      background: #111827;\n    }\n    .logo {\n      color: #fff;\n      font-size: 1.25rem;\n      font-weight: bold;\n    }\n    .links {\n      display: flex;\n      gap: 20px;\n    }\n    .links a {\n      color: #e5e7eb;\n      text-decoration: none;\n    }\n    .links a:hover {\n      color: #60a5fa;\n    }\n  </style>\n</head>\n<body>\n  <nav class=\"navbar\">\n    <div class=\"logo\">Muso</div>\n    <div class=\"links\">\n      <a href=\"#\">Home</a>\n      <a href=\"#\">About</a>\n      <a href=\"#\">Projects</a>\n      <a href=\"#\">Contact</a>\n    </div>\n  </nav>\n</body>\n</html>\n"
+            }
+          ]
+        },
+        {
+          "id": "4lzo349",
+          "title": "ex 7",
+          "files": [
+            {
+              "id": "ruoht5x",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Profile Card</title>\n  <style>\n    body {\n      margin: 0;\n      min-height: 100vh;\n      display: grid;\n      place-items: center;\n      background: #eef2ff;\n      font-family: Arial, sans-serif;\n    }\n    .card {\n      width: 400px;\n      background: #fff;\n      border-radius: 16px;\n      padding: 28px;\n      box-shadow: 0 12px 30px rgba(30, 41, 59, 0.1);\n    }\n    .top {\n      display: flex;\n      align-items: center;\n      gap: 16px;\n    }\n    .avatar {\n      width: 76px;\n      height: 76px;\n      border-radius: 50%;\n      background: #4f46e5;\n      color: #fff;\n      display: grid;\n      place-items: center;\n      font-size: 2rem;\n      font-weight: bold;\n    }\n    h1 { margin: 0; font-size: 1.4rem; }\n    .role { margin: 4px 0 0; color: #6b7280; }\n    hr { border: 0; border-top: 1px solid #e5e7eb; margin: 20px 0; }\n    .tags { display: flex; flex-wrap: wrap; gap: 8px; }\n    .tag {\n      background: #e0e7ff;\n      color: #3730a3;\n      padding: 6px 12px;\n      border-radius: 999px;\n      font-size: 0.85rem;\n      font-weight: 600;\n    }\n  </style>\n</head>\n<body>\n  <div class=\"card\">\n    <div class=\"top\">\n      <div class=\"avatar\">M</div>\n      <div>\n        <h1>Muhammadmuso</h1>\n        <p class=\"role\">Gachon University Student</p>\n      </div>\n    </div>\n    <hr>\n    <div class=\"tags\">\n      <span class=\"tag\">HTML</span>\n      <span class=\"tag\">CSS</span>\n      <span class=\"tag\">JavaScript</span>\n      <span class=\"tag\">React</span>\n    </div>\n  </div>\n</body>\n</html>\n"
+            }
+          ]
+        },
+        {
+          "id": "m0m1eo5",
+          "title": "ex 8",
+          "files": [
+            {
+              "id": "y0pm6j0",
+              "name": "index.html",
+              "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Muhammadmuso - Landing Page</title>\n  <style>\n    * { box-sizing: border-box; margin: 0; padding: 0; }\n    body {\n      font-family: Arial, sans-serif;\n      background: #f8fafc;\n      color: #0f172a;\n      line-height: 1.6;\n    }\n    .nav {\n      display: flex;\n      justify-content: space-between;\n      align-items: center;\n      padding: 18px 32px;\n      background: #1e3a8a;\n      color: #fff;\n    }\n    .nav a { color: #fff; text-decoration: none; margin-left: 20px; }\n    .nav a:hover { text-decoration: underline; }\n    .hero {\n      max-width: 1100px;\n      margin: 48px auto;\n      padding: 0 20px;\n      display: flex;\n      align-items: center;\n      justify-content: space-between;\n      gap: 32px;\n      flex-wrap: wrap;\n    }\n    .hero h1 { font-size: 2.8rem; margin-bottom: 12px; }\n    .hero p { color: #475569; max-width: 520px; font-size: 1.1rem; }\n    .btn {\n      display: inline-block;\n      margin-top: 22px;\n      padding: 12px 24px;\n      background: #2563eb;\n      color: #fff;\n      text-decoration: none;\n      border-radius: 8px;\n    }\n    .btn:hover { background: #1d4ed8; }\n    .hero-img {\n      width: 300px;\n      height: 220px;\n      border-radius: 14px;\n      background: linear-gradient(135deg, #2563eb, #14b8a6);\n      display: grid;\n      place-items: center;\n      color: #fff;\n      font-size: 4rem;\n      font-weight: bold;\n    }\n    .features {\n      max-width: 1100px;\n      margin: 0 auto 56px;\n      padding: 0 20px;\n      display: grid;\n      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));\n      gap: 20px;\n    }\n    .feature {\n      background: #fff;\n      padding: 24px;\n      border-radius: 12px;\n      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);\n    }\n    .feature h3 { margin-bottom: 6px; color: #1e3a8a; }\n    footer {\n      background: #0f172a;\n      color: #cbd5e1;\n      text-align: center;\n      padding: 20px;\n    }\n  </style>\n</head>\n<body>\n  <nav class=\"nav\">\n    <strong>Muhammadmuso</strong>\n    <div>\n      <a href=\"#\">Home</a>\n      <a href=\"#features\">Skills</a>\n      <a href=\"#\">Contact</a>\n    </div>\n  </nav>\n\n  <section class=\"hero\">\n    <div>\n      <h1>Hi, I'm Muhammadmuso.</h1>\n      <p>I'm a Gachon University student learning to build websites from the front end to deployment.</p>\n      <a class=\"btn\" href=\"https://github.com/muso081\">See my GitHub</a>\n    </div>\n    <div class=\"hero-img\" aria-hidden=\"true\">M</div>\n  </section>\n\n  <section class=\"features\" id=\"features\">\n    <div class=\"feature\">\n      <h3>HTML</h3>\n      <p>Clean, semantic page structure.</p>\n    </div>\n    <div class=\"feature\">\n      <h3>CSS</h3>\n      <p>Layouts with flexbox and grid.</p>\n    </div>\n    <div class=\"feature\">\n      <h3>JavaScript</h3>\n      <p>Interactive pages and API calls.</p>\n    </div>\n  </section>\n\n  <footer>&copy; 2026 Muhammadmuso</footer>\n</body>\n</html>\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "78ow3lc",
       "name": "Week 3_2",
       "tasks": [
