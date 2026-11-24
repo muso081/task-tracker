@@ -217,13 +217,23 @@ function build(t) {
   };
   by('CSS').forEach(f => inline(f, `<style>${f.content}</style>`));
   by('JS').forEach(f => inline(f, `<script>${safe(f.content)}<\/script>`));
-  const jsx = by('React').map(f => `<script type="text/babel" data-presets="react">${safe(f.content)}<\/script>`);
+  /* Vite-style React code works too: imports are removed (React, ReactDOM and the hooks
+     are globals here, and every .jsx file in the task shares one scope), exports are unwrapped. */
+  const unmodule = s => s
+    .replace(/^\s*import\s[\s\S]*?\sfrom\s*['"][^'"]+['"];?/gm, '')
+    .replace(/^\s*import\s*['"][^'"]+['"];?/gm, '')
+    .replace(/\bexport\s+default\s+(?=(async\s+)?(function|class)\b)/g, '')
+    .replace(/^\s*export\s+default\s+[\w$]+\s*;?\s*$/gm, '')
+    .replace(/\bexport\s+(?=(const|let|var|function|class|async)\b)/g, '');
+  const jsx = by('React').map(f => `<script type="text/babel" data-presets="react">${safe(unmodule(f.content))}<\/script>`);
 
   const libs = hasReact
-    ? '<script src="https://unpkg.com/react@18.3.1/umd/react.development.js"><\/script><script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"><\/script><script src="https://unpkg.com/@babel/standalone@7.25.6/babel.min.js"><\/script>'
+    ? '<script src="https://unpkg.com/react@18.3.1/umd/react.development.js"><\/script><script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"><\/script><script src="https://unpkg.com/@babel/standalone@7.25.6/babel.min.js"><\/script>' +
+      '<script>["useState","useEffect","useRef","useMemo","useCallback","useReducer","useContext","useLayoutEffect","useId","createContext","Fragment","StrictMode"].forEach(function(k){window[k]=React[k]});' +
+      'var __cr=ReactDOM.createRoot;ReactDOM.createRoot=function(){window.__rootMade=true;return __cr.apply(this,arguments)};<\/script>'
     : '';
   const mount = hasReact
-    ? '<script type="text/babel" data-presets="react">if (typeof App !== "undefined" && !document.getElementById("root").hasChildNodes()) ReactDOM.createRoot(document.getElementById("root")).render(<App />);<\/script>'
+    ? '<script type="text/babel" data-presets="react">if (typeof App !== "undefined" && !window.__rootMade) ReactDOM.createRoot(document.getElementById("root")).render(<App />);<\/script>'
     : '';
   const errs = '<script>(function(){var p;function out(c,a){if(!p){p=document.createElement("pre");p.style.cssText="margin:0;padding:8px;border-top:1px solid #ccc;background:#f6f8fa;color:#111;font:12px monospace;white-space:pre-wrap";document.body.appendChild(p)}p.textContent+=c+Array.prototype.map.call(a,function(x){try{return typeof x==="object"?JSON.stringify(x):String(x)}catch(e){return String(x)}}).join(" ")+"\\n"}["log","warn","error"].forEach(function(k){var o=console[k];console[k]=function(){out(k==="log"?"":k+": ",arguments);o.apply(console,arguments)}});addEventListener("error",function(e){out("Error: ",[e.message])})})()<\/script>';
 
